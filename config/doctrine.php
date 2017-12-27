@@ -1,4 +1,5 @@
 <?php
+use Ramsey;
 
 return [
 
@@ -110,7 +111,11 @@ return [
     |--------------------------------------------------------------------------
     */
     'custom_types'               => [
-        'json' => LaravelDoctrine\ORM\Types\Json::class
+        'json' => LaravelDoctrine\ORM\Types\Json::class,
+        'geometry' => Jsor\Doctrine\PostGIS\Types\GeometryType::class,
+        'geography' => Jsor\Doctrine\PostGIS\Types\GeographyType::class,
+        'raster' => Jsor\Doctrine\PostGIS\Types\RasterType::class,
+        'uuid' => Ramsey\Uuid\Doctrine\UuidType::class,
     ],
     /*
     |--------------------------------------------------------------------------

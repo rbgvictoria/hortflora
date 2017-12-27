@@ -1,17 +1,15 @@
 <?php
 
 namespace App\Entities;
-
+use App\Entities\Traits\UsesPasswordGrant;
 use Doctrine\ORM\Mapping as ORM;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use LaravelDoctrine\ORM\Auth\Authenticatable;
-use LaravelDoctrine\Extensions\Timestamps\Timestamps;
-use LaravelDoctrine\ORM\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
-use App\Entities\Traits\UsesPasswordGrant;
-
+use LaravelDoctrine\Extensions\Timestamps\Timestamps;
+use LaravelDoctrine\ORM\Auth\Authenticatable;
+use LaravelDoctrine\ORM\Notifications\Notifiable;
 
 
 /**
@@ -24,6 +22,7 @@ class User implements AuthenticatableContract, CanResetPasswordContract
     use Authenticatable, CanResetPassword, Timestamps, Notifiable, HasApiTokens, UsesPasswordGrant;
 
     /**
+     * @var int
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      * @ORM\Column(type="integer")
@@ -49,7 +48,7 @@ class User implements AuthenticatableContract, CanResetPasswordContract
     {
         return $this->id;
     }
-    
+
     /**
      * @return string
      */
@@ -57,7 +56,7 @@ class User implements AuthenticatableContract, CanResetPasswordContract
     {
         return $this->email;
     }
-    
+
     /**
      * @param string $email
      */
@@ -65,7 +64,7 @@ class User implements AuthenticatableContract, CanResetPasswordContract
     {
         $this->email = $email;
     }
-    
+
     /**
      * @return string
      */
@@ -73,7 +72,7 @@ class User implements AuthenticatableContract, CanResetPasswordContract
     {
         return $this->name;
     }
-    
+
     /**
      * @param string $name
      */
@@ -81,7 +80,7 @@ class User implements AuthenticatableContract, CanResetPasswordContract
     {
         $this->name = $name;
     }
-    
+
     /**
      * @return int
      */
