@@ -24,7 +24,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Class Taxon
  * @author Niels Klazenga
  * @ORM\Entity()
- * @ORM\Table(schema="flora", name="taxa", indexes={@ORM\Index(columns={"guid"})})
+ * @ORM\Table(schema="flora", name="taxa")
  */
 class Taxon extends ClassBase {
 

@@ -31,7 +31,7 @@ class User implements AuthenticatableContract, CanResetPasswordContract
 
     /**
      * @var string
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", unique=true)
      */
     protected $email;
 
