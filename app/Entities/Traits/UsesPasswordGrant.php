@@ -6,15 +6,13 @@ use App\Entities\User;
 use LaravelDoctrine\ORM\Facades\EntityManager;
 
 /**
- * Description of UsesPasswordGrant
+ * Trait UsesPasswordGrant
  *
  * @author Niels Klazenga <Niels.Klazenga@rbg.vic.gov.au>
  */
 trait UsesPasswordGrant {
-    
+
     /**
-     * 
-     * @param EntityManager $em
      * @param string $userId
      * @return User
      */
@@ -23,5 +21,5 @@ trait UsesPasswordGrant {
         $userRepository = EntityManager::getRepository(get_class($this));
         return $userRepository->findOneByEmail($userId);
     }
-    
+
 }

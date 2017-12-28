@@ -5,7 +5,7 @@ namespace Database\Migrations;
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema as Schema;
 
-class Version20171227075211 extends AbstractMigration
+class Version20171228063242 extends AbstractMigration
 {
     /**
      * @param Schema $schema
@@ -233,7 +233,6 @@ class Version20171227075211 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_3A5A64924A6BEBCA ON flora.taxa (threat_status_id)');
         $this->addSql('CREATE INDEX IDX_3A5A6492B03A8386 ON flora.taxa (created_by_id)');
         $this->addSql('CREATE INDEX IDX_3A5A649299049ECE ON flora.taxa (modified_by_id)');
-        $this->addSql('CREATE INDEX IDX_3A5A64922B6FCFB2 ON flora.taxa (guid)');
         $this->addSql('COMMENT ON COLUMN flora.taxa.guid IS \'(DC2Type:uuid)\'');
         $this->addSql('CREATE TABLE flora.taxon_attributes (id SERIAL NOT NULL, taxon_id INT NOT NULL, attribute_id INT NOT NULL, created_by_id INT DEFAULT NULL, modified_by_id INT DEFAULT NULL, attribute_value VARCHAR(255) NOT NULL, remarks TEXT DEFAULT NULL, timestamp_created TIMESTAMP(0) WITH TIME ZONE NOT NULL, timestamp_modified TIMESTAMP(0) WITH TIME ZONE DEFAULT NULL, guid UUID DEFAULT NULL, version SMALLINT NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_CC70FD92B6FCFB2 ON flora.taxon_attributes (guid)');
