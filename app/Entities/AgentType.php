@@ -49,4 +49,53 @@ class AgentType extends Vocab {
      * @ORM\Column(length=64)
      */
     protected $label;
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+      return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    function setName($name)
+    {
+      $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUri()
+    {
+      return $this->uri;
+    }
+
+    /**
+     * @param string $uri
+     */
+    function setUri($uri)
+    {
+      $this->uri = $uri;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLabel()
+    {
+      return $this->label;
+    }
+
+    /**
+     * @param string $label
+     */
+    function setLabel($label)
+    {
+      $this->label = $label;
+    }
+
 }

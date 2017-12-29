@@ -81,4 +81,132 @@ class TaxonTreeDefItem extends ClassBase {
      */
     protected $rankId;
 
+    /**
+     * @return TaxonTreeDefItem
+     */
+    public function getParentItem()
+    {
+        return $this->parentItem;
+    }
+
+
+    /**
+     * @param TaxonTreeDefItem $parentItem
+     */
+    public function setParentItem($parentItem)
+    {
+        $this->parentItem = $parentItem;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTextBefore()
+    {
+        return $this->textBefore;
+    }
+
+    /**
+     * @param string $prefix
+     */
+    public function setTextBefore($prefix)
+    {
+        $this->textBefore = $prefix;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTextAfter()
+    {
+        return $this->textAfter;
+    }
+
+    /**
+     * @param string $suffix
+     */
+    public function setTextAfter($suffix)
+    {
+        $this->textAfter = $suffix;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullNameSeparator()
+    {
+        return $this->fullNameSeparator;
+    }
+
+    /**
+     * @param string $separator
+     */
+    public function setFullNameSeparator($separator)
+    {
+        $this->fullNameSeparator = $separator;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsEnforced()
+    {
+        return $this->isEnforced;
+    }
+
+    /**
+     * @param bool $isEnforced
+     */
+    public function setIsEnforced($isEnforced)
+    {
+        $this->isEnforced = $isEnforced;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getInFullName()
+    {
+        return $this->isInFullName;
+    }
+
+    /**
+     * @param bool $isInFullName
+     */
+    public function setIsInFullName($isInFullName)
+    {
+        $this->isInFullName = $isInFullName;
+    }
+
+    /**
+     * @return [type] [description]
+     */
+    public function getRankId()
+    {
+        return $this->rankId;
+    }
+
+    /**
+     * @param int $rankId
+     */
+    public function setRankId($rankId)
+    {
+        $this->rankId = $rankId;
+    }
 }

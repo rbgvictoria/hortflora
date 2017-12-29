@@ -61,4 +61,84 @@ class Change extends ClassBase {
      * @ORM\Column(type="boolean", name="is_current", nullable=true)
      */
     protected $isCurrent;
+
+    /**
+     * @return Taxon
+     */
+    public function getFromTaxon()
+    {
+      return $this->fromTaxon;
+    }
+
+    /**
+     * @param Taxon $from
+     */
+    function setFromTaxon(Taxon $from)
+    {
+      $this->fromTaxon = $from;
+    }
+
+    /**
+     * @return Taxon
+     */
+    public function getToTaxon()
+    {
+      return $this->toTaxon;
+    }
+
+    /**
+     * @param Taxon $to
+     */
+    function setToTaxon(Taxon $to)
+    {
+      $this->toTaxon = $to;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSource()
+    {
+      return $this->source;
+    }
+
+    /**
+     * @param string $source
+     */
+    public function setSource($source)
+    {
+      $this->source = $source;
+    }
+
+    /**
+     * @return string
+     */
+    public function getChangeType()
+    {
+      return $this->changeType;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setChangeType($type)
+    {
+      $this->changeType = $type;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsCurrent()
+    {
+      return $this->isCurrent;
+    }
+
+    /**
+     * @param bool $current
+     */
+    public function setIsCurrent($current)
+    {
+      $this->isCurrent = $current;
+    }
 }

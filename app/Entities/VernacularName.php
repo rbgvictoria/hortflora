@@ -91,4 +91,132 @@ class VernacularName extends ClassBase {
      * @ORM\Column(type="text", nullable=true)
      */
     protected $taxonRemarks;
+
+    /**
+     * @return Taxon
+     */
+    public function getTaxon()
+    {
+        return $this->taxon();
+    }
+
+    /**
+     * @param Taxon $taxon
+     */
+    public function setTaxon(Taxon $taxon)
+    {
+        $this->taxon = $taxon;
+    }
+
+    /**
+     * @return Reference
+     */
+    public function getSource()
+    {
+        return $this->source;
+    }
+
+    /**
+     * @param Reference $source
+     */
+    public function setSource($source)
+    {
+        $this->source = $source;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVernacularName()
+    {
+        return $this->vernacularName;
+    }
+
+    /**
+     * @param string $vernacularName
+     */
+    public function setVernacularName($vernacularName)
+    {
+        $this->vernacularName = $vernacularName;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsPreferredName()
+    {
+        return $this->isPreferredName;
+    }
+
+    /**
+     * @param bool $isPreferredName
+     */
+    public function setIsPreferredName($isPreferredName)
+    {
+        $this->isPreferredName = $isPreferredName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVernacularNameUsage()
+    {
+        return $this->vernacularNameUsage;
+    }
+
+    /**
+     * @param string $usage
+     */
+    public function setVernacularNameUsage($usage)
+    {
+        $this->vernacularNameUsage = $usage;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLanguage()
+    {
+        return $language;
+    }
+
+    /**
+     * @param string $language
+     */
+    public function setLanguage($language)
+    {
+        $this->language = $language;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrganismPart()
+    {
+        return $this->organismPart;
+    }
+
+    /**
+     * @param string $organismPart
+     */
+    public function setOrganismPart($organismPart)
+    {
+        $this->organismPart = $organismPart;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTaxonRemarks()
+    {
+        return $this->taxonRemarks;
+    }
+
+    /**
+     * @param string $remarks
+     */
+    public function setTaxonRemarks($remarks)
+    {
+        $this->taxonRemarks = $remarks;
+    }
 }

@@ -48,4 +48,36 @@ class GroupAgent extends ClassBase
      * @ORM\Column(type="smallint")
      */
     protected $sequence;
+
+    /**
+     * @return Agent
+     */
+    public function getMember()
+    {
+      return $this->member;
+    }
+
+    /**
+     * @param Agent $member
+     */
+    public function setMember(Agent $member)
+    {
+      $this->member = $member;
+    }
+
+    /**
+     * @return Agent
+     */
+    public function getGroup()
+    {
+      return $this->group;
+    }
+
+    /**
+     * @param Agent $group
+     */
+    public function setGroup(Agent $group)
+    {
+      $this->group = $group;
+    }
 }

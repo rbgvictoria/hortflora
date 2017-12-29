@@ -55,4 +55,68 @@ class TaxonAttribute extends ClassBase {
      * @ORM\Column(type="text", nullable=true)
      */
     protected $remarks;
+
+    /**
+     * @return Taxon
+     */
+    public function getTaxon()
+    {
+        return $this->taxon;
+    }
+
+    /**
+     * @param Taxon $taxon
+     */
+    public function setTaxon(Taxon $taxon)
+    {
+        $this->taxon = $taxon;
+    }
+
+    /**
+     * @return Attribute
+     */
+    public function getAttribute()
+    {
+        return $this->attribute;
+    }
+
+    /**
+     * @param Attribute $attribute
+     */
+    public function setAttribute(Attribute $attribute)
+    {
+        $this->attribute = $attribute;
+    }
+
+    /**
+     * @return string
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * @param string $value
+     */
+    public function setValue(string $value)
+    {
+        $this->value = $value;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRemarks()
+    {
+        return $this->remarks;
+    }
+
+    /**
+     * @param string $remarks
+     */
+    public function setRemarks($remarks)
+    {
+        $this->remarks = $remarks;
+    }
 }

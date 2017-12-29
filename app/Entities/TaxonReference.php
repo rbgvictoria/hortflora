@@ -44,4 +44,35 @@ class TaxonReference extends ClassBase {
      */
     protected $reference;
 
+    /**
+     * @return Taxon
+     */
+    public function getTaxon()
+    {
+        return $this->taxon;
+    }
+
+    /**
+     * @param Taxon $taxon
+     */
+    public function setTaxon(Taxon $taxon)
+    {
+        $this->taxon = $taxon;
+    }
+
+    /**
+     * @return Reference
+     */
+    public function getReference()
+    {
+        return $this->reference;
+    }
+
+    /**
+     * @param Reference $reference
+     */
+    public function setReference(Reference $reference)
+    {
+        $this->reference = $reference;
+    }
 }

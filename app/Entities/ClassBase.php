@@ -18,6 +18,8 @@
 
 namespace App\Entities;
 
+use App\Entities\Traits\Blameable;
+use App\Entities\Traits\Timestamps;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -29,6 +31,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ClassBase
 {
+    use Timestamps, Blameable;
+
     /**
      * @var int
      * @ORM\Id
@@ -36,18 +40,6 @@ class ClassBase
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
-
-    /**
-     * @var \DateTime
-     * @ORM\Column(type="datetimetz", name="timestamp_created")
-     */
-    protected $timestampCreated;
-
-    /**
-     * @var \DateTime
-     * @ORM\Column(type="datetimetz", name="timestamp_modified", nullable=true)
-     */
-    protected $timestampModified;
 
     /**
      * @var \Ramsey\Uuid\Uuid
@@ -62,58 +54,11 @@ class ClassBase
     protected $version;
 
     /**
-     * @var Agent
-     * @ORM\ManyToOne(targetEntity="\App\Entities\Agent")
-     * @ORM\JoinColumn(name="created_by_id", referencedColumnName="id")
-     */
-    protected $createdBy;
-
-    /**
-     * @var Agent
-     * @ORM\ManyToOne(targetEntity="\App\Entities\Agent")
-     * @ORM\JoinColumn(name="modified_by_id", referencedColumnName="id")
-     */
-    protected $modifiedBy;
-
-    /**
      * @return int
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getTimestampCreated()
-    {
-        return $this->timestampCreated;
-    }
-
-    /**
-     *
-     * @param \DateTime $timestamp
-     */
-    public function setTimestampCreated($timestamp)
-    {
-        $this->timestampCreated = $timestamp;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getTimestampModified()
-    {
-        return $this->timestampModified;
-    }
-
-    /**
-     * @param \DateTime $timestamp
-     */
-    public function setTimestampModified($timestamp)
-    {
-        $this->timestampModified = $timestamp;
     }
 
     /**
@@ -154,37 +99,5 @@ class ClassBase
     public function setGuid($guid)
     {
         $this->guid = $guid;
-    }
-
-    /**
-     * @return /App/Entities/Agent
-     */
-    public function getCreatedBy()
-    {
-        return $this->createdBy;
-    }
-
-    /**
-     * @param /App/Entities/Agent $agent
-     */
-    public function setCreatedBy($agent)
-    {
-        $this->createdBy = $agent;
-    }
-
-    /**
-     * @return /App/Entities/Agent
-     */
-    public function getModifiedBy()
-    {
-        return $this->modifiedBy;
-    }
-
-    /**
-     * @param /App/Entities/Agent $agent
-     */
-    public function setModifiedBy($agent)
-    {
-        $this->modifiedBy = $agent;
     }
 }

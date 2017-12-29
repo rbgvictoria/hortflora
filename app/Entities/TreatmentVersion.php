@@ -56,4 +56,68 @@ class TreatmentVersion extends ClassBase {
      * @var bool
      */
     protected $isUpdated;
+
+    /**
+     * @return Treatment
+     */
+    public function getTreatment()
+    {
+        return $this->treatment;
+    }
+
+    /**
+     * @param Treatment $treatment
+     */
+    public function setTreatment(Treatment $treatment)
+    {
+        $this->treatment = $treatment;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHtml()
+    {
+        return $this->html;
+    }
+
+    /**
+     * @param string $html
+     */
+    public function setHtml($html)
+    {
+        $this->html = $html;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsCurrentVersion()
+    {
+        return $this->isCurrentName;
+    }
+
+    /**
+     * @param bool $isCurrentVersion
+     */
+    public function setIsCurrentVersion($isCurrentVersion)
+    {
+        $this->isCurrentVersion = $isCurrentVersion;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsUpdated()
+    {
+        return $this->isUpdated;
+    }
+
+    /**
+     * @param bool $isUpdated
+     */
+    public function setIsUpdated($isUpdated)
+    {
+        $this->isUpdated = $isUpdated;
+    }
 }

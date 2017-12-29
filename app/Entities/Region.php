@@ -18,6 +18,7 @@
 
 namespace App\Entities;
 
+use App\Entities\Traits\NestedSets;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -30,6 +31,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 
 class Region extends ClassBase {
+
+    use NestedSets;
 
     /**
      * @var string
@@ -63,19 +66,7 @@ class Region extends ClassBase {
     protected $parent;
 
     /**
-     * @var int
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    protected $nodeNumber;
-
-    /**
-     * @var int
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    protected $highestDescendantNodeNumber;
-
-    /**
-     * @var string 
+     * @var string
      * @ORM\Column(type="geometry", options={"geometry_type"="MULTIPOLYGON", "srid"=4326}, nullable=true)
      */
     protected $geom;

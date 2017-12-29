@@ -18,6 +18,7 @@
 
 namespace App\Entities;
 
+use App\Entities\Traits\NestedSets;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -30,6 +31,8 @@ use Doctrine\ORM\Mapping as ORM;
  * })
  */
 class TaxonTree extends ClassBase {
+
+    use NestedSets;
 
     /**
      * @var Taxon
@@ -47,20 +50,34 @@ class TaxonTree extends ClassBase {
     protected $parent;
 
     /**
-     * @var int
-     * @ORM\Column(type="integer", name="node_number")
+     * @return Taxon
      */
-    protected $nodeNumber;
+    public function getTaxon()
+    {
+        return $this->taxon;
+    }
 
     /**
-     * @var int
-     * @ORM\Column(type="integer", nullable=false)
+     * @param Taxon $taxon
      */
-    protected $highestDescendantNodeNumber;
+    public function setTaxon(Taxon $taxon)
+    {
+        $this->taxon = $taxon;
+    }
 
     /**
-     * @var int
-     * @ORM\Column(type="smallint", nullable=false)
+     * @return Taxon
      */
-    protected $depth;
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @param Taxon $parent
+     */
+    public function setParent($parent)
+    {
+        $this->parent = $parent;
+    }
 }

@@ -72,4 +72,100 @@ class Treatment extends ClassBase {
      * @ORM\Column(type="boolean", name="is_current_treatment", nullable=true)
      */
     protected $isCurrentTreatment;
+
+    /**
+     * @return Taxon
+     */
+    public function getTaxon()
+    {
+        return $this->taxon;
+    }
+
+    /**
+     * @param Taxon $taxon
+     */
+    public function setTaxon(Taxon $taxon)
+    {
+        $this->taxon = $taxon;
+    }
+
+    /**
+     * @return Taxon
+     */
+    public function getAcceptedNameUsage()
+    {
+        return $this->accepted;
+    }
+
+    /**
+     * @param Taxon $accepted
+     */
+    public function setAcceptedNameUsage(Taxon $accepted)
+    {
+        $this->accepted = $accepted;
+    }
+
+    /**
+     * @return TaxonomicStatus
+     */
+    public function getTaxonomicStatus()
+    {
+        return $this->taxonomicStatus;
+    }
+
+    /**
+     * @param TaxonomicStatus $taxonomicStatus
+     */
+    public function setTaxonomicStatus($taxonomicStatus)
+    {
+        $this->taxonomicStatus = $taxonomicStatus;
+    }
+
+    /**
+     * @return Reference
+     */
+    public function getSource()
+    {
+        return $this->source;
+    }
+
+    /**
+     * @param Reference $source
+     */
+    public function setSource($source)
+    {
+        $this->source = $source;
+    }
+
+    /**
+     * @return Agent
+     */
+    public function getAuthor()
+    {
+        return $this->author();
+    }
+
+    /**
+     * @param Agent $author
+     */
+    public function setAuthor($author)
+    {
+        $this->author = $author;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsCurrentTreatment()
+    {
+        return $this->isCurrentTreatment;
+    }
+
+    /**
+     * @param bool $isCurrentTreatment
+     */
+    public function setIsCurrentTreatment($isCurrentTreatment)
+    {
+        $this->isCurrentTreatment = $isCurrentTreatment;
+    }
 }

@@ -44,8 +44,92 @@ class OrganizationAgent extends ClassBase
     protected $group;
 
     /**
-     * @var int
+     * @var string
      * @ORM\Column(length=128, nullable=true)
      */
     protected $role;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    protected $startDate;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    protected $endDate;
+
+    /**
+     * @param Agent $member
+     */
+    public function setMember(Agent $member)
+    {
+      $this->member = $member;
+    }
+
+    /**
+     * @return Agent
+     */
+    public function getGroup()
+    {
+      return $this->group;
+    }
+
+    /**
+     * @param Agent $group
+     */
+    public function setGroup(Agent $group)
+    {
+      $this->group = $group;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRole()
+    {
+      return $this->role;
+    }
+
+    /**
+     * @param string $role
+     */
+    public function setRole($role)
+    {
+      $this->role = $role;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getStartDate()
+    {
+      return $this->startDate;
+    }
+
+    /**
+     * @param \DateTime $date
+     */
+    public function setStartDate($date)
+    {
+      $this->startDate = $date;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getEndDate()
+    {
+      return $this->endDate;
+    }
+
+    /**
+     * @param \DateTime $date
+     */
+    public function setEndDate($date)
+    {
+      $this->endDate = $date;
+    }
 }

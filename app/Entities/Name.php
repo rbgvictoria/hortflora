@@ -69,4 +69,100 @@ class Name extends ClassBase {
      * @ORM\JoinColumn(name="name_type_id", referencedColumnName="id")
      */
     protected $nameType;
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+      return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+      $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullName()
+    {
+      return $this->fullName;
+    }
+
+    /**
+     * @param string $fullName
+     */
+    public function setFullName($fullName)
+    {
+      $this->fullName = $fullName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthorship()
+    {
+      return $this->authorship;
+    }
+
+    /**
+     * @param string $author
+     */
+    public function setAuthorship($author)
+    {
+      $this->authorship = $author;
+    }
+
+    /**
+     * @return Reference
+     */
+    public function getProtologue()
+    {
+      return $this->protologue;
+    }
+
+    /**
+     * @param Reference $protologue
+     */
+    public function setProtologue($protologue)
+    {
+      $this->protologue = $protologue;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNomenclaturalNote()
+    {
+      return $this->nomenclaturalNote;
+    }
+
+    /**
+     * @param string $note
+     */
+    public function setNomenclaturalNote($note)
+    {
+      $this->nomenclaturalNote = $note;
+    }
+
+    /**
+     * @return NameType
+     */
+    public function getNameType()
+    {
+      return $this->getNameType;
+    }
+
+    /**
+     * @param NameType $type
+     */
+    public function setNameType($type)
+    {
+      $this->nameType = $type;
+    }
 }

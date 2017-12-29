@@ -20,7 +20,6 @@ namespace App\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
 
-
 /**
  * Description of Link
  *
@@ -54,8 +53,102 @@ class Link extends ClassBase {
     protected $baseUrl;
 
     /**
-     * @ORM\Column()
+     * @ORM\Column(nullable=true)
      * @var string
      */
     protected $path;
+
+    /**
+     * @var string
+     * @ORM\Column(nullable=true)
+     */
+    protected $query;
+
+    /**
+     * @return Taxon
+     */
+    public function getTaxon()
+    {
+      return $this->taxon;
+    }
+
+    /**
+     * @param Taxon $taxon
+     */
+    public function setTaxon(Taxon $taxon)
+    {
+      $this->taxon = $taxon;
+    }
+
+    /**
+     * @return Reference
+     */
+    public function getSource()
+    {
+      return $this->source;
+    }
+
+    /**
+     * @param Reference $source
+     */
+    public function setSource(Reference $source)
+    {
+      $this->source = $source;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBaseUrl()
+    {
+      return $this->baseUrl;
+    }
+
+    /**
+     * @param string $base
+     */
+    public function setBaseUrl($base)
+    {
+      $this->baseUrl = $base;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPath()
+    {
+      return $this->path;
+    }
+
+    /**
+     * @param string $path
+     */
+    public function setPath($path)
+    {
+      $this->path = $path;
+    }
+
+    /**
+     * @return string
+     */
+    public function getQuery()
+    {
+      return $this->query;
+    }
+
+    /**
+     * @param string $query
+     */
+    public function setQuery($query)
+    {
+      $this->path = $path;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+      return $this->baseUrl . $this->path;
+    }
 }

@@ -120,4 +120,244 @@ class Reference extends ClassBase {
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
      */
     protected $parent;
+
+    /**
+     * @return string
+     */
+    public function getReference()
+    {
+      return $this->reference;
+    }
+
+    /**
+     * @param string $str
+     */
+    public function setReference($str)
+    {
+      $this->reference = $str;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthor()
+    {
+      return $this->author;
+    }
+
+    /**
+     * @param string $author
+     */
+    public function setAuthor($author)
+    {
+      $this->author = $author;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPublicationYear()
+    {
+      return $this->publicationYear;
+    }
+
+    /**
+     * @param string $year
+     */
+    public function setPublicationYear($year)
+    {
+      $this->publicationYear = $year;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+      return $this->title;
+    }
+
+    /**
+     * @param string $title
+     */
+    public function setTitle($title)
+    {
+      $this->title = $title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getJournalOrBook()
+    {
+      return $this->journalOrBook;
+    }
+
+    /**
+     * @param string $str
+     */
+    public function setJournalOrBook($str)
+    {
+      $this->journalOrBook = $str;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCollation()
+    {
+      return $this->collation;
+    }
+
+    /**
+     * @param string $collation
+     */
+    public function setCollation($collation)
+    {
+      $this->collation = $collation;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSeries()
+    {
+      return $this->series;
+    }
+
+     /**
+      * @param string $series
+      */
+    public function setSeries($series)
+    {
+      $this->series = $series;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEdition()
+    {
+      return $this->edition;
+    }
+
+    /**
+     * @param string $edition
+     */
+    public function setEdition($edition)
+    {
+      $this->edition = $edition;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVolume()
+    {
+      return $this->volume;
+    }
+
+    /**
+     * @param string $volume
+     */
+    public function setVolume($volume)
+    {
+      $this->volume = $volume;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPart()
+    {
+      return $this->part;
+    }
+
+    /**
+     * @param string $part
+     */
+    public function setPart($part)
+    {
+      $this->part = $part;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPage()
+    {
+      return $this->page;
+    }
+
+    /**
+     * @param string $page
+     */
+    public function setPage($page)
+    {
+      $this->page = $page;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPublisher()
+    {
+      return $this->publisher;
+    }
+
+    /**
+     * @param string $publisher
+     */
+    public function setPublisher($publisher)
+    {
+      $this->publisher = $publisher;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPlaceOfPublication()
+    {
+      return $this->placeOfPublication;
+    }
+
+    /**
+     * @param string $place
+     */
+    public function setPlaceOfPublication($place)
+    {
+      $this->placeOfPublication = $place;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubject()
+    {
+      return $this->subject;
+    }
+
+    /**
+     * @param string $subject
+     */
+    public function setSubject($subject)
+    {
+      $this->subject = $subject;
+    }
+
+    /**
+     * @return Reference
+     */
+    public function getParent()
+    {
+      return $this->parent;
+    }
+
+    /**
+     * @param Reference $parent
+     */
+    public function setParent($parent)
+    {
+      $this->parent = $parent;
+    }
 }

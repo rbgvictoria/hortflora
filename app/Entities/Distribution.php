@@ -43,4 +43,36 @@ class Distribution extends ClassBase {
      *   nullable=false)
      */
     protected $region;
+
+    /**
+     * @return Taxon
+     */
+    public function getTaxon()
+    {
+      return $this->taxon;
+    }
+
+    /**
+     * @param Taxon $taxon
+     */
+    public function setTaxon(Taxon $taxon)
+    {
+      $this->taxon = $taxon;
+    }
+
+    /**
+     * @return Region
+     */
+    public function getRegion()
+    {
+      return $this->region;
+    }
+
+    /**
+     * @param Region $region
+     */
+    public function setRegion(Region $region)
+    {
+      $this->region = $region;
+    }
 }

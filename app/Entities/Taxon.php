@@ -183,4 +183,198 @@ class Taxon extends ClassBase {
      * @ORM\Column(type="boolean", name="do_not_index", nullable=true)
      */
     protected $doNotIndex;
+
+    /**
+     * @return Name
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param Name $name
+     */
+    public function setName(Name $name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return TaxonTreeDefItem
+     */
+    public function getTaxonTreeDefItem()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param TaxonTreeDefItem $taxonTreeDefItem
+     */
+    public function setTaxonTreeDefItem(TaxonTreeDefItem $taxonTreeDefItem)
+    {
+        $this->taxonTreeDefItem = $taxonTreeDefItem;
+    }
+
+    /**
+     * @return Taxon
+     */
+    public function getAcceptedNameUsage()
+    {
+        return $this->accepted;
+    }
+
+    /**
+     * @param Taxon $accepted
+     */
+    public function setAcceptedNameUsage(Taxon $accepted)
+    {
+        $this->accepted = $accepted;
+    }
+
+    /**
+     * @return Taxon
+     */
+    public function getParentNameUsage()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @param Taxon $parent
+     */
+    public function setParentNameUsage(Taxon $parent)
+    {
+        $this->parent = $parent;
+    }
+
+    /**
+     * @return Taxon
+     */
+    public function getCultivarGroup()
+    {
+        return $this->cultivarGroup;
+    }
+
+    /**
+     * @param Taxon $cultiarGroup
+     */
+    public function setCultivarGroup($cultiarGroup)
+    {
+        $this->cultivarGroup = $cultiarGroup;
+    }
+
+
+    /**
+     * @return Reference
+     */
+    public function getNameAccordingTo()
+    {
+        return $this->nameAccordingTo;
+    }
+
+    /**
+     * @param Reference $sensu
+     */
+    public function setNameAccordingTo($sensu)
+    {
+        $this->nameAccordingTo = $sensu;
+    }
+
+    /**
+     * @return TaxonomicStatus
+     */
+    public function getTaxonomicStatus()
+    {
+        return $this->taxonomicStatus;
+    }
+
+    /**
+     * @param TaxonomicStatus $status
+     */
+    function setTaxonomicStatus($status)
+    {
+        $this->taxonomicStatus = $status;
+    }
+
+    /**
+     * @return OccurrenceStatus
+     */
+    function getOccurrenceStatus()
+    {
+        return $this->occurrenceStatus;
+    }
+
+    /**
+     * @param OccurrenceStatus $status
+     */
+    function setOccurrenceStatus($status)
+    {
+        $this->occurrenceStatus = $status;
+    }
+
+    /**
+     * @return EstablishmentMeans
+     */
+    public function getEstablishmentMeans()
+    {
+        return $this->establishmentMeans;
+    }
+
+    /**
+     * @param EstablishmentMeans $establishmentMeans
+     */
+    public function setEstablishmentMeans($establishmentMeans)
+    {
+        $this->establishmentMeans = $establishmentMeans;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsEndemic()
+    {
+        return $this->isEndemic;
+    }
+
+    /**
+     * @param bool $isEndemic
+     */
+    public function setIsEndemic($isEndemic)
+    {
+        $this->isEndemic = $isEndemic;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTaxonRemarks()
+    {
+        return $this->taxonRemarks;
+    }
+
+    /**
+     * @param string $remarks
+     */
+    public function setTaxonRemarks($remarks)
+    {
+        $this->taxonRemarks = $remarks;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getDoNotIndex()
+    {
+        return $this->doNotIndex;
+    }
+
+    /**
+     * @param bool $doNotIndex
+     */
+    public function setDoNotIndex($doNotIndex)
+    {
+        $this->doNotIndex = $doNotIndex;
+    }
+
 }
