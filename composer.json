@@ -16,7 +16,8 @@
         "laravel/passport": "^4.0",
         "laravel/tinker": "~1.0",
         "league/fractal": "^0.17.0",
-        "ramsey/uuid-doctrine": "^1.4"
+        "ramsey/uuid-doctrine": "^1.4",
+        "zircote/swagger-php": "^2.0"
     },
     "require-dev": {
         "filp/whoops": "~2.0",
