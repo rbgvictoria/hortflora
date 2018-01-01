@@ -45,12 +45,12 @@ class Taxon extends ClassBase {
      *
      * The taxonomic rank of the most specific name in the scientificName.
      *
-     * @var TaxonTreeDefItem
-     * @ORM\ManyToOne(targetEntity="TaxonTreeDefItem")
-     * @ORM\JoinColumn(name="taxon_tree_def_item_id", referencedColumnName="id",
-     *   nullable=false)
+     * @var TaxonRank
+     * @ORM\ManyToOne(targetEntity="TaxonRAnk")
+     * @ORM\JoinColumn(name="rank_id", referencedColumnName="id",
+     *   nullable=true)
      */
-    protected $taxonTreeDefItem;
+    protected $taxonRank;
 
     /**
      * http://rs.tdwg.org/dwc/terms/acceptedNameUsageID

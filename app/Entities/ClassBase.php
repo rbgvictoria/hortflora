@@ -28,6 +28,7 @@ use Doctrine\ORM\Mapping as ORM;
  * entities
  * @author Niels Klazenga
  * @ORM\MappedSuperclass
+ * @ORM\HasLifecycleCallbacks
  */
 class ClassBase
 {
@@ -79,6 +80,7 @@ class ClassBase
 
     /**
      * @return int
+     * @ORM\PreUpdate
      */
     public function incrementVersion() {
         $this->version++;
