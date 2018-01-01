@@ -236,7 +236,10 @@ trait RestExceptionHandlerTrait
                     'status' => 500,
                     'code' => '11006',
                     'title' => 'Fatal Error',
-                    'detail' => $e->getTrace()
+                    'detail' => [
+                        'message' => $e->getMessage(),
+                        'trace' => $e->getTrace(),
+                    ]
                 ]
             ]
         ];
