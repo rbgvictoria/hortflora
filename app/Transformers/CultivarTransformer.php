@@ -19,10 +19,16 @@
 namespace App\Transformers;
 
 use League\Fractal;
+use Swagger\Annotations as SWG;
 
 /**
  * Cultivar Transformer
  * @author Niels Klazenga <Niels.Klazenga@rbg.vic.gov.au>
+ * @SWG\Definition(
+ *   definition="Cultivar",
+ *   type="object",
+ *   required={"id", "scientificName"}
+ * )
  */
 class CultivarTransformer extends Fractal\TransformerAbstract
 {
@@ -31,6 +37,18 @@ class CultivarTransformer extends Fractal\TransformerAbstract
     ];
 
     /**
+     * @SWG\Property(
+     *   property="id",
+     *   type="string"
+     * ),
+     * @SWG\Property(
+     *   property="scientificName",
+     *   type="string"
+     * ),
+     * @SWG\Property(
+     *   property="description",
+     *   type="string"
+     * ),
      * @param  object $cultivar
      * @return array
      */

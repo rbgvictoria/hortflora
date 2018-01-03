@@ -19,6 +19,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('apidocs', function() {
+    return view('swagger');
+});
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

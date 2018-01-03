@@ -15,18 +15,17 @@ use Swagger\Annotations as SWG;
  *
  * @SWG\Swagger(
  *   @SWG\Info(
- *     title="VicFlora API",
+ *     title="HortFlora API",
  *     description="",
  *     version="1.0.0",
  *     @SWG\Contact(
  *       name="Niels Klazenga, Royal Botanic Gardens Victoria",
- *       email="Niels.Klazenga@rbg.vic.gov.au",
- *       url="https://vicflora.rbg.vic.gov.au"
+ *       email="Niels.Klazenga@rbg.vic.gov.au"
  *     )
  *   ),
- *   host="vicflora.rbg.vic.gov.au",
+ *   host="hortflora.homestead",
  *   basePath="/api",
- *   schemes={"https"},
+ *   schemes={"http"},
  *   consumes={"application/json", "multipart/form-data"},
  *   produces={"application/json", "application/vnd.api+json"}
  * )
@@ -77,20 +76,12 @@ class ApiController extends Controller
     /**
      * Creates API documentation
      * @param  Request $request
-     * @return \Illuminate\View\View
+     * @return \Illuminate\Http\Response
      */
     public function apiDocs(Request $request)
     {
         $swagger = \Swagger\scan(app_path());
-        if ($request->header('accept') == 'application/json'
-                || $request->input('format') === 'json') {
-            return response()->json($swagger);
-        }
-        else {
-            return view('api', [
-                'swagger' => json_encode($swagger)
-            ]);
-        }
+        return response()->json($swagger);
     }
 
 

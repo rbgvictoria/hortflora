@@ -18,6 +18,7 @@
 
 namespace App\Queries;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
 
@@ -49,4 +50,27 @@ class ReferenceQueries {
                 ->first();
     }
 
+    /**
+     * Get references for a taxon
+     * @param  Uuid $taxon UUID of the taxon
+     * @return Collection
+     */
+    public function getTaxonReferences($taxon)
+    {
+        return DB::table('public.references as r')
+                ->join('flora.taxon_references as tr', 'r.id', '=', 'tr.reference_id')
+                ->join('flora.taxa as t', 'tr.taxon_id', '=', 't.id')
+                ->leftJoin('public.agents as ca', 'r.created_by_id', '=', 'ca.id')
+                ->leftJoin('public.agents as ma', 'r.modified_by_id', '=', 'ma.id')
+                ->leftJoin('public.references as pr', 'r.parent_id', '=', 'pr.id')
+                ->select('r.id', 'r.reference', 'r.author', 'r.publication_year',
+                        'r.title', 'r.journal_or_book', 'r.collation',
+                        'r.series', 'r.edition', 'r.volume', 'r.part', 'r.page',
+                        'r.publisher', 'r.place_of_publication', 'r.subject',
+                        'r.timestamp_created', 'r.timestamp_modified', 'r.guid',
+                        'r.version', 'ca.guid as creator',
+                        'ma.guid as modified_by', 'pr.guid as published_in')
+                ->where('t.guid', '=', $taxon)
+                ->get();
+    }
 }

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2017 Niels Klazenga, Royal Botanic Gardens Victoria.
+ * Copyright 2017 Royal Botanic Gardens Victoria.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,25 +19,44 @@
 namespace App\Transformers;
 
 use League\Fractal;
+use Swagger\Annotations as SWG;
 
 /**
- * Description of ReferenceTransformer
+ * Key Transformer
  *
  * @author Niels Klazenga <Niels.Klazenga@rbg.vic.gov.au>
  *
+ * @SWG\Definition(
+ *   definition="Key",
+ *   type="object",
+ *   required={"id", "title"}
+ * )
  */
-class TaxonIncludeTransformer extends Fractal\TransformerAbstract {
+class KeyTransformer extends Fractal\TransformerAbstract {
 
     /**
-     * @param  object $taxon
+     * @SWG\Property(
+     *   property="id",
+     *   type="string"
+     * ),
+     * @SWG\Property(
+     *   property="title",
+     *   type="string"
+     * ),
+     * @SWG\Property(
+     *   property="taxonomicScope",
+     *   type="string"
+     * ),
+     *
+     * @param object $key
      * @return array
      */
-    public function transform($taxon)
+    public function transform($key)
     {
         return [
-            'id' => $taxon->guid,
-            'rank' => $taxon->rank,
-            'fullName' => $taxon->fullName,
+            'id' => $key->key_id,
+            'title' => $key->key_title,
+            'taxonomicScope' => $key->taxonomic_scope,
         ];
     }
 }

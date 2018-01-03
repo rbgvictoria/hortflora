@@ -36,6 +36,32 @@ trait RestExceptionHandlerTrait
     /**
      * Creates a new JSON response based on exception type.
      *
+     * @SWG\Definition(
+     *   definition="Exception",
+     *   type="object",
+     *   required={"status", "code"},
+     *     @SWG\Property(
+     *       property="status",
+     *       type="integer",
+     *       description="HTTP status"
+     *     ),
+     *     @SWG\Property(
+     *       property="code",
+     *       type="string",
+     *       description="Application-specific error code"
+     *     ),
+     *     @SWG\Property(
+     *       property="title",
+     *       type="string",
+     *       description="Title of the error"
+     *     ),
+     *     @SWG\Property(
+     *       property="detail",
+     *       type="string",
+     *       description="Detail of the error"
+     *     )
+     * )
+     * 
      * @param Request $request
      * @param Exception $e
      * @return \Illuminate\Http\JsonResponse
@@ -158,7 +184,6 @@ trait RestExceptionHandlerTrait
      * @param Exception $e
      * @return bool
      */
-
     protected function isNotFoundHttpException(Exception $e)
     {
         return $e instanceof NotFoundHttpException;

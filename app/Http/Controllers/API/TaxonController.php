@@ -27,13 +27,13 @@ class TaxonController extends ApiController
      * @SWG\Get(
      *     path="/taxa/{taxon}",
      *     tags={"Taxa"},
-     *     summary="Gets a **Taxon** resource",
+     *     summary="Gets a Taxon resource",
      *     @SWG\Parameter(
      *         in="path",
      *         name="taxon",
      *         required=true,
      *         type="string",
-     *         description="UUID of the **Taxon** resource"
+     *         description="UUID of the Taxon resource"
      *     ),
      *     @SWG\Parameter(
      *         in="query",
@@ -41,10 +41,9 @@ class TaxonController extends ApiController
      *         type="array",
      *         items=@SWG\Items(
      *             type="string",
-     *             enum={"creator", "modifiedBy", "hasParentNameUsage",
+     *             enum={"creator", "modifiedBy", "parentNameUsage",
      *                 "classification", "siblings", "children", "synonyms",
-     *                 "treatments", "changes", "bioregionDistribution",
-     *                 "stateDistribution"}
+     *                 "treatments", "changes"}
      *         ),
      *         collectionFormat="csv",
      *         description="Extra linked resources to include in the result; linked resources within included resources can be appended, separated by a full stop, e.g. 'treatment.as'; multiple resources can be included, separated by a comma."
@@ -55,7 +54,7 @@ class TaxonController extends ApiController
      *         type="array",
      *         @SWG\Items(
      *             type="string",
-     *             enum={"hasScientificName", "hasAcceptedNameUsage", "nameAccordingTo"}
+     *             enum={"name", "acceptedNameUsage", "nameAccordingTo"}
      *         ),
      *         collectionFormat="csv",
      *         description="Linked resources to exclude from the result; the enumerated resources are included by default, but can be excluded if they are not wanted in the result."
@@ -68,8 +67,18 @@ class TaxonController extends ApiController
      *         )
      *     ),
      *     @SWG\Response(
+     *         response="400",
+     *         description="Bad request",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Exception"
+     *         )
+     *     ),
+     *     @SWG\Response(
      *         response="404",
-     *         description="The requested resource could not be found"
+     *         description="The requested resource could not be found",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Exception"
+     *         )
      *     )
      * )
      *
@@ -675,6 +684,7 @@ class TaxonController extends ApiController
      *         response="404",
      *         description="The requested resource could not be found."
      *     )
+ *     )
      * @param  Uuid  $id UUID of the Taxon
      * @return \Illuminate\Http\Response
      */
@@ -848,6 +858,7 @@ class TaxonController extends ApiController
      *     )
      * )
      *
+     * @param \Illuminate\Http\Request $request
      * @param Uuid $id
      * @return \Illuminate\Http\Response
      */
@@ -871,4 +882,249 @@ class TaxonController extends ApiController
         $data['meta']['queryParams'] = $queryParams;
         return response()->json($data);
     }
+
+    /**
+     * @SWG\Get(
+     *     path="/taxa/{taxon}/creator",
+     *     tags={"Taxa"},
+     *     summary="Gets creator of a Taxon",
+     *     @SWG\Parameter(
+     *         in="path",
+     *         name="taxon",
+     *         type="string",
+     *         required=true,
+     *         description="Identifier (UUID) of the Taxon"
+     *     ),
+     *     @SWG\Response(
+     *         response="200",
+     *         description="Successful response",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Agent"
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *         response="404",
+     *         description="The requested resource could not be found."
+     *     )
+     * )
+     *
+     * @param Uuid $id
+     * @return \Illuminate\Http\Response
+     */
+    public function hasCreator($id)
+    {
+        $data = null;
+        $taxon = TaxonQueries::getTaxon($id);
+        if (!$taxon) {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+        }
+        $agentModel = new \App\Queries\AgentQueries();
+        $agent = $agentModel->getAgent($taxon->creator);
+        if ($agent) {
+            $transformer = new \App\Transformers\AgentTransformer();
+            $resource = new Fractal\Resource\Item($agent, $transformer, 'agents');
+            $data = $this->fractal->createData($resource)->toArray();
+        }
+        return response()->json($data);
+    }
+
+    /**
+     * @SWG\Get(
+     *     path="/taxa/{taxon}/modifiedBy",
+     *     tags={"Taxa"},
+     *     summary="Gets Agent who last modified a Taxon",
+     *     @SWG\Parameter(
+     *         in="path",
+     *         name="taxon",
+     *         type="string",
+     *         required=true,
+     *         description="Identifier (UUID) of the Taxon"
+     *     ),
+     *     @SWG\Response(
+     *         response="200",
+     *         description="Successful response",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Agent"
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *         response="404",
+     *         description="The requested resource could not be found."
+     *     )
+     * )
+     *
+     * @param Uuid $id
+     * @return \Illuminate\Http\Response
+     */
+    public function hasModifiedBy($id)
+    {
+        $data = null;
+        $taxon = TaxonQueries::getTaxon($id);
+        if (!$taxon) {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+        }
+        $agentModel = new \App\Queries\AgentQueries();
+        $agent = $agentModel->getAgent($taxon->modified_by);
+        if ($agent) {
+            $transformer = new \App\Transformers\AgentTransformer();
+            $resource = new Fractal\Resource\Item($agent, $transformer, 'agents');
+            $data = $this->fractal->createData($resource)->toArray();
+        }
+        return response()->json($data);
+    }
+
+    /**
+     * @SWG\Get(
+     *     path="/taxa/{taxon}/key",
+     *     tags={"Taxa"},
+     *     summary="Gets Key for a Taxon",
+     *     description="Gets the key from KeyBase.",
+     *     @SWG\Parameter(
+     *         in="path",
+     *         name="taxon",
+     *         type="string",
+     *         required=true,
+     *         description="Identifier (UUID) of the Taxon"
+     *     ),
+     *     @SWG\Response(
+     *         response="200",
+     *         description="Successful response",
+     *     ),
+     *     @SWG\Response(
+     *         response="400",
+     *         description="Invalid input."
+     *     ),
+     *     @SWG\Response(
+     *         response="404",
+     *         description="The requested resource could not be found."
+     *     )
+     * )
+     *
+     * @param string $id
+     * @return \Illuminate\Http\Response
+     */
+    public function hasKey($id)
+    {
+        $data = null;
+        $this->checkUuid($id);
+        $taxon = TaxonQueries::getTaxon($id);
+        if (!$taxon) {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+        }
+        $client = new \GuzzleHttp\Client([
+            'base_uri' => 'https://data.rbg.vic.gov.au/keybase-ws/ws/'
+        ]);
+        $response = $client->request('GET', 'search_items', [
+            'query' => [
+                'term' => $taxon->full_name,
+                'project' => 10,
+            ]
+        ]);
+
+        if ($response->hasHeader('Content-Length')) {
+            $length = $response->getHeader("Content-Length");
+            if ($length[0] > '0') {
+                $body = \GuzzleHttp\json_decode($response->getBody());
+                if (is_array($body) && is_object($body[0])) {
+                    $key = $body[0];
+                    $resource = new Fractal\Resource\Item($key, new \App\Transformers\KeyTransformer, 'keys');
+                    $data = $this->fractal->createData($resource)->toArray();
+                }
+            }
+        }
+        return response()->json($data);
+    }
+
+    /**
+     * @SWG\Get(
+     *     path="/taxa/{taxon}/references",
+     *     tags={"Taxa"},
+     *     summary="Gets References for a Taxon",
+     *     @SWG\Parameter(
+     *         in="path",
+     *         name="taxon",
+     *         type="string",
+     *         required=true,
+     *         description="Identifier (UUID) of the Taxon"
+     *     ),
+     *     @SWG\Response(
+     *         response="200",
+     *         description="Successful response",
+     *         @SWG\Schema(
+     *             type="array",
+     *             @SWG\Items(
+     *                 ref="#/definitions/Agent"
+     *             )
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *         response="404",
+     *         description="The requested resource could not be found."
+     *     )
+     * )
+     *
+     * @param Uuid $id
+     * @return \Illuminate\Http\Response
+     */
+    public function hasReferences($id)
+    {
+        $data = null;
+        $this->checkUuid($id);
+        $referenceModel = new \App\Queries\ReferenceQueries();
+        $references = $referenceModel->getTaxonReferences($id);
+        if ($references) {
+            $transformer = new \App\Transformers\ReferenceTransformer();
+            $resource = new Fractal\Resource\Collection($references, $transformer, 'references');
+            $data = $this->fractal->createData($resource)->toArray();
+        }
+        return response()->json($data);
+    }
+
+    /**
+     * [showRegions description]
+     * @param  Uuid $id
+     * @return \Illuminate\Http\Response
+     */
+    public function hasRegions($id)
+    {
+        $data = null;
+        $regions = \App\Queries\DistributionQueries::getDistributionForTaxon($id);
+        if ($regions) {
+            $transformer = new \App\Transformers\RegionTransformer();
+            $resource = new Fractal\Resource\Collection($regions, $transformer, 'regions');
+            $data = $this->fractal->createData($resource)->toArray();
+        }
+        return response()->json($data);
+    }
+
+    /**
+     * [hasDistributionMapUrl description]
+     * @param  Uuid  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function hasDistributionMap($id)
+    {
+        $regions = \App\Queries\DistributionQueries::getDistributionForTaxon($id);
+        if ($regions) {
+            $query = [
+                'service' => 'WMS',
+                'version' => '1.1.0',
+                'request' => 'GetMap',
+                'layers' => 'world:level3,hortflora:distribution_view',
+                'styles' => 'polygon,red_polygon',
+                'bbox' => '-180.00005538,-55.9197235107422,180.0,83.6236064951172',
+                'width' => 851,
+                'height' => 330,
+                'srs' => 'EPSG:4326',
+                'format' => 'image/svg',
+                'cql_filter' => "INCLUDE;taxon_id='$id'"
+            ];
+            return response()->json(['url' => env('GEOSERVER_URL')
+                    . '?' . \GuzzleHttp\Psr7\build_query($query)]);
+        }
+        else {
+            return response()->json(null);
+        }
+    }
+
 }

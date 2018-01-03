@@ -76,27 +76,7 @@ class TaxonTransformer extends Fractal\TransformerAbstract
      *   type="string"
      * ),
      * @SWG\Property(
-     *   property="taxonRank",
-     *   type="string"
-     * ),
-     * @SWG\Property(
-     *   property="taxonomicStatus",
-     *   type="string"
-     * ),
-     * @SWG\Property(
-     *   property="occurrenceStatus",
-     *   type="string"
-     * ),
-     * @SWG\Property(
      *   property="isEndemic",
-     *   type="string"
-     * ),
-     * @SWG\Property(
-     *   property="establishmentMeans",
-     *   type="string"
-     * ),
-     * @SWG\Property(
-     *   property="threatStatus",
      *   type="string"
      * ),
      * @SWG\Property(
@@ -109,6 +89,7 @@ class TaxonTransformer extends Fractal\TransformerAbstract
         return [
             'id' => $taxon->guid,
             'taxonRemarks' => (isset($taxon->taxon_remarks)) ? $taxon->taxon_remarks : null,
+            'isEndemic' => $taxon->is_endemic
         ];
     }
 
@@ -156,7 +137,7 @@ class TaxonTransformer extends Fractal\TransformerAbstract
     /**
      * @SWG\Property(
      *   property="acceptedNameUsage",
-     *   ref="#/definitions/Name"
+     *   ref="#/definitions/Taxon"
      * )
      *
      * @param object $taxon
@@ -177,7 +158,7 @@ class TaxonTransformer extends Fractal\TransformerAbstract
     /**
      * @SWG\Property(
      *   property="parentNameUsage",
-     *   ref="#/definitions/Name"
+     *   ref="#/definitions/Taxon"
      * )
       *
       * @param object $taxon

@@ -19,6 +19,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user()->getName();
 });
 
+Route::get('/', function() {
+    return view('swagger');
+});
+Route::get('/swagger.json', 'API\\ApiController@apiDocs');
+
 Route::get('taxa/{taxon}', 'API\\TaxonController@show')->name('taxa.show');
 Route::get('/taxa/{taxon}/name', 'API\\TaxonController@hasScientificName')
         ->name('api.taxa.name');
@@ -70,45 +75,29 @@ Route::get('taxa/{taxon}/changes',
 Route::get('taxa/{taxon}/heroImage',
         'API\\TaxonController@hasHeroImage')
         ->name('api.taxa.heroImage');
-
 Route::get('taxa/{taxon}/images',
         'API\\TaxonController@hasImages')
         ->name('api.taxa.images');
 
-
-/*Route::get('taxa/{taxon}/features',
-        'API\\TaxonController@listFeatures')
-        ->name('api.taxa.features.list');
-Route::get('taxa/{taxon}/images',
-        'API\\TaxonController@images')
-        ->name('api.taxa.images');
-Route::get('taxa/{taxon}/references',
-        'API\\TaxonController@showReferences')
-        ->name('api.taxa.references');
-Route::get('taxa/{taxon}/key',
-        'API\\TaxonController@findKey')
-        ->name('api.taxa.key');
 Route::get('taxa/{taxon}/creator',
-        'API\\TaxonController@showCreator')
+        'API\\TaxonController@hasCreator')
         ->name('api.taxa.creator');
 Route::get('taxa/{taxon}/modifiedBy',
-        'API\\TaxonController@showModifiedBy')
+        'API\\TaxonController@hasModifiedBy')
         ->name('api.taxa.modifiedBy');
-Route::get('taxa/{taxon}/vernacularNames',
-        'API\\TaxonController@listVernacularNames')
-        ->name('api.taxa.vernacularNames');
+
 Route::get('taxa/{taxon}/key',
         'API\\TaxonController@hasKey')
         ->name('api.taxa.key');
+
+Route::get('taxa/{taxon}/references',
+        'API\\TaxonController@hasReferences')
+        ->name('api.taxa.references');
+
 Route::get('taxa/{taxon}/distribution',
-        'API\\TaxonController@showRegions')
+        'API\\TaxonController@hasRegions')
         ->name('api.taxa.distribution');
+
 Route::get('taxa/{taxon}/distributionMap',
-        'API\\TaxonController@showDistributionMap')
+        'API\\TaxonController@hasDistributionMap')
         ->name('api.taxa.distributionMap');
-Route::get('taxa/{taxon}/distributionMapUrl',
-        'API\\TaxonController@showDistributionMapUrl')
-        ->name('api.taxa.distributionMapUrl');
-Route::get('taxa/{taxon}/groups', 'API\\TaxonController@hasGroups')
-        ->name('api.taxa.groups');
-        */
