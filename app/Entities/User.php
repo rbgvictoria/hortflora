@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Entities;
-use App\Entities\Traits\UsesPasswordGrant;
 use Doctrine\ORM\Mapping as ORM;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -13,13 +12,13 @@ use LaravelDoctrine\ORM\Notifications\Notifiable;
 
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="UserRepository")
  * @ORM\Table(name="users")
  */
 class User implements AuthenticatableContract, CanResetPasswordContract
 {
 
-    use Authenticatable, CanResetPassword, Timestamps, Notifiable, HasApiTokens, UsesPasswordGrant;
+    use Authenticatable, CanResetPassword, Timestamps, Notifiable, HasApiTokens;
 
     /**
      * @var int
