@@ -18,26 +18,33 @@
 
 namespace App\Transformers;
 
+use App\Entities\Occurrence;
 use League\Fractal;
 use Swagger\Annotations as SWG;
 
 /**
  * @SWG\Definition(
  *   definition="Occurrence",
- *   type="object",
- *   required={"id", "catalogNumber", "recordedBy", "recordNumber", "eventID",
- *       "eventDate", "locationID", "country", "countryCode", "stateProvince",
- *       "verbatimLocality", "decimalLongitude", "decimalLatitude"}
+ *   type="object"
  * )
  *
  * @author Niels Klazenga <Niels.Klazenga@rbg.vic.gov.au>
  */
-class OccurrenceTransformer extends Fractal\TransformerAbstract {
+class OccurrenceTransformer extends OrmTransformer {
+    
+    protected $defaultIncludes = [
+        'event'
+    ];
 
     /**
      * @SWG\Property(
-     *   property="id",
+     *   property="type",
      *   type="string"
+     * ),
+     * @SWG\Property(
+     *   property="id",
+     *   type="string",
+     *   format="uuid"
      * ),
      * @SWG\Property(
      *   property="catalogNumber",
@@ -50,68 +57,35 @@ class OccurrenceTransformer extends Fractal\TransformerAbstract {
      * @SWG\Property(
      *   property="recordNumber",
      *   type="string"
-     * ),
-     * @SWG\Property(
-     *   property="eventID",
-     *   type="string"
-     * ),
-     * @SWG\Property(
-     *   property="eventDate",
-     *   type="string"
-     * ),
-     * @SWG\Property(
-     *   property="locationID",
-     *   type="string"
-     * ),
-     * @SWG\Property(
-     *   property="country",
-     *   type="string"
-     * ),
-     * @SWG\Property(
-     *   property="countryCode",
-     *   type="string"
-     * ),
-     * @SWG\Property(
-     *   property="stateProvince",
-     *   type="string"
-     * ),
-     * @SWG\Property(
-     *   property="verbatimLocality",
-     *   type="string"
-     * ),
-     * @SWG\Property(
-     *   property="decimalLongitude",
-     *   type="number",
-     *   format="double"
-     * ),
-     * @SWG\Property(
-     *   property="decimalLatitude",
-     *   type="number",
-     *   format="double"
      * )
      *
-     * @param object $occurrence
+     * @param \App\Entities\Occurrence $occurrence
      * @return array
      */
-    public function transform($occurrence)
+    public function transform(Occurrence $occurrence)
     {
         return [
-            'id' => $occurrence->occurrence_id,
-            'catalogNumber' => $occurrence->catalog_number,
-            'recordedBy' => $occurrence->recorded_by,
-            'recordNumber' => $occurrence->record_number,
-            'eventID' => $occurrence->event_id,
-            'eventDate' => ($occurrence->end_date) ? $occurrence->start_date .
-                    '/' . $occurrence->end_date : $occurrence->start_date,
-            'locationID' => $occurrence->location_id,
-            'country' => $occurrence->country,
-            'countryCode' => $occurrence->country_code,
-            'stateProvince' => $occurrence->state_province,
-            'verbatimLocality' => $occurrence->locality,
-            'decimalLongitude' => $occurrence->decimal_longitude
-                ? (double) $occurrence->decimal_longitude : null,
-            'decimalLatitude' => $occurrence->decimal_latitude
-                ? (double) $occurrence->decimal_latitude : null,
+            'type' => 'Occurrence',
+            'id' => $occurrence->getGuid(),
+            'catalogNumber' => $occurrence->getCatalogNumber(),
+            'recordedBy' => $occurrence->getRecordedBy()->getName(),
+            'recordNumber' => $occurrence->getRecordNumber(),
         ];
+    }
+    
+    /**
+     * 
+     * @SWG\Property(
+     *     property="event",
+     *     ref="#/definitions/Event"
+     * )
+     * @param \App\Entities\Occurrence $occurrence
+     */
+    public function includeEvent(Occurrence $occurrence) 
+    {
+        $event = $occurrence->getEvent();
+        if ($event) {
+            return new Fractal\Resource\Item($event, new EventTransformer, 'events');
+        }
     }
 }

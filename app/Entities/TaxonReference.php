@@ -24,13 +24,13 @@ use Doctrine\ORM\Mapping as ORM;
  * Class TaxonReference
  * @author Niels Klazenga
  * @ORM\Entity()
- * @ORM\Table(schema="flora")
+ * @ORM\Table()
  */
 class TaxonReference extends ClassBase {
 
     /**
      * @var Taxon
-     * @ORM\ManyToOne(targetEntity="Taxon")
+     * @ORM\ManyToOne(targetEntity="TaxonAbstract", inversedBy="taxonReferences")
      * @ORM\JoinColumn(name="taxon_id", referencedColumnName="id",
      *     nullable=false)
      */
@@ -43,6 +43,19 @@ class TaxonReference extends ClassBase {
      *     nullable=false)
      */
     protected $reference;
+    
+    /**
+     *
+     * @var string
+     * @ORM\Column(nullable=true, length=32)
+     */
+    protected $page;
+    
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     * @var \DateTime
+     */
+    protected $dateAccessed;
 
     /**
      * @return Taxon
@@ -75,4 +88,42 @@ class TaxonReference extends ClassBase {
     {
         $this->reference = $reference;
     }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getPage()
+    {
+        return $this->page;
+    }
+    
+    /**
+     * 
+     * @param string $page
+     */
+    public function setPage($page)
+    {
+        $this->page = $page;
+    }
+    
+    /**
+     * 
+     * @return \DateTime
+     */
+    public function getDateAccessed()
+    {
+        return $this->dateAccessed;
+    }
+    
+    /**
+     * 
+     * @param \DateTime $dateAccessed
+     */
+    public function setDateAccessed($dateAccessed)
+    {
+        $this->dateAccessed = $dateAccessed;
+    }
+    
+    
 }

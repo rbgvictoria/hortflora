@@ -18,12 +18,15 @@
 
 namespace App\Transformers;
 
+use App\Entities\Region;
 use League\Fractal;
 use Swagger\Annotations as SWG;
 
 /**
  * Region Transformer
+ * 
  * @author Niels Klazenga <Niels.Klazenga@rbg.vic.gov.au>
+ * 
  * @SWG\Definition(
  *   definition="Region",
  *   type="object",
@@ -33,10 +36,19 @@ use Swagger\Annotations as SWG;
 class RegionTransformer extends Fractal\TransformerAbstract {
 
     /**
-     * [transform description]
+     * @SWG\Property(
+     *   property="type",
+     *   type="string"
+     * ),
      * @SWG\Property(
      *   property="id",
-     *   type="string"
+     *   type="string",
+     *   format="uuid"
+     * ),
+     * @SWG\Property(
+     *   property="level",
+     *   type="integer",
+     *   format="int32"
      * ),
      * @SWG\Property(
      *   property="regionCode",
@@ -46,16 +58,22 @@ class RegionTransformer extends Fractal\TransformerAbstract {
      *   property="regionName",
      *   type="string"
      * ),
-     * @param  [type] $region [description]
-     * @return [type]         [description]
+     * @SWG\Property(
+     *   property="fullNameString",
+     *   type="string"
+     * ),
+     * @param  \App\Entities\Region $region
+     * @return array
      */
-    public function transform($region)
+    public function transform(Region $region)
     {
         return [
-            'id' => $region->guid,
-            'code' => $region->code,
-            'name' => $region->name,
-            'fullName' => $region->full_name,
+            'type' => 'Region',
+            'id' => $region->getGuid(),
+            'level' => $region->getLevel(),
+            'regionCode' => $region->getCode(),
+            'regionName' => $region->getName(),
+            'fullNameString' => $region->getFullName(),
         ];
     }
 

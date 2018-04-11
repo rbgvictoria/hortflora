@@ -39,6 +39,12 @@ class User implements AuthenticatableContract, CanResetPasswordContract
      * @ORM\Column(type="string",nullable=false)
      */
     protected $name;
+    
+    /**
+     * @ORM\OneToOne(targetEntity="Agent", mappedBy="user")
+     * @var \App\Entities\Agent
+     */
+    protected $agent;
 
     /**
      * @return mixed

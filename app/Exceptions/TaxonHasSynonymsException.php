@@ -29,6 +29,6 @@ class TaxonHasSynonymsException extends HttpException
 {
     public function __construct()
     {
-        parent::construct(400, 'The taxon cannot be deleted, as it has synonyms');
+        parent::__construct(400, 'The taxon cannot be deleted, as it has synonyms');
     }
 }

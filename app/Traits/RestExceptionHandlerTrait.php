@@ -34,31 +34,25 @@ trait RestExceptionHandlerTrait
 {
 
     /**
-     * Creates a new JSON response based on exception type.
-     *
      * @SWG\Definition(
      *   definition="Exception",
      *   type="object",
      *   required={"status", "code"},
      *     @SWG\Property(
      *       property="status",
-     *       type="integer",
-     *       description="HTTP status"
+     *       type="integer"
      *     ),
      *     @SWG\Property(
      *       property="code",
-     *       type="string",
-     *       description="Application-specific error code"
+     *       type="string"
      *     ),
      *     @SWG\Property(
      *       property="title",
-     *       type="string",
-     *       description="Title of the error"
+     *       type="string"
      *     ),
      *     @SWG\Property(
      *       property="detail",
-     *       type="string",
-     *       description="Detail of the error"
+     *       type="string"
      *     )
      * )
      * 

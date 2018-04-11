@@ -18,6 +18,7 @@
 
 namespace App\Transformers;
 
+use App\Entities\Agent;
 use League\Fractal;
 use Swagger\Annotations as SWG;
 
@@ -28,19 +29,24 @@ use Swagger\Annotations as SWG;
  * @SWG\Definition(
  *   definition="Agent",
  *   type="object",
- *   required={"id", "agentType", "name"}
+ *   required={"agentType", "name"}
  * )
  */
-class AgentTransformer extends Fractal\TransformerAbstract {
+class AgentTransformer extends OrmTransformer {
+    
+    protected $defaultIncludes = [
+        'agentType'
+    ];
 
     /**
      * @SWG\Property(
-     *   property="id",
+     *   property="type",
      *   type="string"
      * ),
      * @SWG\Property(
-     *   property="agentType",
-     *   type="string"
+     *   property="id",
+     *   type="string",
+     *   format="uuid"
      * ),
      * @SWG\Property(
      *   property="name",
@@ -54,23 +60,38 @@ class AgentTransformer extends Fractal\TransformerAbstract {
      *   property="lastName",
      *   type="string"
      * ),
+     * @SWG\Property(
+     *   property="ipni",
+     *   type="string"
+     * ),
      *
-     * @param object $agent
+     * @param \App\Entities\Agent $agent
      * @return array
      */
-    public function transform($agent)
+    public function transform(Agent $agent)
     {
-        $ret = [
-            'id' => $agent->guid,
-            'agentType' => $agent->agent_type,
-            'name' => $agent->name,
+        return [
+            'type' => 'Agent',
+            'id' => $agent->getGuid(),
+            'name' => $agent->getName(),
+            'firstName' => $agent->getFirstName(),
+            'lastName' => $agent->getLastName(),
+            'ipni' => $agent->getIpni()
         ];
-        if (isset($agent->first_name)) {
-            $ret['firstName'] = $agent->first_name;
-        }
-        if (isset($agent->last_name)) {
-            $ret['lastName'] = $agent->last_name;
-        }
-        return $ret;
+    }
+    
+    /**
+     * @SWG\Property(
+     *   property="agentType",
+     *   ref="#/definitions/AgentType"
+     * )
+     * 
+     * @param \App\Entities\Agent $agent
+     * @return \League\Fractal\Resource\Item
+     */
+    public function includeAgentType(Agent $agent)
+    {
+        return new Fractal\Resource\Item($agent->getAgentType(), 
+                new AgentTypeTransformer);
     }
 }

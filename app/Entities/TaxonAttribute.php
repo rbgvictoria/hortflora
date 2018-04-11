@@ -24,7 +24,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Class TaxonAttribute
  * @author Niels Klazenga
  * @ORM\Entity()
- * @ORM\Table(schema="flora")
+ * @ORM\Table()
  */
 class TaxonAttribute extends ClassBase {
 

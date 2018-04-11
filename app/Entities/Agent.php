@@ -66,6 +66,12 @@ class Agent extends ClassBase
    * @ORM\Column(length=128, nullable=true)
    */
   protected $legalName;
+  
+  /**
+   * @ORM\Column(length=128, nullable=true)
+   * @var string
+   */
+  protected $ipni;
 
   /**
    * @var string
@@ -75,7 +81,7 @@ class Agent extends ClassBase
 
   /**
    * @var User
-   * @ORM\OneToOne(targetEntity="User")
+   * @ORM\OneToOne(targetEntity="User", inversedBy="agent")
    * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
    */
   protected $user;
@@ -203,9 +209,27 @@ class Agent extends ClassBase
   /**
    * @param User $user
    */
-  function setUser($user)
+  public function setUser($user)
   {
     $this->user = $user;
+  }
+  
+  /**
+   * 
+   * @return string
+   */
+  public function getIpni()
+  {
+      return $this->ipni;
+  }
+  
+  /**
+   * 
+   * @param string $ipni
+   */
+  public function setIpni($ipni)
+  {
+      $this->ipni = $ipni;
   }
 
 }

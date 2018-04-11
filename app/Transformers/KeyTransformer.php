@@ -36,16 +36,29 @@ class KeyTransformer extends Fractal\TransformerAbstract {
 
     /**
      * @SWG\Property(
-     *   property="id",
+     *   property="type",
      *   type="string"
+     * ),
+     * @SWG\Property(
+     *   property="id",
+     *   type="string",
+     *   format="uri",
+     *   description="URL to the JSON representation of the key"
      * ),
      * @SWG\Property(
      *   property="title",
-     *   type="string"
+     *   type="string",
+     *   description="Title of the key"
      * ),
      * @SWG\Property(
      *   property="taxonomicScope",
-     *   type="string"
+     *   type="string",
+     *   description="Taxonomic Group to which the key applies"
+     * ),
+     * @SWG\Property(
+     *   property="geographicScope",
+     *   type="string",
+     *   description="Geographic area in which the key applies"
      * ),
      *
      * @param object $key
@@ -54,9 +67,11 @@ class KeyTransformer extends Fractal\TransformerAbstract {
     public function transform($key)
     {
         return [
-            'id' => $key->key_id,
+            'type' => 'Key',
+            'id' => 'http://data.rbg.vic.gov.au/keybase-ws/ws/key_get/' . $key->key_id,
             'title' => $key->key_title,
             'taxonomicScope' => $key->taxonomic_scope,
+            'geographicScope' => $key->geographic_scope,
         ];
     }
 }

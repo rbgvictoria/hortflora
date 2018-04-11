@@ -28,16 +28,21 @@ use Swagger\Annotations as SWG;
  * @SWG\Definition(
  *   definition="NameType",
  *   type="object",
- *   required={"id", "name"}
+ *   required={"name"}
  * )
  */
-class NameTypeTransformer extends Fractal\TransformerAbstract
+class NameTypeTransformer extends VocabularyTermTransformer
 {
 
     /**
      * @SWG\Property(
-     *   property="id",
+     *   property="type",
      *   type="string"
+     * ),
+     * @SWG\Property(
+     *   property="id",
+     *   type="string",
+     *   format="uuid"
      * ),
      * @SWG\Property(
      *   property="name",
@@ -53,10 +58,11 @@ class NameTypeTransformer extends Fractal\TransformerAbstract
      */
     public function transform($nameType)
     {
-        return [
-            'id' => $nameType->uri,
-            'name' => $nameType->name,
-            'label' => $nameType->label
-        ];
+        if ($nameType instanceof \App\Entities\NameType) {
+            return parent::transform($nameType);
+        }
+        else {
+            return parent::transformArray($nameType);
+        }
     }
 }

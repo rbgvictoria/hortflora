@@ -1,0 +1,131 @@
+/*
+Copyright 2016 Royal Botanic Gardens Victoria.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+/*
+    Created on : 13/08/2016, 10:57:44 PM
+    Author     : Niels Klazenga
+*/
+#banner .navbar {
+    background-color: transparent;
+    border: none;
+}
+
+.section.cultivars {
+
+    .cultivar-group > h4 {
+        padding-top: 6px;
+        padding-bottom: 5px;
+        border-bottom: solid 1px $brand_primary;
+        margin-bottom: 6px;
+    }
+
+    .cultivar-group > p:focus {
+        background-color: #E9DC51;
+    }
+}
+
+#treatment {
+    .note {
+        &-recognition::before {
+            @include note-prefix;
+            content: 'Recognition';
+        }
+
+        &-propagation::before {
+            @include note-prefix;
+            content: 'Propagation';
+        }
+
+        &-uses::before {
+            @include note-prefix;
+            content: 'Uses';
+        }
+
+        &-natural-distribution::before {
+            @include note-prefix;
+            content: 'Natural distribution';
+        }
+
+        &-distribution::before {
+            @include note-prefix;
+            content: 'Distribution';
+        }
+
+        &-literature::before {
+            @include note-prefix;
+            content: 'Literature';
+        }
+
+        &-collections::before {
+            @include note-prefix;
+            content: 'Collections';
+        }
+
+        &-cultivar-origin::before {
+            @include note-prefix;
+            content: 'Cultivar origin';
+        }
+
+        &-etymology::before {
+            @include note-prefix;
+            content: 'Etymology';
+        }
+
+        &-specimens::before {
+            @include note-prefix;
+            content: 'Specimens';
+        }
+
+        &-identification::before {
+            @include note-prefix;
+            content: 'Identification';
+        }
+
+        &-classification::before {
+            @include note-prefix;
+            content: 'Classification';
+        }
+
+        &-author::before {
+            @include note-prefix;
+            content: 'Author(s)';
+        }
+
+        &-common-name::before {
+            @include note-prefix;
+            content: 'Common name(s)';
+        }
+    }
+
+    .custom-note-header {
+        @include note-prefix;
+    }
+
+}
+
+.taxon-edit-menu .dropdown-menu > li > a {
+    background-color: transparent;
+    border: none;
+    text-align: left;
+}
+
+.taxon-edit-menu .btn-group a.btn.btn-primary {
+    padding: 6px 12px;
+    font-size: 14px;
+}
+
+span.cv {
+    font-style: normal;
+}

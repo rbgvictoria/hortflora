@@ -18,6 +18,7 @@
 
 namespace App\Transformers;
 
+use App\Entities\Change;
 use League\Fractal;
 use Swagger\Annotations as SWG;
 
@@ -32,10 +33,11 @@ use Swagger\Annotations as SWG;
  *   required={"id", "fromTaxon", "toTaxon", "changeType"}
  * )
  */
-class ChangeTransformer extends Fractal\TransformerAbstract {
+class ChangeTransformer extends OrmTransformer {
 
     protected $availableIncludes = [
         'creator',
+        'source'
     ];
 
     protected $defaultIncludes = [
@@ -45,16 +47,13 @@ class ChangeTransformer extends Fractal\TransformerAbstract {
 
     /**
      * @SWG\Property(
+     *   property="type",
+     *   type="string"
+     * ),
+     * @SWG\Property(
      *   property="id",
-     *   type="string"
-     * ),
-     * @SWG\Property(
-     *   property="source",
-     *   type="string"
-     * ),
-     * @SWG\Property(
-     *   property="changeType",
-     *   type="string"
+     *   type="string",
+     *   format="uuid"
      * ),
      * @SWG\Property(
      *   property="created",
@@ -62,57 +61,63 @@ class ChangeTransformer extends Fractal\TransformerAbstract {
      *   format="dateTime"
      * ),
      *
-     * @param object $change
+     * @param \App\Entities\Change $change
      * @return array
      */
-    public function transform($change)
+    public function transform(Change $change)
     {
         return [
-            'id' => $change->guid,
-            'source' => $change->source,
-            'changeType' => $change->change_type,
-            'created' => $change->timestamp_created,
+            'type' => 'Change',
+            'id' => $change->getGuid(),
+            'source' => $change->getSource(),
+            'changeType' => $change->getChangeType(),
+            'created' => $change->getTimestampCreated()->format('Y-m-d H:i:sP')
         ];
     }
 
     /**
      * @SWG\Property(
      *   property="fromTaxon",
-     *   ref="#/definitions/Taxon"
+     *   ref="#/definitions/TaxonAbstract"
      * ),
      *
-     * @param object $change
+     * @param \app|entities\Change $change
      * @return \League\Fractal\Resource\Item
      */
-    protected function includeFromTaxon($change)
+    protected function includeFromTaxon(Change $change)
     {
-        $transformer = new TaxonIncludeTransformer();
-        $fromTaxon = (object) [
-            'guid' => $change->from_taxon,
-            'rank' => $change->from_rank,
-            'full_name' => $change->from_full_name
-        ];
-        return new Fractal\Resource\Item($fromTaxon, $transformer, 'taxa');
+        $fromTaxon = $change->getFromTaxon();
+        return new Fractal\Resource\Item($fromTaxon, new TaxonTransformer, 'taxa');
     }
 
     /**
      * @SWG\Property(
      *   property="toTaxon",
-     *   ref="#/definitions/Taxon"
+     *   ref="#/definitions/TaxonAbstract"
      * ),
      *
-     * @param object $change
+     * @param \App\Entities\Change $change
      * @return \League\Fractal\Resource\Item
      */
-    protected function includeToTaxon($change)
+    protected function includeToTaxon(Change $change)
     {
-        $transformer = new TaxonIncludeTransformer();
-        $toTaxon = (object) [
-            'guid' => $change->to_taxon,
-            'rank' => $change->to_rank,
-            'full_name' => $change->to_full_name
-        ];
-        return new Fractal\Resource\Item($toTaxon, $transformer, 'taxa');
+        $toTaxon = $change->getToTaxon();
+        return new Fractal\Resource\Item($toTaxon, new TaxonTransformer, 'taxa');
+    }
+    
+    /**
+     * @SWG\Property(
+     *   property="changeType",
+     *   ref="#/definitions/ChangeType"
+     * ),
+     * 
+     * @param \App\Entities\Change $change
+     * @return \League\Fractal\Resource\Item
+     */
+    protected function includeChangeType(Change $change)
+    {
+        return new Fractal\Resource\Item($change->getChangeType(), 
+                new ChangeTypeTransformer);
     }
 
     /**
@@ -121,21 +126,27 @@ class ChangeTransformer extends Fractal\TransformerAbstract {
      *   ref="#/definitions/Agent"
      * ),
      *
-     * @param object $change
+     * @param \App\Entities\Change $change
      * @return \League\Fractal\Resource\Item
      */
-    protected function includeCreator($change)
+    protected function includeCreator(Change $change)
     {
-        if ($change->created_by_agent_guid) {
-            $transformer = new AgentTransformer();
-            $createdBy = (object) [
-                'guid' => $change->created_by_agent_guid,
-                'agent_type' => $change->created_by_agent_type,
-                'name' => $change->created_by_agent_name,
-                'first_name' => $change->created_by_agent_first_name,
-                'last_name' => $change->created_by_agent_last_name
-            ];
-            return new Fractal\Resource\Item($createdBy, $transformer, 'agents');
-        }
+        $creator = $change->getCreatedBy();
+        return new Fractal\Resource\Item($creator, new AgentTransformer, 'agents');
+    }
+    
+    /**
+     * @SWG\Property(
+     *   property="source",
+     *   ref="#/definitions/Reference"
+     * ),
+     * 
+     * @param \App\Entities\Change $change
+     * @return \League\Fractal\Resource\Item
+     */
+    protected function includeSource(Change $change)
+    {
+        return new Fractal\Resource\Item($change->getSource(), 
+                new ReferenceTransformer);
     }
 }

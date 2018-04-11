@@ -24,7 +24,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Class TreatmentVersion
  * @author Niels Klazenga
  * @ORM\Entity()
- * @ORM\Table(schema="flora",uniqueConstraints={
+ * @ORM\Table(uniqueConstraints={
  *     @ORM\UniqueConstraint(name="treatment_version_idx",
  *         columns={"treatment_id", "version"})
  * })
@@ -33,7 +33,7 @@ class TreatmentVersion extends ClassBase {
 
     /**
      * @var Treatment
-     * @ORM\ManyToOne(targetEntity="Treatment")
+     * @ORM\ManyToOne(targetEntity="Treatment", inversedBy="versions")
      * @ORM\JoinColumn(name="treatment_id", referencedColumnName="id",
      *     nullable=false)
      */
@@ -94,7 +94,7 @@ class TreatmentVersion extends ClassBase {
      */
     public function getIsCurrentVersion()
     {
-        return $this->isCurrentName;
+        return $this->isCurrentVersion;
     }
 
     /**

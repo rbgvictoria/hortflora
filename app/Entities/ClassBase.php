@@ -18,9 +18,10 @@
 
 namespace App\Entities;
 
-use App\Entities\Traits\Blameable;
-use App\Entities\Traits\Timestamps;
 use Doctrine\ORM\Mapping as ORM;
+use Illuminate\Support\Facades\Auth;
+use LaravelDoctrine\ORM\Facades\EntityManager;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Class ClassBase
@@ -32,8 +33,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ClassBase
 {
-    use Timestamps, Blameable;
-
     /**
      * @var int
      * @ORM\Id
@@ -43,7 +42,7 @@ class ClassBase
     protected $id;
 
     /**
-     * @var \Ramsey\Uuid\Uuid
+     * @var string
      * @ORM\Column(type="uuid", nullable=true, unique=true)
      */
     protected $guid;
@@ -53,6 +52,32 @@ class ClassBase
      * @var int
      */
     protected $version;
+
+    /**
+     * @var \App\Entities\Agent $createdBy
+     * @ORM\ManyToOne(targetEntity="\App\Entities\Agent")
+     * @ORM\JoinColumn(name="created_by_id", referencedColumnName="id")
+     */
+    protected $createdBy;
+
+    /**
+     * @var \App\Entities\Agent $modifiedBy
+     * @ORM\ManyToOne(targetEntity="\App\Entities\Agent")
+     * @ORM\JoinColumn(name="modified_by_id", referencedColumnName="id")
+     */
+    protected $modifiedBy;
+
+    /**
+     * @var DateTime
+     * @ORM\Column(type="datetimetz", name="timestamp_created", nullable=false)
+     */
+    protected $timestampCreated;
+
+    /**
+     * @var DateTime
+     * @ORM\Column(type="datetimetz", name="timestamp_modified", nullable=true)
+     */
+    protected $timestampModified;
 
     /**
      * @return int
@@ -72,12 +97,13 @@ class ClassBase
 
     /**
      * @param int $version
+     * @ORM\PrePersist
      */
-    public function setVersion($version)
+    public function setVersion()
     {
-        $this->version = $version;
+        $this->version = 1;
     }
-
+    
     /**
      * @return int
      * @ORM\PreUpdate
@@ -97,9 +123,86 @@ class ClassBase
 
     /**
      * @param string $guid
+     * @ORM\PrePersist
      */
-    public function setGuid($guid)
+    public function setGuid()
     {
-        $this->guid = $guid;
+        $this->guid = Uuid::uuid4()->toString();
+    }
+    
+    /**
+     * @return \App\Entities\Agent
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * @param \App\Entities\Agent $createdBy
+     * @ORM\PrePersist
+     */
+    public function setCreatedBy()
+    {
+        $this->createdBy = EntityManager::getRepository('\App\Entities\Agent')
+                ->findOneBy(['user' => Auth::User()]);
+    }
+
+    /**
+     * @return \App\Entities\Agent
+     */
+    public function getModifiedBy()
+    {
+        return $this->modifiedBy;
+    }
+
+    /**
+     * @param \App\Entities\Agent $modifiedBy
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function setModifiedBy()
+    {
+        $this->modifiedBy = EntityManager::getRepository('\App\Entities\Agent')
+                ->findOneBy(['user' => Auth::User()]);
+    }
+    
+    /**
+     * @return DateTime
+     */
+    public function getTimestampCreated()
+    {
+        return $this->timestampCreated;
+    }
+
+    /**
+     * @param DateTime $timestampCreated
+     * @ORM\PrePersist
+     */
+    public function setTimestampCreated()
+    {   
+        $date = new \DateTime();
+        $date->setTimezone(new \DateTimeZone(env('APP_DEFAULT_TIMEZONE', 'Australia/Melbourne')));
+        $this->timestampCreated = $date;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getTimestampModified()
+    {
+        return $this->timestampModified;
+    }
+
+    /**
+     * @param DateTime $timestampModified
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function setTimestampModified()
+    {
+        $date = new \DateTime();
+        $date->setTimezone(new \DateTimeZone(env('APP_DEFAULT_TIMEZONE', 'Australia/Melbourne')));
+        $this->timestampModified = new $date;
     }
 }

@@ -24,7 +24,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Class Attribute
  * @author Niels Klazenga
  * @ORM\Entity()
- * @ORM\Table(schema="flora", indexes={
+ * @ORM\Table( indexes={
  *     @ORM\Index(columns={"name"}),
  *     @ORM\Index(columns={"label"}),
  * })

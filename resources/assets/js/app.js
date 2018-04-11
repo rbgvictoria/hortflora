@@ -30,6 +30,11 @@ Vue.component(
     require('./components/passport/PersonalAccessTokens.vue')
 );
 
+Vue.component(
+    'taxon-page',
+    require('../components/TaxonPage.vue')
+);
+
 const app = new Vue({
     el: '#app'
 });

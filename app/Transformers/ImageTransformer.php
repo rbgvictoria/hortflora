@@ -18,32 +18,26 @@
 
 namespace App\Transformers;
 
+use App\Entities\Image;
 use League\Fractal;
-use App\Queries\ImageQueries;
 use Swagger\Annotations as SWG;
 
 /**
- * Description of ImageTransformer
+ * Image Transformer
  *
  * @SWG\Definition(
  *   definition="Image",
  *   type="object",
- *   required={"id", "taxonID", "scientificName", "subtype", "subjectCategory",
- *       "creator", "license", "title", "source", "caption", "subjectPart",
- *       "subjectOrientation", "createDate", "digitizationDate", "rights",
- *        "rating"}
+ *   required={"scientificName", "creator", "license", "title", "rights"}
  * )
  */
-class ImageTransformer extends Fractal\TransformerAbstract {
+class ImageTransformer extends OrmTransformer {
 
-
-    /**
-     * @var ImageQueries
-     */
-    protected $imageModel;
 
     protected $defaultIncludes = [
         'accessPoints',
+        'creator',
+        'source'
     ];
 
     protected $availableIncludes = [
@@ -52,20 +46,14 @@ class ImageTransformer extends Fractal\TransformerAbstract {
     ];
 
     /**
-     * Constructor
-     */
-    public function __construct() {
-        $this->imageModel = new ImageQueries();
-    }
-
-    /**
      * @SWG\Property(
-     *   property="id",
+     *   property="type",
      *   type="string"
      * ),
      * @SWG\Property(
-     *   property="taxonID",
-     *   type="string"
+     *   property="id",
+     *   type="string",
+     *   format="uuid"
      * ),
      * @SWG\Property(
      *   property="scientificName",
@@ -80,19 +68,11 @@ class ImageTransformer extends Fractal\TransformerAbstract {
      *   type="string"
      * ),
      * @SWG\Property(
-     *   property="creator",
-     *   type="string"
-     * ),
-     * @SWG\Property(
      *   property="license",
      *   type="string"
      * ),
      * @SWG\Property(
      *   property="title",
-     *   type="string"
-     * ),
-     * @SWG\Property(
-     *   property="source",
      *   type="string"
      * ),
      * @SWG\Property(
@@ -131,34 +111,67 @@ class ImageTransformer extends Fractal\TransformerAbstract {
      *   type="boolean"
      * )
      *
-     * @param object $image
+     * @param \App\Entities\Image $image
      * @return array
      */
     public function transform($image)
     {
         return [
-            'id' => $image->image_id,
-            'taxonID' => $image->accepted_name_usage_id,
-            'scientificName' => $image->accepted_name_usage,
-            'verbatimScientificName' => $image->verbatim_scientific_name,
-            'matchType' => $image->match_type,
-            'subtype' => $image->subtype,
-            'subjectCategory' => $image->subject_category,
-            'creator' => $image->creator,
-            'license' => $image->license,
-            'title' => $image->title,
-            'source' => $image->source,
-            'caption' => $image->caption,
-            'subjectPart' => $image->subject_part,
-            'subjectOrientation' => $image->subject_orientation,
-            'createDate' => $image->create_date,
-            'digitizationDate' => $image->digitization_date,
-            'rights' => $image->rights,
-            'rating' => $image->rating ? (int) $image->rating : null,
-            'isHeroImage' => (bool) $image->is_hero_image
+            'type' => 'Image',
+            'id' => $image->getGuid(),
+            'taxonID' => $image->getTaxa()->first()->getGuid(),
+            'scientificName' => $image->getScientificName()->getFullName(),
+            'verbatimScientificName' => $image->getVerbatimScientificName(),
+            'subtype' => $image->getSubtype()->getName(),
+            'subjectCategory' => $image->getSubjectCategory()->getName(),
+            'license' => $image->getLicense()->getUri(),
+            'title' => $image->getTitle(),
+            'caption' => $image->getCaption(),
+            'subjectPart' => $image->getSubjectPart(),
+            'subjectOrientation' => $image->getSubjectOrientation(),
+            'createDate' => $image->getCreateDate()->format('Y-m-d'),
+            'digitizationDate' => 
+                    $image->getDigitizationDate()->format('Y-m-d'),
+            'providerLiteral' => $image->getProvider()->getName(),
+            'rights' => $image->getRights(),
+            'rating' => $image->getRating(),
+            'isHeroImage' => (bool) $image->getIsHeroImage(),
         ];
     }
 
+    /**
+     * @SWG\Property(
+     *   property="creator",
+     *   ref="#/definitions/Agent"
+     * )
+     * 
+     * @param \App\Entities\Image $image
+     * @return \League\Fractal\Resource\Item
+     */
+    public function includeCreator(Image $image)
+    {
+        return new Fractal\Resource\Item($image->getCreator(), 
+                new AgentTransformer, 'agents');
+    }
+    
+    /**
+     * @SWG\Property(
+     *   property="source",
+     *   ref="#/definitions/Reference"
+     * )
+     * 
+     * @param \App\Entities\Image $image
+     * @return \League\Fractal\Resource\Item
+     */
+    public function includeSource(Image $image)
+    {
+        $source = $image->getSource();
+        if ($source) {
+            return new Fractal\Resource\Item($source, new ReferenceTransformer, 
+                    'references');
+        }
+    }
+    
     /**
      * @SWG\Property(
      *   property="accessPoints",
@@ -168,13 +181,13 @@ class ImageTransformer extends Fractal\TransformerAbstract {
      *   )
      * )
      *
-     * @param object $image
+     * @param \App\Entities\Image $image
      * @return Fractal\Resource\Collection
      */
-    public function includeAccessPoints($image)
+    public function includeAccessPoints(Image $image)
     {
-        $collection = $this->imageModel->getAccessPoints($image->image_id);
-        return $this->collection($collection, new ImageAccessPointTransformer,
+        $accessPoints = $image->getAccessPoints();
+        return $this->collection($accessPoints, new ImageAccessPointTransformer,
                 'access-points');
     }
 
@@ -184,14 +197,13 @@ class ImageTransformer extends Fractal\TransformerAbstract {
      *   ref="#/definitions/Occurrence"
      * )
      *
-     * @param object $image
+     * @param \App\Entities\Image $image
      * @return Fractal\Resource\Item
      */
-    public function includeOccurrence($image)
+    public function includeOccurrence(Image $image)
     {
-        if ($image->occurrence_id) {
-            $occurrenceModel = new \App\Queries\OccurrenceQueries();
-            $occurrence = $occurrenceModel->getOccurrence($image->occurrence_id);
+        $occurrence = $image->getOccurrence();
+        if ($occurrence) {
             return $this->item($occurrence, new OccurrenceTransformer,
                         'occurrences');
         }
@@ -217,4 +229,5 @@ class ImageTransformer extends Fractal\TransformerAbstract {
                     'features');
         }
     }
+    
 }

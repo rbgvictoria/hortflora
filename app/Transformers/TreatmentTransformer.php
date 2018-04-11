@@ -18,8 +18,7 @@
 
 namespace App\Transformers;
 
-use App\Queries\TaxonQueries;
-use App\Queries\ReferenceQueries;
+use App\Entities\Treatment;
 use League\Fractal;
 use Swagger\Annotations as SWG;
 
@@ -31,98 +30,109 @@ use Swagger\Annotations as SWG;
  * @SWG\Definition(
  *   definition="Treatment",
  *   type="object",
- *   required={"id", "treatment", "isCurrent"}
+ *   required={"versions"},
+ *   example=
+ *   {
+ *     "versions": {
+ *       {
+ *         "text": "<p class=""description"">Erect herb to 0.5 m tall with ribbed stems. Leaves bunched together, narrow, obovate to elliptic, about 2 cm long, 0.5 cm wide, woolly-hairy below, margins curled under, entire or with a few teeth. Flowers solitary or in few-flowered clusters, each about 1 cm long with a few grey hairs; spring.</p><p class=""note"">WA</p>",
+ *         "isUpdated": true
+ *       }
+ *     }
+ *   }
  * )
  */
-class TreatmentTransformer extends Fractal\TransformerAbstract {
+class TreatmentTransformer extends OrmTransformer {
 
     protected $availableIncludes = [
         'forTaxon',
-
+        'asTaxon',
+        'acceptedNameUsage',
+        'currentVersion',
+        'versions'
     ];
 
     protected $defaultIncludes = [
-        'asTaxon',
-        'acceptedNameUsage',
-        'source',
-        'creator',
-        'modifiedBy'
+        'author',
+        'source'
     ];
 
     /**
      * @SWG\Property(
-     *   property="id",
+     *   property="type",
      *   type="string"
      * ),
      * @SWG\Property(
-     *   property="treatment",
-     *   type="string"
+     *   property="id",
+     *   type="string",
+     *   format="uuid"
      * ),
      * @SWG\Property(
      *   property="isCurrent",
      *   type="boolean"
      * ),
      *
-     * @param object $treatment
+     * @param \App\Entities\Treatment $treatment
      * @return array
      */
-    public function transform($treatment)
+    public function transform(Treatment $treatment)
     {
         return [
-            'id' => $treatment->guid . ':' . $treatment->version,
-            'treatment' => $treatment->html,
-            'isCurrent' => $treatment->is_current_treatment
+            'type' => 'TaxonTreatment',
+            'id' => $treatment->getGuid(),
+            'isCurrent' => $treatment->getIsCurrentTreatment(),
         ];
     }
 
     /**
      * @SWG\Property(
-     *   property="forTaxon",
-     *   ref="#/definitions/Taxon"
+     *   property="asTaxon",
+     *   ref="#/definitions/TaxonAbstract"
      * ),
      *
-     * @param object $treatment
+     * @param \App\Entities\Treatment $treatment
      * @return \League\Fractal\Resource\Item
      */
-    protected function includeForTaxon($treatment)
+    protected function includeAsTaxon(Treatment $treatment)
     {
-        $taxon = TaxonQueries::getTaxon($treatment->taxon_guid);
-        return new Fractal\Resource\Item($taxon, new TaxonTransformer, 'taxa');
+        if ($asTaxon = $treatment->getAsTaxon()) {
+            return new Fractal\Resource\Item($asTaxon, 
+                    new TaxonTransformer, 'taxa');
+        }
     }
 
     /**
      * @SWG\Property(
-     *   property="asTaxon",
-     *   ref="#/definitions/Taxon"
+     *   property="forTaxon",
+     *   ref="#/definitions/TaxonAbstract"
      * ),
      *
-     * @param object $treatment
+     * @param \App\Entities\Treatment $treatment
      * @return \League\Fractal\Resource\Item
      */
-    protected function includeAsTaxon($treatment)
+    protected function includeForTaxon(Treatment $treatment)
     {
-        if ($treatment->as_guid) {
-            $taxon = TaxonQueries::getTaxon($treatment->as_guid);
-            $transformer = new TaxonTransformer();
-            return new Fractal\Resource\Item($taxon, $transformer, 'taxa');
+        if ($forTaxon = $treatment->getForTaxon()) {
+            return new Fractal\Resource\Item($forTaxon, 
+                    new TaxonTransformer, 'taxa');
         }
     }
 
     /**
      * @SWG\Property(
      *   property="acceptedNameUsage",
-     *   ref="#/definitions/Taxon"
+     *   ref="#/definitions/TaxonAbstract"
      * ),
      *
-     * @param object $treatment
+     * @param \App\Entities\Treatment $treatment
      * @return \League\Fractal\Resource\Item
      */
-    protected function includeAcceptedNameUsage($treatment)
+    protected function includeAcceptedNameUsage(Treatment $treatment)
     {
-        if ($treatment->accepted_guid) {
-            $taxon = TaxonQueries::getTaxon($treatment->accepted_guid);
-            $transformer = new TaxonTransformer();
-            return new Fractal\Resource\Item($taxon, $transformer, 'taxa');
+        $acceptedNameUsage = $treatment->getForTaxon()->getAcceptedNameUsage();
+        if ($acceptedNameUsage) {
+            return new Fractal\Resource\Item($acceptedNameUsage, 
+                    new TaxonTransformer, 'taxa');
         }
     }
 
@@ -132,59 +142,61 @@ class TreatmentTransformer extends Fractal\TransformerAbstract {
      *   ref="#/definitions/Reference"
      * ),
      *
-     * @param object $treatment
+     * @param \App\Entities\Treatment $treatment
      * @return \League\Fractal\Resource\Item
      */
-    protected function includeSource($treatment)
+    protected function includeSource(Treatment $treatment)
     {
-        if ($treatment->source_id) {
-            $source = ReferenceQueries::getReference($treatment->source_id);
-            $transformer = new ReferenceTransformer();
-            return new Fractal\Resource\Item($source, $transformer, 'references');
-        }
-    }
-
-    /**
-     * @SWG\Property(
-     *   property="creator",
-     *   ref="#/definitions/Agent"
-     * ),
-     *
-     * @param object $treatment
-     * @return \League\Fractal\Resource\Item
-     */
-    protected function includeCreator($treatment)
-    {
-        if (!$treatment->source_id) {
-            $agent = (object) [
-                'guid' => $treatment->created_by_agent_id,
-                'agent_type' => $treatment->created_by_agent_type,
-                'name' => $treatment->created_by_agent_name
-            ];
-            $transformer = new AgentTransformer();
-            return new Fractal\Resource\Item($agent, $transformer, 'agents');
+        $source = $treatment->getSource();
+        if ($source) {
+            return new Fractal\Resource\Item($source, new ReferenceTransformer, 
+                    'references');
         }
     }
     
     /**
      * @SWG\Property(
-     *   property="modifiedBy",
-     *   ref="#/definitions/Agent"
+     *   property="currentVersion",
+     *   ref="#/definitions/TreatmentVersion"
      * ),
-     *
-     * @param object $treatment
+     * 
+     * @param \App\Entities\Treatment $treatment
      * @return \League\Fractal\Resource\Item
      */
-    protected function includeModifiedBy($treatment)
+    protected function includeCurrentVersion(Treatment $treatment)
     {
-        if ($treatment->is_updated) {
-            $agent = (object) [
-                'guid' => $treatment->created_by_agent_id,
-                'agent_type' => $treatment->created_by_agent_type,
-                'name' => $treatment->created_by_agent_name
-            ];
-            $transformer = new AgentTransformer();
-            return new Fractal\Resource\Item($agent, $transformer, 'agents');
+        $currentVersion = $treatment->getVersions()->filter(function($version) {
+            return $version->getIsCurrentVersion();
+        })->first();
+        return new Fractal\Resource\Item($currentVersion, 
+                new TreatmentVersionTransformer);
+    }
+    
+    
+    /**
+     * @SWG\Property(
+     *   property="versions",
+     *     type="array",
+     *     @SWG\Items(
+     *       ref="#/definitions/TreatmentVersion"
+     *     )
+     * ),
+     * 
+     * @param \App\Entities\Treatment $treatment
+     * @return \League\Fractal\Resource\Collection
+     */
+    protected function includeVersions(Treatment $treatment)
+    {
+        $versions = $treatment->getVersions();
+        return new Fractal\Resource\Collection($versions, 
+                new TreatmentVersionTransformer);
+    }
+    
+    protected function includeAuthor(Treatment $treatment)
+    {
+        $author = $treatment->getAuthor();
+        if ($author) {
+            return new Fractal\Resource\Item($author, new AgentTransformer);
         }
     }
 }

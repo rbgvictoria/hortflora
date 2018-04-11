@@ -18,6 +18,7 @@
 
 namespace App\Transformers;
 
+use App\Entities\VernacularName;
 use League\Fractal;
 use Swagger\Annotations as SWG;
 
@@ -29,7 +30,7 @@ use Swagger\Annotations as SWG;
  * @SWG\Definition(
  *   definition="VernacularName",
  *   type="object",
- *   required={"id", "vernacularName"}
+ *   required={"vernacularName", "taxon"}
  * )
  */
 class VernacularNameTransformer extends Fractal\TransformerAbstract {
@@ -42,8 +43,13 @@ class VernacularNameTransformer extends Fractal\TransformerAbstract {
 
     /**
      * @SWG\Property(
+     *   property="type",
+     *   type="string"
+     * ),
+     * @SWG\Property(
      *     property="id",
-     *     type="string"
+     *     type="string",
+     *     format="uuid"
      * ),
      * @SWG\Property(
      *     property="vernacularName",
@@ -58,31 +64,32 @@ class VernacularNameTransformer extends Fractal\TransformerAbstract {
      *     type="string"
      * ),
      *
-     * @param object $vernacularName
+     * @param \App\Entities\VernacularName $vernacularName
      * @return array
      */
-    public function transform($vernacularName)
+    public function transform(VernacularName $vernacularName)
     {
         return [
-            'id' => $vernacularName->guid,
-            'vernacularName' => $vernacularName->vernacular_name,
-            'vernacularNameUsage' => $vernacularName->vernacular_name_usage,
-            'isPreferredName' => $vernacularName->is_preferred_name,
+            'type' => 'VernacularName',
+            'id' => $vernacularName->getGuid(),
+            'vernacularName' => $vernacularName->getVernacularName(),
+            'vernacularNameUsage' => $vernacularName->getVernacularNameUsage(),
+            'isPreferredName' => $vernacularName->getIsPreferredName(),
         ];
     }
 
     /**
      * @SWG\Property(
      *     property="taxon",
-     *     ref="#/definitions/Taxon"
+     *     ref="#/definitions/TaxonAbstract"
      * )
      *
-     * @param object $vernacularName
+     * @param \App\Entities\VernacularName $vernacularName
      * @return \League\Fractal\Resource\Item
      */
-    protected function includeTaxon($vernacularName)
+    protected function includeTaxon(VernacularName $vernacularName)
     {
-        $taxon = \App\Queries\TaxonQueries::getTaxon($vernacularName->taxon_id);
+        $taxon = $vernacularName->getTaxon();
         return new Fractal\Resource\Item($taxon, new TaxonTransformer, 'taxa');
     }
 }

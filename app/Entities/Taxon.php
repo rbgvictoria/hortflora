@@ -18,52 +18,15 @@
 
 namespace App\Entities;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Class Taxon
  * @author Niels Klazenga
- * @ORM\Entity()
- * @ORM\Table(schema="flora", name="taxa")
+ * @ORM\Entity(repositoryClass="TaxonRepository")
  */
-class Taxon extends ClassBase {
-
-    /**
-     * http://rs.tdwg.org/dwc/terms/scientificNameID
-     *
-     * An identifier for the nomenclatural details of a scientific name.
-     *
-     * @var Name
-     * @ORM\ManyToOne(targetEntity="Name")
-     * @ORM\JoinColumn(name="name_id", referencedColumnName="id",
-     *   nullable=false)
-     */
-    protected $name;
-
-    /**
-     * http://rs.tdwg.org/dwc/terms/taxonRank
-     *
-     * The taxonomic rank of the most specific name in the scientificName.
-     *
-     * @var TaxonRank
-     * @ORM\ManyToOne(targetEntity="TaxonRAnk")
-     * @ORM\JoinColumn(name="rank_id", referencedColumnName="id",
-     *   nullable=true)
-     */
-    protected $taxonRank;
-
-    /**
-     * http://rs.tdwg.org/dwc/terms/acceptedNameUsageID
-     *
-     * An identifier for the name usage of the direct, most proximate
-     * higher-rank parent taxon (in a classification) of the most specific
-     * element of the scientificName.
-     *
-     * @var Taxon
-     * @ORM\ManyToOne(targetEntity="Taxon")
-     * @ORM\JoinColumn(name="accepted_id", referencedColumnName="id")
-     */
-    protected $accepted;
+class Taxon extends TaxonAbstract {
 
     /**
      * http://rs.tdwg.org/dwc/terms/parentNameUsageID
@@ -74,20 +37,30 @@ class Taxon extends ClassBase {
      * scientificName.
      *
      * @var Taxon
-     * @ORM\ManyToOne(targetEntity="Taxon")
+     * @ORM\ManyToOne(targetEntity="Taxon", inversedBy="children")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
      */
     protected $parent;
+    
+    /**
+     * Parent/children association has been made bidirectional, so it is 
+     * possible to obtain the parent by the id of a child, using DQL, without 
+     * having to include the child in the result; see 
+     * TaxonRepository#getParentNameUsage.
+     * 
+     * @ORM\OneToMany(targetEntity="Taxon", mappedBy="parent")
+     * @var Taxon
+     */
+    protected $children;
 
     /**
-     * Cultivar Group
-     *
-     * @var Taxon
-     * @ORM\ManyToOne(targetEntity="Taxon")
-     * @ORM\JoinColumn(name="cultivar_group_id", referencedColumnName="id")
+     * Node in the taxon tree. This makes the association with the Taxon Tree
+     * bidirectional
+     * @ORM\OneToOne(targetEntity="TaxonTree", mappedBy="taxon")
+     * @var \App\Entities\TaxonTree
      */
-    protected $cultivarGroup;
-
+    protected $node;
+    
     /**
      * http://rs.tdwg.org/dwc/terms/originalNameUsageID
      *
@@ -100,21 +73,6 @@ class Taxon extends ClassBase {
      * @ORM\JoinColumn(name="basionym_id", referencedColumnName="id")
      */
     protected $basionym;
-
-    /**
-     * http://rs.tdwg.org/dwc/terms/nameAccordingToID
-     *
-     * An identifier for the source in which the specific taxon concept
-     * circumscription is defined or implied. See nameAccordingTo:
-     * The reference to the source in which the specific taxon concept
-     * circumscription is defined or implied - traditionally signified by the
-     * Latin "sensu" or "sec."
-     *
-     * @var Reference
-     * @ORM\ManyToOne(targetEntity="Reference")
-     * @ORM\JoinColumn(name="name_according_to_id", referencedColumnName="id")
-     */
-    protected $nameAccordingTo;
 
     /**
      * http://rs.tdwg.org/dwc/terms/taxonomicStatus
@@ -167,75 +125,52 @@ class Taxon extends ClassBase {
      * @ORM\Column(type="boolean", nullable=true)
      */
     protected $isEndemic;
-
+    
     /**
-     * http://rs.tdwg.org/dwc/terms/taxonRemarks
-     *
-     * Comments or notes about the taxon or name.
-     *
-     * @var string
-     * @ORM\Column(type="text", name="taxon_remarks", nullable=true)
+     * @ORM\OneToMany(targetEntity="Cultivar", mappedBy="taxon")
+     * @var \Doctrine\Common\Collections\ArrayCollection $cultivars
      */
-    protected $taxonRemarks;
-
+    protected $cultivars;
+    
     /**
-     * @var bool
-     * @ORM\Column(type="boolean", name="do_not_index", nullable=true)
+     * @ORM\OneToMany(targetEntity="HorticulturalGroup", mappedBy="taxon")
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    protected $doNotIndex;
-
+    protected $horticulturalGroups;
+    
     /**
-     * @return Name
+     * @ORM\ManyToMany(targetEntity="Region")
+     * @ORM\JoinTable(name="taxon_region")
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    public function getName()
-    {
-        return $this->name;
+    protected $regions;
+    
+    public function __construct() {
+        parent::__construct();
+        $this->cultivars = new ArrayCollection();
+        $this->distribution = new ArrayCollection();
     }
 
     /**
-     * @param Name $name
+     * @return \App\Entities\TaxonRank
      */
-    public function setName(Name $name)
+    public function getTaxonRank()
     {
-        $this->name = $name;
+        return $this->taxonRank;
     }
-
+    
     /**
-     * @return TaxonTreeDefItem
+     * @param \App\Entities\TaxonRank $rank
      */
-    public function getTaxonTreeDefItem()
+    public function setTaxonRank($rank)
     {
-        return $this->name;
-    }
-
-    /**
-     * @param TaxonTreeDefItem $taxonTreeDefItem
-     */
-    public function setTaxonTreeDefItem(TaxonTreeDefItem $taxonTreeDefItem)
-    {
-        $this->taxonTreeDefItem = $taxonTreeDefItem;
+        $this->taxonRank = $rank;
     }
 
     /**
      * @return Taxon
      */
-    public function getAcceptedNameUsage()
-    {
-        return $this->accepted;
-    }
-
-    /**
-     * @param Taxon $accepted
-     */
-    public function setAcceptedNameUsage(Taxon $accepted)
-    {
-        $this->accepted = $accepted;
-    }
-
-    /**
-     * @return Taxon
-     */
-    public function getParentNameUsage()
+    public function getParent()
     {
         return $this->parent;
     }
@@ -243,42 +178,25 @@ class Taxon extends ClassBase {
     /**
      * @param Taxon $parent
      */
-    public function setParentNameUsage(Taxon $parent)
+    public function setParent(Taxon $parent)
     {
         $this->parent = $parent;
     }
 
     /**
-     * @return Taxon
+     * @return HorticulturalGroup
      */
-    public function getCultivarGroup()
+    public function getHorticulturalGroup()
     {
-        return $this->cultivarGroup;
+        return $this->horticulturalGroup;
     }
 
     /**
-     * @param Taxon $cultiarGroup
+     * @param HorticulturalGroup $horticulturalGroup
      */
-    public function setCultivarGroup($cultiarGroup)
+    public function setHorticulturalGroup($horticulturalGroup)
     {
-        $this->cultivarGroup = $cultiarGroup;
-    }
-
-
-    /**
-     * @return Reference
-     */
-    public function getNameAccordingTo()
-    {
-        return $this->nameAccordingTo;
-    }
-
-    /**
-     * @param Reference $sensu
-     */
-    public function setNameAccordingTo($sensu)
-    {
-        $this->nameAccordingTo = $sensu;
+        $this->horticulturalGroup = $horticulturalGroup;
     }
 
     /**
@@ -346,35 +264,101 @@ class Taxon extends ClassBase {
     }
 
     /**
-     * @return string
+     * @return \App\Entities\TaxonTree
      */
-    public function getTaxonRemarks()
+    public function getNode()
     {
-        return $this->taxonRemarks;
+        return $this->node;
+    }
+    
+    /**
+     * 
+     * @return \App\Entities\Taxon
+     */
+    public function getHybridParent1()
+    {
+        return $this->hybridParent1;
+    }
+    
+    /**
+     * 
+     * @param \App\Entities\Taxon $hybridParent1
+     */
+    public function setHybridParent1(Taxon $hybridParent1)
+    {
+        $this->hybridParent1 = $hybridParent1;
+    }
+    
+    /**
+     * 
+     * @return \App\Entities\Taxon
+     */
+    public function getHybridParent2()
+    {
+        return $this->hybridParent2;
+    }
+    
+    /**
+     * 
+     * @param \App\Entities\Taxon $hybridParent2
+     */
+    public function setHybridParent2(Taxon $hybridParent2)
+    {
+        $this->hybridParent2 = $hybridParent2;
     }
 
     /**
-     * @param string $remarks
+     * 
+     * @return \Doctrine\Common\Collections\ArrayCollection
      */
-    public function setTaxonRemarks($remarks)
+    public function getCultivars()
     {
-        $this->taxonRemarks = $remarks;
+        return $this->cultivars;
     }
-
+    
     /**
-     * @return bool
+     * 
+     * @param \App\Entities\Cultivar $cultivar
      */
-    public function getDoNotIndex()
+    public function addCultivar(Cultivar $cultivar)
     {
-        return $this->doNotIndex;
+        $this->cultivars[] = $cultivar;
     }
-
+    
     /**
-     * @param bool $doNotIndex
+     * 
+     * @return \Doctrine\Common\Collections\ArrayCollection
      */
-    public function setDoNotIndex($doNotIndex)
+    public function getHorticulturalGroups()
     {
-        $this->doNotIndex = $doNotIndex;
+        return $this->horticulturalGroups;
     }
-
+    
+    /**
+     * 
+     * @param \App\Entities\HorticulturalGroup $horticulturalGroup
+     */
+    public function addHorticulturalGroup($horticulturalGroup)
+    {
+        $this->horticulturalGroups[] = $horticulturalGroup;
+    }
+    
+    /**
+     * 
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getRegions()
+    {
+        return $this->regions;
+    }
+    
+    /**
+     * 
+     * @param \App\Entities\Region $region
+     */
+    public function addRegion(Region $region)
+    {
+        $this->regions[] = $region;
+    }
+    
 }

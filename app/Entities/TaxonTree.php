@@ -25,7 +25,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Class TaxonTree
  * @author Niels Klazenga
  * @ORM\Entity()
- * @ORM\Table(name="taxon_tree", schema="flora", indexes={
+ * @ORM\Table(name="taxon_tree",  indexes={
  *     @ORM\Index(columns={"node_number"}),
  *     @ORM\Index(columns={"highest_descendant_node_number"})
  * })
@@ -36,7 +36,7 @@ class TaxonTree extends ClassBase {
 
     /**
      * @var Taxon
-     * @ORM\ManyToOne(targetEntity="Taxon")
+     * @ORM\OneToOne(targetEntity="Taxon", inversedBy="node")
      * @ORM\JoinColumn(name="taxon_id", referencedColumnName="id",
      *     nullable=false)
      */

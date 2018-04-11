@@ -24,7 +24,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Class Distribution
  * @author Niels Klazenga <Niels.Klazenga@rbg.vic.gov.au>
  * @ORM\Entity()
- * @ORM\Table(schema="flora", name="distribution")
+ * @ORM\Table( name="distribution")
  */
 class Distribution extends ClassBase {
 

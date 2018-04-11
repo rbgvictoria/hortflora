@@ -24,19 +24,19 @@ use Doctrine\ORM\Mapping as ORM;
  * Class Reference
  * @author Niels Klazenga
  * @ORM\Entity()
- * @ORM\Table()
+ * @ORM\Table("`references`")
  */
 class Reference extends ClassBase {
-
+    
     /**
-     * @var string
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\ManyToOne(targetEntity="\App\Entities\ReferenceType")
+     * @var \App\Entities\ReferenceType
      */
-    protected $reference;
+    protected $referenceType;
 
     /**
-     * @var string
-     * @ORM\Column(type="string", length=128, nullable=true)
+     * @var \App\Entities\Agent
+     * @ORM\ManyToOne(targetEntity="\App\Entities\Agent")
      */
     protected $author;
 
@@ -54,51 +54,65 @@ class Reference extends ClassBase {
     protected $title;
 
     /**
+     * The name defining a special edition of a document. Normally its a literal 
+     * value composed of a version number and words.
+     * http://purl.org/ontology/bibo/edition
+     * 
      * @var string
-     * @ORM\Column(type="string", length=128, nullable=true)
-     */
-    protected $journalOrBook;
-
-    /**
-     * @var string
-     * @ORM\Column(type="string", length=128, nullable=true)
-     */
-    protected $collation;
-
-    /**
-     * @var string
-     * @ORM\Column(type="string", length=32, nullable=true)
-     */
-    protected $series;
-
-    /**
-      * @var string
      * @ORM\Column(type="string", length=32, nullable=true)
      */
     protected $edition;
 
     /**
+     * A volume number
+     * http://purl.org/ontology/bibo/volume
+     * 
      * @var string
      * @ORM\Column(type="string", length=32, nullable=true)
      */
     protected $volume;
 
     /**
+     * An issue number
+     * http://purl.org/ontology/bibo/issue
+     * 
      * @var string
-     * @ORM\Column(type="string", length=32, nullable=true)
+     * @ORM\Column(length=32, nullable=true)
      */
-    protected $part;
+    protected $issue;
+
+    /**
+     * Starting page number within a continuous page range.
+     * http://purl.org/ontology/bibo/pages
+     * 
+     * @var string
+     * @ORM\Column(length=32, nullable=true)
+     */
+    protected $pages;
+    
+    /**
+     * Starting page number within a continuous page range.
+     * http://purl.org/ontology/bibo/pageStart
+     * 
+     * @var int
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    protected $pageStart;
+
+
+    /**
+     * Ending page number within a continuous page range.
+     * http://purl.org/ontology/bibo/pageEnd
+     * 
+     * @var int
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    protected $pageEnd;
+
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=32, nullable=true)
-     */
-    protected $page;
-
-
-    /**
-     * @var string
-     * @ORM\Column(type="string", length=64, nullable=true)
+     * @ORM\ManyToOne(targetEntity="\App\Entities\Agent")
      */
     protected $publisher;
 
@@ -109,36 +123,58 @@ class Reference extends ClassBase {
     protected $placeOfPublication;
 
     /**
-     * @var string
-     * @ORM\Column(type="string", length=64, nullable=true)
-     */
-    protected $subject;
-
-    /**
+     * Parent publication; can be a Journal, or Book (with Chapters, Multi-Volume Book,
+     * or Series
+     * 
      * @var \App\Entities\Reference
      * @ORM\ManyToOne(targetEntity="Reference")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
      */
     protected $parent;
-
+    
     /**
-     * @return string
+     * @ORM\Column(length=64, nullable=true)
+     * @var string
      */
-    public function getReference()
+    protected $isbn;
+    
+    /**
+     * @ORM\Column(length=64, nullable=true)
+     * @var string
+     */
+    protected $issn;
+    
+    /**
+     * @ORM\Column(length=64, nullable=true)
+     * @var string
+     */
+    protected $doi;
+    
+    /**
+     * @ORM\Column(length=128, nullable=true)
+     * @var string
+     */
+    protected $url;
+    
+    /**
+     * 
+     * @return \App\Entities\ReferenceType
+     */
+    public function getReferenceType()
     {
-      return $this->reference;
+        return $this->referenceType;
+    }
+    
+    /**
+     * 
+     * @param \App\Entities\ReferenceType $referenceType
+     */
+    public function setReferenceType(ReferenceType $referenceType)
+    {
+        $this->referenceType = $referenceType;
     }
 
     /**
-     * @param string $str
-     */
-    public function setReference($str)
-    {
-      $this->reference = $str;
-    }
-
-    /**
-     * @return string
+     * @return \App\Entities\Agent
      */
     public function getAuthor()
     {
@@ -146,9 +182,9 @@ class Reference extends ClassBase {
     }
 
     /**
-     * @param string $author
+     * @param \App\Entities\Agent $author
      */
-    public function setAuthor($author)
+    public function setAuthor(Agent $author)
     {
       $this->author = $author;
     }
@@ -188,54 +224,6 @@ class Reference extends ClassBase {
     /**
      * @return string
      */
-    public function getJournalOrBook()
-    {
-      return $this->journalOrBook;
-    }
-
-    /**
-     * @param string $str
-     */
-    public function setJournalOrBook($str)
-    {
-      $this->journalOrBook = $str;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCollation()
-    {
-      return $this->collation;
-    }
-
-    /**
-     * @param string $collation
-     */
-    public function setCollation($collation)
-    {
-      $this->collation = $collation;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSeries()
-    {
-      return $this->series;
-    }
-
-     /**
-      * @param string $series
-      */
-    public function setSeries($series)
-    {
-      $this->series = $series;
-    }
-
-    /**
-     * @return string
-     */
     public function getEdition()
     {
       return $this->edition;
@@ -264,41 +252,79 @@ class Reference extends ClassBase {
     {
       $this->volume = $volume;
     }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getIssue()
+    {
+        return $this->issue;
+    }
+    
+    /**
+     * 
+     * @param string $issue
+     */
+    public function setIssue($issue)
+    {
+        $this->issue = $issue;
+    }
+
+    /**
+     * 
+     * @return int
+     */
+    public function getPageStart()
+    {
+        return $this->pageStart;
+    }
+    
+    /**
+     * 
+     * @param int $pageStart
+     */
+    public function setPageStart($pageStart)
+    {
+        $this->pageStart = $pageStart;
+    }
+
+    /**
+     * 
+     * @return int
+     */
+    public function getPageEnd()
+    {
+        return $this->pageEnd;
+    }
+    
+    /**
+     * 
+     * @param int $pageEnd
+     */
+    public function setPageEnd($pageEnd)
+    {
+        $this->pageEnd = $pageEnd;
+    }
 
     /**
      * @return string
      */
-    public function getPart()
+    public function getPages()
     {
-      return $this->part;
+      return $this->pages;
     }
 
     /**
-     * @param string $part
+     * @param string $pages
      */
-    public function setPart($part)
+    public function setPages($pages)
     {
-      $this->part = $part;
+      $this->page = $pages;
     }
 
     /**
-     * @return string
-     */
-    public function getPage()
-    {
-      return $this->page;
-    }
-
-    /**
-     * @param string $page
-     */
-    public function setPage($page)
-    {
-      $this->page = $page;
-    }
-
-    /**
-     * @return string
+     * @return \App\Entities\Agent
      */
     public function getPublisher()
     {
@@ -306,9 +332,9 @@ class Reference extends ClassBase {
     }
 
     /**
-     * @param string $publisher
+     * @param \App\Entities\Agent $publisher
      */
-    public function setPublisher($publisher)
+    public function setPublisher(Agent $publisher)
     {
       $this->publisher = $publisher;
     }
@@ -330,22 +356,6 @@ class Reference extends ClassBase {
     }
 
     /**
-     * @return string
-     */
-    public function getSubject()
-    {
-      return $this->subject;
-    }
-
-    /**
-     * @param string $subject
-     */
-    public function setSubject($subject)
-    {
-      $this->subject = $subject;
-    }
-
-    /**
      * @return Reference
      */
     public function getParent()
@@ -359,5 +369,77 @@ class Reference extends ClassBase {
     public function setParent($parent)
     {
       $this->parent = $parent;
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getIsbn()
+    {
+        return $this->isbn;
+    }
+    
+    /**
+     * 
+     * @param string $isbn
+     */
+    public function setIsbn($isbn)
+    {
+        $this->isbn = $isbn;
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getIssn()
+    {
+        return $this->issn;
+    }
+    
+    /**
+     * 
+     * @param string $issn
+     */
+    public function setIssn($issn)
+    {
+        $this->issn = $issn;
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getDoi()
+    {
+        return $this->doi;
+    }
+    
+    /**
+     * 
+     * @param string $isbn
+     */
+    public function setDoi($doi)
+    {
+        $this->doi = $doi;
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+    
+    /**
+     * 
+     * @param string $url
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
     }
 }

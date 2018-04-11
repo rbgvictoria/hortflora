@@ -2,27 +2,18 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Queries\NameQueries;
-use App\Queries\TaxonQueries;
-use App\Queries\ReferenceQueries;
-use App\Traits\TaxonExistsTrait;
 use App\Transformers\TaxonTransformer;
-use App\Transformers\NameTransformer;
-use App\Transformers\ReferenceTransformer;
 use Illuminate\Http\Request;
 use League\Fractal;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use Ramsey\Uuid\Uuid;
+use Solarium\Client;
 use Swagger\Annotations as SWG;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Taxon Controller
  */
-class TaxonController extends ApiController
+class TaxonController extends TaxonAbstractController
 {
-
-    use TaxonExistsTrait;
-
     /**
      * @SWG\Get(
      *     path="/taxa/{taxon}",
@@ -61,7 +52,7 @@ class TaxonController extends ApiController
      *     ),
      *     @SWG\Response(
      *         response="200",
-     *         description="Successful response",
+     *         description="Successful response.",
      *         @SWG\Schema(
      *             ref="#/definitions/Taxon"
      *         )
@@ -75,7 +66,7 @@ class TaxonController extends ApiController
      *     ),
      *     @SWG\Response(
      *         response="404",
-     *         description="The requested resource could not be found",
+     *         description="The requested Taxon resource could not be found",
      *         @SWG\Schema(
      *             ref="#/definitions/Exception"
      *         )
@@ -83,101 +74,23 @@ class TaxonController extends ApiController
      * )
      *
      * @param Request $request
-     * @param  Uuid  $id
+     * @param  string  $id
      * @return \Illuminate\Http\Response
      */
     public function show(Request $request, $id)
     {
         $this->checkUuid($id);
-        $include = 'name.nameType,taxonomicStatus,acceptedNameUsage';
+        $includes = 'taxonomicStatus,acceptedNameUsage,name.nameType';
         if ($request->input('include')) {
-            $include .= ',' . $request->input('include');
+            $includes .= ',' . $request->input('include');
         }
-        $taxon = TaxonQueries::getTaxon($id, explode(',', $include));
+        $taxon = $this->em->getRepository('\App\Entities\Taxon')->getTaxon($id);
+        //$taxon = app('em')->getRepository('\App\Entities\Taxon')->findOneBy(['guid' => $id]);
         $transformer = new TaxonTransformer();
         $resource = new Fractal\Resource\Item($taxon, $transformer, 'taxa');
-        $this->fractal->parseIncludes($include);
+        $this->fractal->parseIncludes($includes);
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
-    }
-
-    /**
-     * @SWG\Get(
-     *     path="/taxa/{taxon}/name",
-     *     tags={"Taxa"},
-     *     summary="Gets the Name record for a Taxon",
-     *     @SWG\Parameter(
-     *         in="path",
-     *         name="taxon",
-     *         type="string",
-     *         required=true,
-     *         description="Identifier (UUID) of the Taxon"
-     *     ),
-     *     @SWG\Response(
-     *         response="200",
-     *         description="Successful response",
-     *         @SWG\Schema(
-     *             ref="#/definitions/Name"
-     *         )
-     *     ),
-     *     @SWG\Response(
-     *         response="404",
-     *         description="The requested resource could not be found."
-     *     )
-     * )
-     *
-     * @param Uuid $id
-     * @return \Illuminate\Http\Response
-     */
-    public function hasScientificName($id)
-    {
-        $this->checkUuid($id);
-        $taxon = $this->checkTaxon($id);
-        $name = NameQueries::getName($taxon->scientific_name_id);
-        $resource = new Fractal\Resource\Item($name, new NameTransformer, 'names');
-        $data = $this->fractal->createData($resource)->toArray();
-        return response()->json($data);
-    }
-
-    /**
-     * @SWG\Get(
-     *     path="/taxa/{taxon}/nameAccordingTo",
-     *     tags={"Taxa"},
-     *     summary="Gets the Reference for a Name Usage (""sensu"")",
-     *     @SWG\Parameter(
-     *         in="path",
-     *         name="name",
-     *         type="string",
-     *         required=true,
-     *         description="Identifier (UUID) of the Name"
-     *     ),
-     *     @SWG\Response(
-     *         response="200",
-     *         description="Successful response",
-     *         @SWG\Schema(
-     *             ref="#/definitions/Reference"
-     *         )
-     *     ),
-     *     @SWG\Response(
-     *         response="404",
-     *         description="The requested resource could not be found."
-     *     )
-     * )
-     *
-     * @param Uuid $id
-     * @return \Illuminate\Http\Response
-     */
-    public function hasNameAccordingTo($id)
-    {
-        $this->checkUuid($id);
-        $this->checkTaxon($id);
-        if ($taxon->name_according_to_id) {
-            $nameAccordingTo = ReferenceQueries::getReference($taxon->name_according_to_id);
-            $resource = new Fractal\Resource\Item($nameAccordingTo,
-                    new ReferenceTransformer, 'references');
-            $data = $this->fractal->createData($resource)->toArray();
-            return response()->json($data);
-        }
     }
 
     /**
@@ -200,21 +113,36 @@ class TaxonController extends ApiController
      *         )
      *     ),
      *     @SWG\Response(
+     *         response="400",
+     *         description="Bad request",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Exception"
+     *         )
+     *     ),
+     *     @SWG\Response(
      *         response="404",
-     *         description="The requested resource could not be found."
+     *         description="The requested Taxon resource could not be found",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Exception"
+     *         )
      *     )
      * )
      *
-     * @param Uuid $id
+     * @param string $id
      * @return \Illuminate\Http\Response
      */
     public function hasAcceptedNameUsage($id)
     {
         $this->checkUuid($id);
-        $taxon = $this->checkTaxon($id);
-        if ($taxon->accepted_name_usage_id) {
-            $accepted = TaxonQueries::getTaxon($taxon->accepted_name_usage_id);
-            $resource = new Fractal\Resource\Item($accepted, new TaxonTransformer, 'taxa');
+        $taxon = $this->em->getRepository('\App\Entities\Taxon')
+                ->findOneBy(['guid' => $id]);
+        if (!$taxon) {
+            throw new NotFoundHttpException();
+        }
+        $acceptedNameUsage = $taxon->getAcceptedNameUsage();
+        if ($acceptedNameUsage) {
+            $resource = new Fractal\Resource\Item($acceptedNameUsage, 
+                    new TaxonTransformer, 'taxa');
             $data = $this->fractal->createData($resource)->toArray();
             return response()->json($data);
         }
@@ -240,21 +168,36 @@ class TaxonController extends ApiController
      *         )
      *     ),
      *     @SWG\Response(
+     *         response="400",
+     *         description="Bad request",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Exception"
+     *         )
+     *     ),
+     *     @SWG\Response(
      *         response="404",
-     *         description="The requested resource could not be found."
+     *         description="The requested Taxon resource could not be found",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Exception"
+     *         )
      *     )
      * )
      *
-     * @param Uuid $id
+     * @param string $id
      * @return \Illuminate\Http\Response
      */
     public function hasParentNameUsage($id)
     {
         $this->checkUuid($id);
-        $taxon = $this->checkTaxon($id);
-        if ($taxon->parent_name_usage_id) {
-            $parent = TaxonQueries::getTaxon($taxon->parent_name_usage_id);
-            $resource = new Fractal\Resource\Item($parent, new TaxonTransformer, 'taxa');
+        $taxon = $this->em->getRepository('\App\Entities\Taxon')
+                ->findOneBy(['guid' => $id]);
+        if (!$taxon) {
+            throw new NotFoundHttpException();
+        }
+        $parent = $taxon->getParent();
+        if ($parent) {
+            $resource = new Fractal\Resource\Item($parent, 
+                    new TaxonTransformer, 'taxa');
             $data = $this->fractal->createData($resource)->toArray();
             return response()->json($data);
         }
@@ -283,25 +226,40 @@ class TaxonController extends ApiController
      *         )
      *     ),
      *     @SWG\Response(
+     *         response="400",
+     *         description="Bad request",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Exception"
+     *         )
+     *     ),
+     *     @SWG\Response(
      *         response="404",
-     *         description="The requested resource could not be found."
+     *         description="The requested Taxon resource could not be found",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Exception"
+     *         )
      *     )
      * )
      *
-     * @param Uuid $id
+     * @param string $id
      * @return \Illuminate\Http\Response
      */
     public function classification($id)
     {
         $this->checkUuid($id);
-        $this->checkTaxon($id);
-        $taxa = TaxonQueries::getHigherClassification($id);
-        if ($taxa) {
-            $resource = new Fractal\Resource\Collection($taxa, new TaxonTransformer, 'taxa');
+        $taxon = $this->em->getRepository('\App\Entities\Taxon')
+                ->findOneBy(['guid' => $id]);
+        if (!$taxon) {
+            throw new NotFoundHttpException();
+        }
+        $classification = $this->em->getRepository('\App\Entities\Taxon')
+                ->getHigherClassification($taxon);
+        if ($classification) {
+            $resource = new Fractal\Resource\Collection($classification, 
+                    new TaxonTransformer, 'taxa');
             $data = $this->fractal->createData($resource)->toArray();
             return response()->json($data);
         }
-        return response()->json($taxa);
     }
 
     /**
@@ -327,25 +285,40 @@ class TaxonController extends ApiController
      *         )
      *     ),
      *     @SWG\Response(
+     *         response="400",
+     *         description="Bad request",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Exception"
+     *         )
+     *     ),
+     *     @SWG\Response(
      *         response="404",
-     *         description="The requested resource could not be found."
+     *         description="The requested Taxon resource could not be found",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Exception"
+     *         )
      *     )
      * )
      *
-     * @param Uuid $id
+     * @param string $id
      * @return \Illuminate\Http\Response
      */
     public function children($id)
     {
         $this->checkUuid($id);
-        $this->checkTaxon($id);
-        $children = TaxonQueries::getChildren($id);
+        $taxon = $this->em->getRepository('\App\Entities\Taxon')
+                ->findOneBy(['guid' => $id]);
+        if (!$taxon) {
+            throw new NotFoundHttpException();
+        }
+        $children = $this->em->getRepository('\App\Entities\Taxon')
+                ->getChildren($taxon);
         if ($children) {
-            $resource = new Fractal\Resource\Collection($children, new TaxonTransformer, 'taxa');
+            $resource = new Fractal\Resource\Collection($children, 
+                    new TaxonTransformer, 'taxa');
             $data = $this->fractal->createData($resource)->toArray();
             return response()->json($data);
         }
-        return response()->json($children);
     }
 
     /**
@@ -371,8 +344,18 @@ class TaxonController extends ApiController
      *         )
      *     ),
      *     @SWG\Response(
+     *         response="400",
+     *         description="Bad request",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Exception"
+     *         )
+     *     ),
+     *     @SWG\Response(
      *         response="404",
-     *         description="The requested resource could not be found."
+     *         description="The requested Taxon resource could not be found",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Exception"
+     *         )
      *     )
      * )
      *
@@ -382,14 +365,19 @@ class TaxonController extends ApiController
     public function siblings($id)
     {
         $this->checkUuid($id);
-        $this->checkTaxon($id);
-        $siblings = TaxonQueries::getSiblings($id);
+        $taxon = $this->em->getRepository('\App\Entities\Taxon')
+                ->findOneBy(['guid' => $id]);
+        if (!$taxon) {
+            throw new NotFoundHttpException();
+        }
+        $siblings = $this->em->getRepository('\App\Entities\Taxon')
+                ->getSiblings($taxon);
         if ($siblings) {
-            $resource = new Fractal\Resource\Collection($siblings, new TaxonTransformer, 'taxa');
+            $resource = new Fractal\Resource\Collection($siblings, 
+                    new TaxonTransformer, 'taxa');
             $data = $this->fractal->createData($resource)->toArray();
             return response()->json($data);
         }
-        return response()->json($siblings);
     }
 
     /**
@@ -415,8 +403,18 @@ class TaxonController extends ApiController
      *         )
      *     ),
      *     @SWG\Response(
+     *         response="400",
+     *         description="Bad request",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Exception"
+     *         )
+     *     ),
+     *     @SWG\Response(
      *         response="404",
-     *         description="The requested resource could not be found."
+     *         description="The requested Taxon resource could not be found",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Exception"
+     *         )
      *     )
      * )
      *
@@ -426,203 +424,26 @@ class TaxonController extends ApiController
     public function synonyms($id)
     {
         $this->checkUuid($id);
-        $this->checkTaxon($id);
-        $synonyms = TaxonQueries::getSynonyms($id);
+        $taxon = $this->em->getRepository('\App\Entities\Taxon')
+                ->findOneBy(['guid' => $id]);
+        if (!$taxon) {
+            throw new NotFoundHttpException();
+        }
+        $synonyms = $this->em->getRepository('\App\Entities\Taxon')
+                ->getSynonyms($taxon);
         if ($synonyms) {
-            $resource = new Fractal\Resource\Collection($synonyms, new TaxonTransformer, 'taxa');
-            $data = $this->fractal->createData($resource)->toArray();
-            return response()->json($data);
-        }
-        return response()->json($synonyms);
-    }
-
-    /**
-     * @SWG\Get(
-     *     path="/taxa/{taxon}/treatments",
-     *     tags={"Taxa"},
-     *     summary="Gets descriptions for a Taxon",
-     *     @SWG\Parameter(
-     *         in="path",
-     *         name="taxon",
-     *         type="string",
-     *         required=true,
-     *         description="Identifier (UUID) of the Taxon"
-     *     ),
-     *     @SWG\Parameter(
-     *         in="query",
-     *         name="include",
-     *         type="array",
-     *         @SWG\Items(
-     *             type="string",
-     *             enum={"forTaxon"}
-     *         ),
-     *         collectionFormat="csv",
-     *         description="Extra linked resources to include; multiple resources can be added, separated by a comma."
-     *     ),
-     *     @SWG\Parameter(
-     *         in="query",
-     *         name="exclude",
-     *         type="array",
-     *         @SWG\Items(
-     *             type="string",
-     *             enum={"asTaxon", "acceptedNameUsage", "creator", "modifiedBy"}
-     *         ),
-     *         collectionFormat="csv",
-     *         description="Resources that are embedded by default to exclude; multiple resources can be given, separated by a comma"
-     *     ),
-     *     @SWG\Response(
-     *         response="200",
-     *         description="Successful response",
-     *         @SWG\Schema(
-     *             ref="#/definitions/Treatment"
-     *         )
-     *     ),
-     *     @SWG\Response(
-     *         response="400",
-     *         description="Invalid input."
-     *     ),
-     *     @SWG\Response(
-     *         response="404",
-     *         description="The requested resource could not be found."
-     *     )
-     * )
-     *
-     * @param string $id
-     * @return \Illuminate\Http\Response
-     */
-    public function hasTreatments($id)
-    {
-        $params = ['filter' => ['taxonID' => $id]];
-        $treatmentModel = new \App\Queries\TreatmentQueries();
-        $treatments = $treatmentModel->getTreatments($params, false);
-        $resource = new Fractal\Resource\Collection($treatments,
-                new \App\Transformers\TreatmentTransformer(), 'treatments');
-        $data = $this->fractal->createData($resource)->toArray();
-        return response()->json($data);
-    }
-
-    /**
-     * @SWG\Get(
-     *     path="/taxa/{taxon}/currentTreatment",
-     *     tags={"Taxa"},
-     *     summary="Gets current description for a Taxon",
-     *     @SWG\Parameter(
-     *         in="path",
-     *         name="taxon",
-     *         type="string",
-     *         required=true,
-     *         description="Identifier (UUID) of the Taxon"
-     *     ),
-     *     @SWG\Parameter(
-     *         in="query",
-     *         name="include",
-     *         type="array",
-     *         @SWG\Items(
-     *             type="string",
-     *             enum={"forTaxon"}
-     *         ),
-     *         collectionFormat="csv",
-     *         description="Extra linked resources to include; multiple resources can be added, separated by a comma."
-     *     ),
-     *     @SWG\Parameter(
-     *         in="query",
-     *         name="exclude",
-     *         type="array",
-     *         @SWG\Items(
-     *             type="string",
-     *             enum={"asTaxon", "acceptedNameUsage", "creator", "modifiedBy"}
-     *         ),
-     *         collectionFormat="csv",
-     *         description="Resources that are embedded by default to exclude; multiple resources can be given, separated by a comma"
-     *     ),
-     *     @SWG\Response(
-     *         response="200",
-     *         description="Successful response",
-     *         @SWG\Schema(
-     *             type="array",
-     *             @SWG\Items(
-     *                 ref="#/definitions/Treatment"
-     *             )
-     *         )
-     *     ),
-     *     @SWG\Response(
-     *         response="400",
-     *         description="Invalid input."
-     *     ),
-     *     @SWG\Response(
-     *         response="404",
-     *         description="The requested resource could not be found."
-     *     )
-     * )
-     *
-     * @param string $id
-     * @return \Illuminate\Http\Response
-     */
-    public function hasCurrentTreatment($id)
-    {
-        $params = [
-            'filter' => [
-                'taxonID' => $id,
-                'isCurrent' => 'true'
-            ]
-        ];
-        $treatmentModel = new \App\Queries\TreatmentQueries();
-        $treatments = $treatmentModel->getTreatments($params, false);
-        if (count($treatments) > 0) {
-            $resource = new Fractal\Resource\Item($treatments[0],
-                    new \App\Transformers\TreatmentTransformer(), 'treatments');
+            $resource = new Fractal\Resource\Collection($synonyms, 
+                    new TaxonTransformer, 'taxa');
             $data = $this->fractal->createData($resource)->toArray();
             return response()->json($data);
         }
     }
 
     /**
-     * @SWG\Get(
-     *     path="/taxa/{taxon}/vernacularNames",
-     *     tags={"Taxa"},
-     *     summary="Gets vernacular names for a Taxon",
-     *     @SWG\Parameter(
-     *         in="path",
-     *         name="taxon",
-     *         type="string",
-     *         required=true,
-     *         description="Identifier (UUID) of the Taxon"
-     *     ),
-     *     @SWG\Response(
-     *         response="200",
-     *         description="Successful response",
-     *         @SWG\Schema(
-     *             type="array",
-     *             @SWG\Items(
-     *                 ref="#/definitions/VernacularName"
-     *             )
-     *         )
-     *     ),
-     *     @SWG\Response(
-     *         response="404",
-     *         description="The requested resource could not be found."
-     *     )
-     * )
-     *
-     * @param string $id
-     * @return \Illuminate\Http\Response
-     */
-    public function hasVernacularNames($id)
-    {
-        $model = new \App\Queries\VernacularNameQueries();
-        $vernacularNames = $model->getVernacularNames($id);
-        $transformer = new \App\Transformers\VernacularNameTransformer();
-        $resource = new Fractal\Resource\Collection($vernacularNames,
-                $transformer, 'vernacular-names');
-        $data = $this->fractal->createData($resource)->toArray();
-        return response()->json($data);
-    }
-
-    /**
-     * [showCultivars description]
+     * 
      * @SWG\Get(
      *     path="/taxa/{taxon}/cultivars",
-     *     tags={"Cultivars"},
+     *     tags={"Taxa", "Cultivars"},
      *     summary="Gets cultivars for a Taxon",
      *     @SWG\Parameter(
      *         in="path",
@@ -642,30 +463,45 @@ class TaxonController extends ApiController
      *         )
      *     ),
      *     @SWG\Response(
+     *         response="400",
+     *         description="Bad request",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Exception"
+     *         )
+     *     ),
+     *     @SWG\Response(
      *         response="404",
-     *         description="The requested resource could not be found."
+     *         description="The requested Taxon resource could not be found",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Exception"
+     *         )
      *     )
      * )
-     * @param  Uuid  $id [description]
+     * @param  string  $id [description]
      * @return \Illuminate\Http\Response
      */
     public function hasCultivars($id)
     {
         $this->checkUuid($id);
-        $this->checkTaxon($id);
-        $cultivars = \App\Queries\CultivarQueries::getCultivars($id);
-        $transformer = new \App\Transformers\CultivarTransformer();
-        $resource = new Fractal\Resource\Collection($cultivars, $transformer, 'cultivars');
+        $taxon = $this->em->getRepository('\App\Entities\Taxon')
+                ->findOneBy(['guid' => $id]);
+        if (!$taxon) {
+            throw new NotFoundHttpException();
+        }
+        $cultivars = $taxon->getCultivars();
+        $resource = new Fractal\Resource\Collection($cultivars, 
+                new \App\Transformers\CultivarTransformer, 'cultivars');
+        $this->fractal->parseExcludes('taxon');
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
     }
 
     /**
-     * [hasCultivarGroup description]
+     * 
      * @SWG\Get(
-     *     path="/taxa/{taxon}/cultivarGroup",
-     *     tags={"Cultivars"},
-     *     summary="Gets cultivar group for a Taxon (if the Taxon is a cultivar)",
+     *     path="/taxa/{taxon}/horticulturalGroups",
+     *     tags={"Taxa", "Horticultural Groups"},
+     *     summary="Gets horticultural groups that are assigned to a Taxon",
      *     @SWG\Parameter(
      *         in="path",
      *         name="taxon",
@@ -677,301 +513,48 @@ class TaxonController extends ApiController
      *         response="200",
      *         description="Successful response",
      *         @SWG\Schema(
-     *             ref="#/definitions/Cultivar"
+     *             ref="#/definitions/HorticulturalGroup"
      *         )
      *     ),
      *     @SWG\Response(
-     *         response="404",
-     *         description="The requested resource could not be found."
-     *     )
- *     )
-     * @param  Uuid  $id UUID of the Taxon
-     * @return \Illuminate\Http\Response
-     */
-    public function hasCultivarGroup($id)
-    {
-        $this->checkUuid($id);
-        $taxon = $this->checkTaxon($id);
-        if ($taxon->cultivar_group_id) {
-            $cultivarGroup = \App\Queries\CultivarQueries::getCultivarGroup($taxon->cultivar_group_id);
-            $transformer = new \App\Transformers\CultivarTransformer();
-            $resource = new Fractal\Resource\Item($cultivars, $transformer, 'cultivars');
-            $data = $this->fractal->createData($resource)->toArray();
-            return response()->json($data);
-        }
-    }
-
-    /**
-     * @SWG\Get(
-     *     path="/taxa/{taxon}/changes",
-     *     tags={"Taxa"},
-     *     summary="Gets changes for a Taxon",
-     *     @SWG\Parameter(
-     *         in="path",
-     *         name="taxon",
-     *         type="string",
-     *         required=true,
-     *         description="Identifier (UUID) of the Taxon"
-     *     ),
-     *     @SWG\Response(
-     *         response="200",
-     *         description="Successful response",
+     *         response="400",
+     *         description="Bad request",
      *         @SWG\Schema(
      *             type="array",
      *             @SWG\Items(
-     *                 ref="#/definitions/Change"
+     *                 ref="#/definitions/Exception"
      *             )
      *         )
      *     ),
      *     @SWG\Response(
      *         response="404",
-     *         description="The requested resource could not be found."
+     *         description="The requested Taxon resource could not be found",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Exception"
+     *         )
      *     )
      * )
-     *
-     * @param Uuid $id
+     * @param  string  $id UUID of the Taxon
      * @return \Illuminate\Http\Response
      */
-    public function hasChanges($id)
-    {
-        $params = ['filter' => ['fromTaxonID' => $id]];
-        $changeModel = new \App\Queries\ChangeQueries();
-        $changes = $changeModel->getChanges($params, false);
-        $resource = new Fractal\Resource\Collection($changes,
-                new \App\Transformers\ChangeTransformer, 'changes');
-        $data = $this->fractal->createData($resource)->toArray();
-        return response()->json($data);
-    }
-
-    /**
-     * [showHeroImage description]
-     * @param  Uuid $id UUID for the Taxon
-     * @return \Illuminate\Http\Response
-     */
-    public function hasHeroImage($id)
+    public function hasHorticulturalGroups($id)
     {
         $this->checkUuid($id);
-        $imageModel = new \App\Queries\ImageQueries();
-        $heroImage = $imageModel->getHeroImage($id);
-        if ($heroImage) {
-            $transformer = new \App\Transformers\ImageTransformer();
-            $transformer->setDefaultIncludes(['accessPoints']);
-            $resource = new Fractal\Resource\Item($heroImage, $transformer, 'images');
+        $taxon = $this->em->getRepository('\App\Entities\Taxon')
+                ->findOneBy(['guid' => $id]);
+        if (!$taxon) {
+            throw new NotFoundHttpException();
+        }
+        $horticulturalGroups = $taxon->getHorticulturalGroups();
+        if ($horticulturalGroups) {
+            $transformer = new \App\Transformers\HorticulturalGroupTransformer();
+            $resource = new Fractal\Resource\Collection($horticulturalGroups, 
+                    new \App\Transformers\HorticulturalGroupTransformer);
             $data = $this->fractal->createData($resource)->toArray();
             return response()->json($data);
         }
     }
 
-    /**
-     * @SWG\Get(
-     *     path="/taxa/{taxon}/images",
-     *     tags={"Taxa"},
-     *     summary="Gets images for a Taxon",
-     *     @SWG\Parameter(
-     *         in="path",
-     *         name="taxon",
-     *         type="string",
-     *         required=true,
-     *         description="Identifier (UUID) of the Taxon"
-     *     ),
-     *     @SWG\Parameter(
-     *       in="query",
-     *       name="filter[subtype]",
-     *       type="string",
-     *       enum={"illustration", "photograph"},
-     *       description="Filter by subtype."
-     *     ),
-     *     @SWG\Parameter(
-     *       in="query",
-     *       name="filter[license]",
-     *       type="string",
-     *       description="Filter by licence; parameter can take a wildcard ('__*__'), for example '__*__' will return all images that have a licence."
-     *     ),
-     *     @SWG\Parameter(
-     *       in="query",
-     *       name="filter[features]",
-     *       type="array",
-     *       @SWG\Items(
-     *         type="string",
-     *       ),
-     *       collectionFormat="csv",
-     *       description="Filter on features in the image; values from the feature vocabulary."
-     *     ),
-     *     @SWG\Parameter(
-     *       in="query",
-     *       name="filter[hero]",
-     *       type="string",
-     *       enum={"true"},
-     *       description="Filter on hero images; only recognised value is ""true""."
-     *     ),
-     *     @SWG\Parameter(
-     *       in="query",
-     *       name="filter[creator]",
-     *       type="string",
-     *       description="Filter on creator; the wildcard character '__*__' may be used."
-     *     ),
-     *     @SWG\Parameter(
-     *       in="query",
-     *       name="exclude",
-     *       type="array",
-     *       @SWG\Items(
-     *         type="string",
-     *         enum={"accessPoints", "occurrence", "features"}
-     *       ),
-     *       collectionFormat="csv",
-     *       description="Linked resources to exclude from the response."
-     *     ),
-     *     @SWG\Parameter(
-     *       in="query",
-     *       name="sort",
-     *       type="array",
-     *       @SWG\Items(
-     *         type="string",
-     *         enum={"scientificName", "-scientificName", "subtype", "-subtype", "subjectCategory", "-subjectCategory", "license", "-license", "rating", "-rating", "creator", "-creator", "createDate", "-createDate", "digitizationDate", "-digitizationDate"}
-     *       ),
-     *       collectionFormat="csv",
-     *       description="Terms to sort the results by; you can sort by multiple terms at the same time; prefix a term with a '-' to sort in descending order. **Note that applying sorting appears to break the Swagger UI, but works perfectly well in other clients (there might be an AJAX issue).**"
-     *     ),
-     *     @SWG\Parameter(
-     *       in="query",
-     *       name="pageSize",
-     *       type="integer",
-     *       format="int32",
-     *       description="The number of results to return."
-     *     ),
-     *     @SWG\Parameter(
-     *       in="query",
-     *       name="page",
-     *       type="integer",
-     *       format="int32",
-     *       description="The page of query results to return."
-     *     ),
-      *     @SWG\Response(
-     *         response="200",
-     *         description="Successful response",
-     *         @SWG\Schema(
-     *             type="array",
-     *             @SWG\Items(
-     *                 ref="#/definitions/Image"
-     *             )
-     *         )
-     *     )
-     * )
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param Uuid $id
-     * @return \Illuminate\Http\Response
-     */
-    public function hasImages(Request $request, $id) {
-        $imageModel = new \App\Queries\ImageQueries();
-
-        $queryParams = array_diff_key($request->all(), array_flip(['page']));
-        $params = $queryParams;
-        $params['filter']['taxonID'] = $id;
-        $pageSize = (isset($queryParams['pageSize']))
-                ? $queryParams['pageSize'] : 20;
-
-        $paginator = $imageModel->getImages($params, true, $pageSize);
-        $paginator->appends($queryParams);
-        $paginatorAdapter = new IlluminatePaginatorAdapter($paginator);
-        $images = $paginator->getCollection();
-        $resource = new Fractal\Resource\Collection($images,
-                new \App\Transformers\ImageTransformer, 'images');
-        $resource->setPaginator($paginatorAdapter);
-        $data = $this->fractal->createData($resource)->toArray();
-        $data['meta']['queryParams'] = $queryParams;
-        return response()->json($data);
-    }
-
-    /**
-     * @SWG\Get(
-     *     path="/taxa/{taxon}/creator",
-     *     tags={"Taxa"},
-     *     summary="Gets creator of a Taxon",
-     *     @SWG\Parameter(
-     *         in="path",
-     *         name="taxon",
-     *         type="string",
-     *         required=true,
-     *         description="Identifier (UUID) of the Taxon"
-     *     ),
-     *     @SWG\Response(
-     *         response="200",
-     *         description="Successful response",
-     *         @SWG\Schema(
-     *             ref="#/definitions/Agent"
-     *         )
-     *     ),
-     *     @SWG\Response(
-     *         response="404",
-     *         description="The requested resource could not be found."
-     *     )
-     * )
-     *
-     * @param Uuid $id
-     * @return \Illuminate\Http\Response
-     */
-    public function hasCreator($id)
-    {
-        $data = null;
-        $taxon = TaxonQueries::getTaxon($id);
-        if (!$taxon) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-        }
-        $agentModel = new \App\Queries\AgentQueries();
-        $agent = $agentModel->getAgent($taxon->creator);
-        if ($agent) {
-            $transformer = new \App\Transformers\AgentTransformer();
-            $resource = new Fractal\Resource\Item($agent, $transformer, 'agents');
-            $data = $this->fractal->createData($resource)->toArray();
-        }
-        return response()->json($data);
-    }
-
-    /**
-     * @SWG\Get(
-     *     path="/taxa/{taxon}/modifiedBy",
-     *     tags={"Taxa"},
-     *     summary="Gets Agent who last modified a Taxon",
-     *     @SWG\Parameter(
-     *         in="path",
-     *         name="taxon",
-     *         type="string",
-     *         required=true,
-     *         description="Identifier (UUID) of the Taxon"
-     *     ),
-     *     @SWG\Response(
-     *         response="200",
-     *         description="Successful response",
-     *         @SWG\Schema(
-     *             ref="#/definitions/Agent"
-     *         )
-     *     ),
-     *     @SWG\Response(
-     *         response="404",
-     *         description="The requested resource could not be found."
-     *     )
-     * )
-     *
-     * @param Uuid $id
-     * @return \Illuminate\Http\Response
-     */
-    public function hasModifiedBy($id)
-    {
-        $data = null;
-        $taxon = TaxonQueries::getTaxon($id);
-        if (!$taxon) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-        }
-        $agentModel = new \App\Queries\AgentQueries();
-        $agent = $agentModel->getAgent($taxon->modified_by);
-        if ($agent) {
-            $transformer = new \App\Transformers\AgentTransformer();
-            $resource = new Fractal\Resource\Item($agent, $transformer, 'agents');
-            $data = $this->fractal->createData($resource)->toArray();
-        }
-        return response()->json($data);
-    }
 
     /**
      * @SWG\Get(
@@ -989,14 +572,23 @@ class TaxonController extends ApiController
      *     @SWG\Response(
      *         response="200",
      *         description="Successful response",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Key"
+     *         )
      *     ),
      *     @SWG\Response(
      *         response="400",
-     *         description="Invalid input."
+     *         description="Bad request",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Exception"
+     *         )
      *     ),
      *     @SWG\Response(
      *         response="404",
-     *         description="The requested resource could not be found."
+     *         description="The requested Taxon resource could not be found",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Exception"
+     *         )
      *     )
      * )
      *
@@ -1005,26 +597,27 @@ class TaxonController extends ApiController
      */
     public function hasKey($id)
     {
-        $data = null;
+        $data = false;
         $this->checkUuid($id);
-        $taxon = TaxonQueries::getTaxon($id);
+        $taxon = $this->em->getRepository('\App\Entities\Taxon')
+                ->findOneBy(['guid' => $id]);
         if (!$taxon) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new NotFoundHttpException();
         }
         $client = new \GuzzleHttp\Client([
             'base_uri' => 'https://data.rbg.vic.gov.au/keybase-ws/ws/'
         ]);
         $response = $client->request('GET', 'search_items', [
             'query' => [
-                'term' => $taxon->full_name,
-                'project' => 10,
+                'term' => $taxon->getName()->getFullName(),
+                'project' => 33,
             ]
         ]);
 
         if ($response->hasHeader('Content-Length')) {
             $length = $response->getHeader("Content-Length");
             if ($length[0] > '0') {
-                $body = \GuzzleHttp\json_decode($response->getBody());
+                $body = json_decode($response->getBody());
                 if (is_array($body) && is_object($body[0])) {
                     $key = $body[0];
                     $resource = new Fractal\Resource\Item($key, new \App\Transformers\KeyTransformer, 'keys');
@@ -1036,75 +629,34 @@ class TaxonController extends ApiController
     }
 
     /**
-     * @SWG\Get(
-     *     path="/taxa/{taxon}/references",
-     *     tags={"Taxa"},
-     *     summary="Gets References for a Taxon",
-     *     @SWG\Parameter(
-     *         in="path",
-     *         name="taxon",
-     *         type="string",
-     *         required=true,
-     *         description="Identifier (UUID) of the Taxon"
-     *     ),
-     *     @SWG\Response(
-     *         response="200",
-     *         description="Successful response",
-     *         @SWG\Schema(
-     *             type="array",
-     *             @SWG\Items(
-     *                 ref="#/definitions/Agent"
-     *             )
-     *         )
-     *     ),
-     *     @SWG\Response(
-     *         response="404",
-     *         description="The requested resource could not be found."
-     *     )
-     * )
-     *
-     * @param Uuid $id
-     * @return \Illuminate\Http\Response
-     */
-    public function hasReferences($id)
-    {
-        $data = null;
-        $this->checkUuid($id);
-        $referenceModel = new \App\Queries\ReferenceQueries();
-        $references = $referenceModel->getTaxonReferences($id);
-        if ($references) {
-            $transformer = new \App\Transformers\ReferenceTransformer();
-            $resource = new Fractal\Resource\Collection($references, $transformer, 'references');
-            $data = $this->fractal->createData($resource)->toArray();
-        }
-        return response()->json($data);
-    }
-
-    /**
-     * [showRegions description]
-     * @param  Uuid $id
+     * 
+     * @param  string $id
      * @return \Illuminate\Http\Response
      */
     public function hasRegions($id)
     {
-        $data = null;
-        $regions = \App\Queries\DistributionQueries::getDistributionForTaxon($id);
-        if ($regions) {
-            $transformer = new \App\Transformers\RegionTransformer();
-            $resource = new Fractal\Resource\Collection($regions, $transformer, 'regions');
-            $data = $this->fractal->createData($resource)->toArray();
+        $this->checkUuid($id);
+        $taxon = $this->em->getRepository('\App\Entities\Taxon')
+                ->findOneBy(['guid' => $id]);
+        if (!$taxon) {
+            throw new NotFoundHttpException();
         }
+        $distribution = $taxon->getDistribution();
+        $resource = new Fractal\Resource\Collection($distribution, 
+                new \App\Transformers\RegionTransformer, 'regions');
+        $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
     }
 
     /**
      * [hasDistributionMapUrl description]
-     * @param  Uuid  $id
+     * @param  string  $id
      * @return \Illuminate\Http\Response
      */
     public function hasDistributionMap($id)
     {
-        $regions = \App\Queries\DistributionQueries::getDistributionForTaxon($id);
+        $this->getTaxon($id);
+        $regions = $taxon->getRegions();
         if ($regions) {
             $query = [
                 'service' => 'WMS',
@@ -1125,6 +677,497 @@ class TaxonController extends ApiController
         else {
             return response()->json(null);
         }
+    }
+    
+    /**
+     * @SWG\Post(
+     *     path="/taxa",
+     *     tags={"Taxa"},
+     *     summary="Creates a new Taxon record",
+     *     @SWG\Parameter(
+     *         in="body",
+     *         name="body",
+     *         required=true,
+     *         description="Taxon object that needs to be created",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Taxon"
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *         response="201",
+     *         description="Successful response returns the inserted Taxon object in the response body and its URL in the Location header",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Taxon"
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *         response="400",
+     *         description="Invalid input"
+     *     ),
+     *     @SWG\Response(
+     *         response="404",
+     *         description="The requested resource could not be found."
+     *     ),
+     *     security={
+     *         {
+     *             "hortflora_auth": {}
+     *         }
+     *     }
+     * )
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $taxon = new \App\Entities\Taxon();
+        $taxon->setName($this->getValue($request->input('name'), 
+                'Name'));
+        $taxon->setTaxonRank($this->getValue($request->input('taxonRank'), 
+                'TaxonRank', true));
+        $taxon->setParent($this->getValue($request->input('parentNameUsage'), 
+                'Taxon'));
+        if ($request->input('acceptedNameUsage')) {
+            $taxon->setAcceptedNameUsage($this->getValue($request
+                    ->input('acceptedNameUsage'), 'Taxon'));
+            if ($request->input('taxonomicStatus')) {
+                $taxon->setTaxonomicStatus($this->getValue($request
+                        ->input('taxonomicStatus'), 'TaxonomicStatus', true));
+            }
+        }
+        else {
+            $taxon->setTaxonomicStatus(
+                    $this->em->getRepository('\App\Entities\TaxonomicStatus')
+                    ->findOneBy(['name' => 'accepted']));
+            $taxon->setAcceptedNameUsage($taxon);
+        }
+        $taxon->setTaxonRemarks($request->input('taxonRemarks'));
+        $this->em->persist($taxon);
+        $this->em->flush();
+        $transformer = new \App\Transformers\TaxonTransformer();
+        $resource = new Fractal\Resource\Item($taxon, $transformer, 'taxa');
+        $this->fractal->parseIncludes(['parentNameUsage', 'acceptedNameUsage', 
+                'taxonomicStatus']);
+        $data = $this->fractal->createData($resource)->toArray();
+        return response()->json($data, 201)->header('Location', env('APP_URL') 
+                . '/' . $request->path() . '/' . $taxon->getGuid());
+    }
+    
+    /**
+     * @SWG\Put(
+     *     path="/taxa/{taxon}",
+     *     tags={"Taxa"},
+     *     summary="Updates an existing Taxon record",
+     *     @SWG\Parameter(
+     *         in="path",
+     *         name="taxon",
+     *         type="string",
+     *         required=true,
+     *         description="Identifier (UUID) of the Taxon"
+     *     ),
+     *     @SWG\Parameter(
+     *         in="body",
+     *         name="body",
+     *         required=true,
+     *         description="Taxon object that needs to be updated",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Taxon"
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *         response="200",
+     *         description="Successful response returns the updated Taxon object",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Taxon"
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *         response="400",
+     *         description="Invalid input"
+     *     ),
+     *     @SWG\Response(
+     *         response="404",
+     *         description="The requested resource could not be found."
+     *     ),
+     *     security={
+     *         {
+     *             "hortflora_auth": {}
+     *         }
+     *     }
+     * )
+     * 
+     * @param Request $request
+     * @param string $id
+     * @return \Illuminate\Http\Response
+     * @throws NotFoundHttpException
+     * @throws \App\Exceptions\CannotChangeTaxonNameException
+     */
+    public function update(Request $request, $id)
+    {
+        $this->checkUuid($id);
+        $taxon = $this->em->getRepository('\App\Entities\Taxon')
+                ->findOneBy(['guid' => $id]);
+        if (!$taxon) {
+            throw new NotFoundHttpException();
+        }
+        $name = $request->input('name');
+        if (is_array($name)) {
+            $name = $name['id'];
+        }
+        if ($name != $taxon->getName()->getGuid()) {
+            throw new \App\Exceptions\CannotChangeTaxonNameException();
+        }
+        if ($request->input('taxonRank')) {
+            $taxon->setTaxonRank($this->getValue($request->input('taxonRank'), 
+                    'TaxonRank', true));
+        }
+        if ($request->input('parentNameUsage')) {
+            $taxon->setParent($this->getValue($request->input('parentNameUsage'),
+                    'Taxon'));
+        }
+        if ($request->input('acceptedNameUsage')) {
+            $taxon->setAcceptedNameUsage($this->getValue($request
+                    ->input('acceptedNameUsage'), 'Taxon'));
+            $taxon->setTaxonomicStatus($this->getValue($request
+                    ->input('taxonomicStatus'), 'TaxonomicStatus', 
+                    true));
+        }
+        $taxon->setTaxonRemarks($request->input('taxonRemarks'));
+        $this->em->flush();
+        $transformer = new \App\Transformers\TaxonTransformer();
+        $resource = new Fractal\Resource\Item($taxon, $transformer, 'taxa');
+        $this->fractal->parseIncludes(['parentNameUsage', 'acceptedNameUsage', 'taxonomicStatus']);
+        $data = $this->fractal->createData($resource)->toArray();
+        return response()->json($data);
+    }
+    
+    /**
+     * @SWG\Delete(
+     *     path="/taxa/{taxon}",
+     *     tags={"Taxa"},
+     *     summary="Deletes a Taxon record",
+     *     @SWG\Parameter(
+     *         in="path",
+     *         name="taxon",
+     *         type="string",
+     *         required=true,
+     *         description="Identifier (UUID) of the Taxon"
+     *     ),
+     *     @SWG\Response(
+     *         response="204",
+     *         description="Successful delete returns empty response body"
+     *     ),
+     *     @SWG\Response(
+     *         response="400",
+     *         description="Invalid input"
+     *     ),
+     *     @SWG\Response(
+     *         response="404",
+     *         description="The requested resource could not be found."
+     *     ),
+     *     security={
+     *         {
+     *             "hortflora_auth": {}
+     *         }
+     *     }
+     * )
+     * 
+     * @param string $id
+     * @return \Illuminate\Http\Response
+     * @throws NotFoundHttpException
+     */
+    public function destroy($id)
+    {
+        $this->checkUuid($id);
+        $taxon = $this->em->getRepository('\App\Entities\Taxon')
+                ->findOneBy(['guid' => $id]);
+        if (!$taxon) {
+            throw new NotFoundHttpException();
+        }
+        $this->em->remove($taxon);
+        $this->em->flush();
+        return response()->json([], 204);
+    }
+    
+    /**
+     * @SWG\Get(
+     *     path="/taxa/{taxon}/regions",
+     *     tags={"Taxa", "Regions"},
+     *     summary="Gets WGS Regions a Taxon naturally occurs in",
+     *     @SWG\Parameter(
+     *       in="path",
+     *       name="taxon",
+     *       type="string",
+     *       required=true,
+     *       description="Identifier (UUID) of the Taxon"
+     *     ),
+     *     @SWG\Response(
+     *       response="200",
+     *       description="Successful response",
+     *       @SWG\Schema(
+     *           type="array",
+     *           @SWG\Items(
+     *               ref="#/definitions/Region"
+     *           )
+     *       )
+     *     ),
+     *     @SWG\Response(
+     *         response="404",
+     *         description="The requested resource could not be found"
+     *     )
+     * )
+     * 
+     * @param string $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showRegions($id)
+    {
+        $taxon = $this->getTaxon($id);
+        $resource = new Fractal\Resource\Collection($taxon->getRegions(), 
+                new \App\Transformers\TaxonTransformer);
+        $data = $this->fractal->createData($resource)->toArray();
+        return response()->json($data);
+    }
+    
+    /**
+     * 
+     * @param string $id
+     * @return \App\Entities\Taxon
+     * @throws NotFoundHttpException
+     */
+    protected function getTaxon($id): \App\Entities\Taxon
+    {
+        $this->checkUuid($id);
+        $taxon = $this->em->getRepository('\App\Entities\Taxon')
+                ->findOneBy(['guid' => $id]);
+        if (!$taxon) {
+            throw new NotFoundHttpException();
+        }
+        return $taxon;
+    }
+
+    /**
+     * @SWG\Post(
+     *     path="/taxa/{taxon}/regions",
+     *     tags={"Taxa", "Regions"},
+     *     summary="Adds WGS Regions to a Taxon",
+     *     description="Route takes an array of region codes in the body; a region won't be added if the Taxon already has it; an error will be thrown if a region doesn't exist.",
+     *     @SWG\Parameter(
+     *       in="path",
+     *       name="image",
+     *       type="string",
+     *       required=true,
+     *       description="Identifier (UUID) of the Taxon"
+     *     ),
+     *     @SWG\Parameter(
+     *         in="body",
+     *         name="body",
+     *         required=true,
+     *         description="Regions to add to the Taxon",
+     *         @SWG\Schema(
+     *             type="array",
+     *             @SWG\Items(
+     *                 type="string"
+     *             )
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *       response="200",
+     *       @SWG\Schema(
+     *           type="array",
+     *           @SWG\Items(
+     *               ref="#/definitions/Feature"
+     *           )
+     *       ),
+     *       description="Successful response returns the updated list of Regions for the Taxon"
+     *     ),
+     *     @SWG\Response(
+     *         response="404",
+     *         description="The requested resource could not be found"
+     *     ),
+     *     security={
+     *         {
+     *             "hortflora_auth": {}
+     *         }
+     *     }
+     * )
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @param string $image
+     * @return \Illuminate\Http\Response
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
+    public function addRegions(Request $request, $id)
+    {
+        $taxon = $this->getTaxon($id);
+        $regions = $request->getContent();
+        if ($regions) {
+            foreach ($regions as $reg) {
+                if (!$taxon->getRegions()->filter(function($region) 
+                        use ($reg) {
+                    return $region->getRegionCode == $reg;
+                })) {
+                    $region = $this->em->getRepository('\App\Entities\Region')
+                            ->findOneBy(['regionCode' == $reg]);
+                    if (!$reqion) {
+                        throw new NotFoundHttpException();
+                    }
+                    $taxon->addRegion($region);
+                }
+            }
+            $this->em->flush();
+        }
+        $resource = new Fractal\Resource\Collection($taxon->getRegions(), 
+                new \App\Transformers\RegionTransformer);
+        $data = $this->fractal->createData($resource)->toArray();
+        return response()->json($data);
+    }
+    
+    /**
+     * @SWG\Delete(
+     *     path="/taxa/{taxon}/regions",
+     *     tags={"Taxa", "Regions"},
+     *     summary="Removes Regions from a Taxon",
+     *     description="Route takes an array of region codes in the body; an error will be thrown if the Taxon doesn't have the region or if a region doesn't exist.",
+     *     consumes={"application/json"},
+     *     @SWG\Parameter(
+     *       in="path",
+     *       name="taxon",
+     *       type="string",
+     *       format="uuid",
+     *       required=true,
+     *       description="Identifier (UUID) of the Taxon"
+     *     ),
+     *     @SWG\Parameter(
+     *         in="body",
+     *         name="body",
+     *         required=true,
+     *         description="Regions to remove from the Taxon",
+     *         @SWG\Schema(
+     *             type="array",
+     *             @SWG\Items(
+     *                 type="string"
+     *             )
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *       response="200",
+     *       description="Successful response ",
+     *       @SWG\Schema(
+     *           type="array",
+     *           @SWG\Items(
+     *               ref="#/definitions/Region"
+     *           )
+     *       ),
+     *       description="Successful response returns the updated list of Regions for the Taxon"
+     *     ),
+     *     @SWG\Response(
+     *         response="404",
+     *         description="The requested resource could not be found"
+     *     ),
+     *     security={
+     *         {
+     *             "hortflora_auth": {}
+     *         }
+     *     }
+     * )
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @param string $id
+     * @return \Illuminate\Http\Response
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
+    public function removeRegions(Request $request, $id)
+    {
+        $taxon = $this->getTaxon($id);
+        $regions = $request->getContent();
+        if ($regions) {
+            foreach ($regions as $item) {
+                $region = $taxon->getRegions()->filter(function($region) 
+                        use ($item) {
+                    return $region->getRegionCode() == $item;
+                });
+                if (!$region) {
+                    throw new NotFoundHttpException();
+                }
+                $this->em->remove($region);
+            }
+            $this->em->flush();
+        }
+        $resource = new Fractal\Resource\Collection($taxon->getRegions(), 
+                new \App\Transformers\RegionTransformer);
+        $data = $this->fractal->createData($resource)->toArray();
+        return response()->json($data);
+    }
+    
+    /**
+     * @SWG\Post(
+     *     path="/taxa/{taxon}/changes",
+     *     tags={"Taxa", "Changes"},
+     *     summary="Adds a Change to a Taxon",
+     *     @SWG\Parameter(
+     *       in="path",
+     *       name="taxon",
+     *       type="string",
+     *       required=true,
+     *       description="Identifier (UUID) of the Taxon"
+     *     ),
+     *     @SWG\Parameter(
+     *         in="body",
+     *         name="body",
+     *         required=true,
+     *         description="Change to add to the Taxon",
+     *         @SWG\Schema(
+     *             ref="#/definitions/Change"
+     *         )
+     *     ),
+     *     @SWG\Response(
+     *       response="200",
+     *       @SWG\Schema(
+     *           type="array",
+     *           @SWG\Items(
+     *               ref="#/definitions/Feature"
+     *           )
+     *       ),
+     *       description="Successful response returns the updated list of Regions for the Taxon"
+     *     ),
+     *     @SWG\Response(
+     *         response="404",
+     *         description="The requested resource could not be found"
+     *     ),
+     *     security={
+     *         {
+     *             "hortflora_auth": {}
+     *         }
+     *     }
+     * )
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @param string $id
+     * @return \Illuminate\Http\Response
+     */
+    public function storeChange(Request $request, $id)
+    {
+        $taxon = $this->getTaxon($id);
+        $change = new \App\Entities\Taxon();
+        $change->setFromTaxon($taxon);
+        $change->setToTaxon($this->setValue($request->input('toTaxon', 'Taxon')));
+        $change->setChangeType($request->input('changeType'));
+        $change->setSource($request->input('source'));
+        $this->em->persist($change);
+        $changes = $taxon->getChanges();
+        if ($changes) {
+            foreach ($changes as $ch) {
+                $ch->setIsCurrent(false);
+            }
+        }
+        $change->setIsCurrent(true);
+        $this->em->flush();
+        $resource = new Fractal\Resource\Item($change, 
+                new \App\Transformer\ChangeTransformer());
+        $data = $this->fractal->createData($resource)->toArray();
+        return response()->json($data, 201)->header('Location', 
+                $request->fullUrl() . '/' . $change->getGuid());
     }
 
 }

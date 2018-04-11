@@ -24,7 +24,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Class Name
  * @author Niels Klazenga
  * @ORM\Entity()
- * @ORM\Table(schema="flora", indexes={
+ * @ORM\Table( indexes={
  *     @ORM\Index(columns={"name"}),
  *     @ORM\Index(columns={"full_name"}),
  *     @ORM\Index(columns={"authorship"})
@@ -155,7 +155,7 @@ class Name extends ClassBase {
      */
     public function getNameType()
     {
-      return $this->getNameType;
+      return $this->nameType;
     }
 
     /**

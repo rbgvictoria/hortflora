@@ -74,21 +74,14 @@ window.onload = function() {
     url: "{{ env('APP_URL') }}/api/swagger.json",
     dom_id: '#swagger-ui',
     deepLinking: true,
-    presets: [
-      SwaggerUIBundle.presets.apis
-    ],
-    docExpansion: "list",
-    plugins: [
-      SwaggerUIBundle.plugins.DownloadUrl
-    ],
+    docExpansion: "none",
     defaultModelRendering: "model",
     apisSorter: "alpha",
-    operationsSorter: "method",
-    jsonEditor: true
-  })
+    operationsSorter: "alpha"
+  });
 
-  window.ui = ui
-}
+  window.ui = ui;
+};
 </script>
 </body>
 

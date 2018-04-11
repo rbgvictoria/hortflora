@@ -24,7 +24,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Class Reference
  * @author Niels Klazenga
  * @ORM\Entity()
- * @ORM\Table(name="name_type_vocab", schema="vocab")
+ * @ORM\Table(name="name_type_vocab")
  */
 class NameType extends Vocab {
 

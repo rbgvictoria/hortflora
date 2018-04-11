@@ -18,6 +18,7 @@
 
 namespace App\Transformers;
 
+use App\Entities\TaxonomicStatus;
 use League\Fractal;
 use Swagger\Annotations as SWG;
 
@@ -31,10 +32,15 @@ use Swagger\Annotations as SWG;
  *   required={"id", "name"}
  * )
  */
-class TaxonomicStatusTransformer extends Fractal\TransformerAbstract
+class TaxonomicStatusTransformer extends VocabularyTermTransformer
 {
 
     /**
+     * @SWG\Property(
+     *   property="type",
+     *   type="string",
+     *   format="uri"
+     * ),
      * @SWG\Property(
      *   property="id",
      *   type="string"
@@ -48,15 +54,11 @@ class TaxonomicStatusTransformer extends Fractal\TransformerAbstract
      *   type="string"
      * )
      *
-     * @param  \stdClass $taxonomicStatus
+     * @param  \App\Entities\TaxonomicStatus $taxonomicStatus
      * @return array
      */
     public function transform($taxonomicStatus)
     {
-        return [
-            'id' => $taxonomicStatus->uri,
-            'name' => $taxonomicStatus->name,
-            'label' => $taxonomicStatus->label
-        ];
+        return parent::transform($taxonomicStatus);
     }
 }

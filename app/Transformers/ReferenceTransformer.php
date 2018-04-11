@@ -18,7 +18,7 @@
 
 namespace App\Transformers;
 
-use App\Models\ReferenceQueries;
+use App\Entities\Reference;
 use League\Fractal;
 use Swagger\Annotations as SWG;
 
@@ -30,25 +30,30 @@ use Swagger\Annotations as SWG;
  * @SWG\Definition(
  *   definition="Reference",
  *   type="object",
- *   required={"id", "title"}
+ *   required={"referenceType", "author", "title", "publicationYear"}
  * )
  */
-class ReferenceTransformer extends Fractal\TransformerAbstract {
+class ReferenceTransformer extends OrmTransformer {
 
     protected $defaultIncludes = [
-        'publishedIn'
+        'author',
+        'publishedIn',
+        'publisher'
     ];
 
     /**
-     * @param object $reference
-     * @return array
      *
      * @SWG\Property(
-     *   property="id",
+     *   property="type",
      *   type="string"
      * ),
      * @SWG\Property(
-     *   property="author",
+     *   property="id",
+     *   type="string",
+     *   format="uuid"
+     * ),
+     * @SWG\Property(
+     *   property="referenceType",
      *   type="string"
      * ),
      * @SWG\Property(
@@ -56,15 +61,7 @@ class ReferenceTransformer extends Fractal\TransformerAbstract {
      *   type="string"
      * ),
      * @SWG\Property(
-     *   property="journalOrBook",
-     *   type="string"
-     * ),
-     * @SWG\Property(
-     *   property="collation",
-     *   type="string"
-     * ),
-     * @SWG\Property(
-     *   property="series",
+     *   property="title",
      *   type="string"
      * ),
      * @SWG\Property(
@@ -76,7 +73,21 @@ class ReferenceTransformer extends Fractal\TransformerAbstract {
      *   type="string"
      * ),
      * @SWG\Property(
-     *   property="part",
+     *   property="issue",
+     *   type="string"
+     * ),
+     * @SWG\Property(
+     *   property="pageStart",
+     *   type="integer",
+     *   format="int32"
+     * ),
+     * @SWG\Property(
+     *   property="pageEnd",
+     *   type="integer",
+     *   format="int32"
+     * ),
+     * @SWG\Property(
+     *   property="pages",
      *   type="string"
      * ),
      * @SWG\Property(
@@ -84,40 +95,76 @@ class ReferenceTransformer extends Fractal\TransformerAbstract {
      *   type="string"
      * ),
      * @SWG\Property(
-     *   property="subject",
+     *   property="url",
      *   type="string"
      * ),
      * @SWG\Property(
-     *   property="created",
-     *   type="string",
-     *   format="dateTime"
+     *   property="isbn",
+     *   type="string"
      * ),
      * @SWG\Property(
-     *   property="modified",
-     *   type="string",
-     *   format="dateTime"
+     *   property="issn",
+     *   type="string"
+     * ),
+     * @SWG\Property(
+     *   property="doi",
+     *   type="string"
      * )
+     * 
+     * @param \App\Entities\Reference $reference
+     * @return array
      */
-    public function transform($reference)
+    public function transform(Reference $reference)
     {
         return [
-            'id' => $reference->guid,
-            'author' => $reference->author,
-            'publicationYear' => $reference->publication_year,
-            'title' => $reference->title,
-            'journalOrBook' => $reference->journal_or_book,
-            'collation' => $reference->collation,
-            'series' => $reference->series,
-            'edition' => $reference->edition,
-            'volume' => $reference->volume,
-            'part' => $reference->part,
-            'page' => $reference->page,
-            'publisher' => $reference->publisher,
-            'placeOfPublication' => $reference->place_of_publication,
-            'subject' => $reference->subject,
-            'created' => $reference->timestamp_created,
-            'modified' => $reference->timestamp_modified,
+            'type' => 'Reference',
+            'id' => $reference->getGuid(),
+            'referenceType' => $reference->getReferenceType()->getName(),
+            'publicationYear' => $reference->getPublicationYear(),
+            'title' => $reference->getTitle(),
+            'edition' => $reference->getEdition(),
+            'volume' => $reference->getVolume(),
+            'issue' => $reference->getIssue(),
+            'pageStart' => $reference->getPageStart(),
+            'pageEnd' => $reference->getPageEnd(),
+            'pages' => $reference->getPages(),
+            'placeOfPublication' => $reference->getPlaceOfPublication(),
+            'url' => $reference->getUrl(),
+            'isbn' => $reference->getIsbn(),
+            'issn' => $reference->getIssn(),
+            'doi' => $reference->getDoi()
         ];
+    }
+    
+    /**
+     * @SWG\Property(
+     *   property="author",
+     *   ref="#/definitions/Agent"
+     * )
+     * 
+     * @param \App\Entities\Reference $reference
+     * @return \League\Fractal\Resource\Item
+     */
+    public function includeAuthor(Reference $reference)
+    {
+        $author = $reference->getAuthor();
+        return new Fractal\Resource\Item($author, new AgentTranformer, 'agents');
+    }
+
+    /**
+     * @SWG\Property(
+     *   property="publisher",
+     *   ref="#/definitions/Agent"
+     * )
+     * 
+     * @param \App\Entities\Reference $reference
+     * @return \League\Fractal\Resource\Item
+     */
+    public function includePublisher(Reference $reference)
+    {
+        $publisher = $reference->getPublisher();
+        return new Fractal\Resource\Item($publisher, new AgentTranformer, 
+                'agents');
     }
 
     /**
@@ -126,17 +173,15 @@ class ReferenceTransformer extends Fractal\TransformerAbstract {
      *   ref="#/definitions/Reference"
      * )
      *
-     * @param object $reference
+     * @param \App\Entities\Reference $reference
      * @return \League\Fractal\Resource\Item
      */
-    public function includePublishedIn($reference)
+    public function includePublishedIn(Reference $reference)
     {
-        if ($reference->published_in) {
-            $publishedIn =  ReferenceQueries::getReference($reference->published_in);
-            if ($publishedIn) {
-                $transformer = new ReferenceTransformer();
-                return new Fractal\Resource\Item($publishedIn, $transformer, 'references');
-            }
+        $publishedIn = $reference->getParent();
+        if ($publishedIn) {
+            return new Fractal\Resource\Item($publishedIn, 
+                    new ReferenceTransformer, 'references');
         }
     }
 }

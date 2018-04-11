@@ -22,28 +22,28 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Trait Blamees
+ * Trait Blameable
  */
 trait Blameable
 {
     /**
-     * @var \App\Entities\User $createdBy
+     * @var \App\Entities\Agent $createdBy
      * @Gedmo\Blameable(on="create")
-     * @ORM\ManyToOne(targetEntity="\App\Entities\User")
+     * @ORM\ManyToOne(targetEntity="\App\Entities\Agent")
      * @ORM\JoinColumn(name="created_by_id", referencedColumnName="id")
      */
     protected $createdBy;
 
     /**
-     * @var \App\Entities\User $modifiedBy
+     * @var \App\Entities\Agent $modifiedBy
      * @Gedmo\Blameable(on="update")
-     * @ORM\ManyToOne(targetEntity="\App\Entities\User")
+     * @ORM\ManyToOne(targetEntity="\App\Entities\Agent")
      * @ORM\JoinColumn(name="modified_by_id", referencedColumnName="id")
      */
     protected $modifiedBy;
 
     /**
-     * @return \App\Entities\User
+     * @return \App\Entities\Agent
      */
     public function getCreatedBy()
     {
@@ -51,15 +51,15 @@ trait Blameable
     }
 
     /**
-     * @param \App\Entities\User $createdBy
+     * @param \App\Entities\Agent $createdBy
      */
-    public function setCreatedBy(\App\Entities\User $createdBy)
+    public function setCreatedBy(\App\Entities\Agent $createdBy)
     {
         $this->createdBy = $createdBy;
     }
 
     /**
-     * @return \App\Entities\User
+     * @return \App\Entities\Agent
      */
     public function getModifiedBy()
     {
@@ -67,9 +67,9 @@ trait Blameable
     }
 
     /**
-     * @param \App\Entities\User $modifiedBy
+     * @param \App\Entities\Agent $modifiedBy
      */
-    public function setModifiedBy(\App\Entities\User $modifiedBy)
+    public function setModifiedBy(\App\Entities\Agent $modifiedBy)
     {
         $this->modifiedBy = $modifiedBy;
     }

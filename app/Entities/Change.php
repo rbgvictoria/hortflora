@@ -24,13 +24,13 @@ use Doctrine\ORM\Mapping as ORM;
  * Class Change
  * @author Niels Klazenga
  * @ORM\Entity()
- * @ORM\Table(schema="flora")
+ * @ORM\Table()
  */
 class Change extends ClassBase {
 
     /**
      * @var Taxon
-     * @ORM\ManyToOne(targetEntity="Taxon")
+     * @ORM\ManyToOne(targetEntity="TaxonAbstract", inversedBy="changes")
      * @ORM\JoinColumn(name="from_taxon_id", referencedColumnName="id",
      *     nullable=false)
      */
@@ -38,15 +38,15 @@ class Change extends ClassBase {
 
     /**
      * @var Taxon
-     * @ORM\ManyToOne(targetEntity="Taxon")
+     * @ORM\ManyToOne(targetEntity="TaxonAbstract")
      * @ORM\JoinColumn(name="to_taxon_id", referencedColumnName="id",
      *     nullable=false)
      */
     protected $toTaxon;
 
     /**
-     * @var string
-     * @ORM\Column(nullable=true)
+     * @var \App\Entities\Reference
+     * @ORM\ManyToOne(targetEntity="\App\Entities\Reference")
      */
     protected $source;
 
@@ -95,7 +95,7 @@ class Change extends ClassBase {
     }
 
     /**
-     * @return string
+     * @return \App\Entities\Reference
      */
     public function getSource()
     {
@@ -103,7 +103,7 @@ class Change extends ClassBase {
     }
 
     /**
-     * @param string $source
+     * @param \App\Entities\References $source
      */
     public function setSource($source)
     {

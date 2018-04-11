@@ -31,13 +31,14 @@ use Swagger\Annotations as SWG;
  *   required={"id", "name"}
  * )
  */
-class TaxonRankTransformer extends Fractal\TransformerAbstract
+class TaxonRankTransformer extends VocabularyTermTransformer
 {
 
     /**
      * @SWG\Property(
      *   property="id",
-     *   type="string"
+     *   type="string",
+     *   format="uri"
      * ),
      * @SWG\Property(
      *   property="name",
@@ -53,10 +54,11 @@ class TaxonRankTransformer extends Fractal\TransformerAbstract
      */
     public function transform($taxonRank)
     {
-        return [
-            'id' => $taxonRank->uri,
-            'name' => $taxonRank->name,
-            'label' => $taxonRank->label
-        ];
+        if ($taxonRank instanceof \App\Entities\TaxonRank) {
+            return parent::transform($taxonRank);
+        }
+        else {
+            return parent::transformArray($taxonRank);
+        }
     }
 }

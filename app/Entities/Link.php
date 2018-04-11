@@ -26,7 +26,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @author Niels Klazenga <Niels.Klazenga@rbg.vic.gov.au>
  *
  * @ORM\Entity
- * @ORM\Table(schema="flora")
+ * @ORM\Table()
  */
 class Link extends ClassBase {
 

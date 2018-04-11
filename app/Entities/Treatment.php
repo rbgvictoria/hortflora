@@ -19,39 +19,17 @@
 namespace App\Entities;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Class Treatment
  * @author Niels Klazenga
- * @ORM\Entity()
- * @ORM\Table(schema="flora",uniqueConstraints={
+ * @ORM\Entity(repositoryClass="TreatmentRepository")
+ * @ORM\Table(uniqueConstraints={
  *     @ORM\UniqueConstraint(name="treatment_guid_idx", columns={"guid"})
  * })
  */
 class Treatment extends ClassBase {
-
-    /**
-     * @var Taxon
-     * @ORM\ManyToOne(targetEntity="Taxon")
-     * @ORM\JoinColumn(name="taxon_id", referencedColumnName="id",
-     *     nullable=false)
-     */
-    protected $taxon;
-
-    /**
-     * @var Taxon
-     * @ORM\ManyToOne(targetEntity="Taxon")
-     * @ORM\JoinColumn(name="accepted_id", referencedColumnName="id",
-     *     nullable=false)
-     */
-    protected $accepted;
-
-    /**
-     * @var TaxonomicStatus
-     * @ORM\ManyToOne(targetEntity="TaxonomicStatus")
-     * @ORM\JoinColumn(name="taxonomic_status_id", referencedColumnName="id")
-     */
-    protected $taxonomicStatus;
 
     /**
      * @var Reference|null
@@ -72,53 +50,55 @@ class Treatment extends ClassBase {
      * @ORM\Column(type="boolean", name="is_current_treatment", nullable=true)
      */
     protected $isCurrentTreatment;
-
+    
     /**
-     * @return Taxon
+     * @ORM\OneToMany(targetEntity="TreatmentVersion", mappedBy="treatment")
+     * @var ArrayCollection
      */
-    public function getTaxon()
+    protected $versions;
+    
+    /**
+     * @ORM\ManyToMany(targetEntity="TaxonAbstract", mappedBy="treatments")
+     * @var \Doctrine\Common\Collections\ArrayCollection;
+     */
+    protected $forTaxon;
+    
+    /**
+     * Taxon for which the treatment was made
+     * @ORM\ManyToOne(targetEntity="Taxon")
+     * @var \App\Entities\Taxon
+     */
+    protected $asTaxon;
+    
+    /**
+     * Name of the taxon for which the treatment was made (if taxon is not in 
+     * VicFlora/HortFlora)
+     * @ORM\Column(nullable=true)
+     * @var string
+     */
+    protected $asScientificName;
+    
+
+    public function __construct()
     {
-        return $this->taxon;
+        $this->versions = new ArrayCollection();
+        $this->forTaxon = new ArrayCollection();
+    }
+    
+    /**
+     * @return \App\Entities\TaxonAbstract
+     */
+    public function getAsTaxon()
+    {
+        return $this->asTaxon;
     }
 
     /**
-     * @param Taxon $taxon
+     * @param \App\Entities\TaxonAbstract $taxon
      */
-    public function setTaxon(Taxon $taxon)
+    public function setAsTaxon(\App\Entities\TaxonAbstract $taxon)
     {
-        $this->taxon = $taxon;
-    }
-
-    /**
-     * @return Taxon
-     */
-    public function getAcceptedNameUsage()
-    {
-        return $this->accepted;
-    }
-
-    /**
-     * @param Taxon $accepted
-     */
-    public function setAcceptedNameUsage(Taxon $accepted)
-    {
-        $this->accepted = $accepted;
-    }
-
-    /**
-     * @return TaxonomicStatus
-     */
-    public function getTaxonomicStatus()
-    {
-        return $this->taxonomicStatus;
-    }
-
-    /**
-     * @param TaxonomicStatus $taxonomicStatus
-     */
-    public function setTaxonomicStatus($taxonomicStatus)
-    {
-        $this->taxonomicStatus = $taxonomicStatus;
+        $this->asTaxon = $taxon;
     }
 
     /**
@@ -142,7 +122,7 @@ class Treatment extends ClassBase {
      */
     public function getAuthor()
     {
-        return $this->author();
+        return $this->author;
     }
 
     /**
@@ -168,4 +148,59 @@ class Treatment extends ClassBase {
     {
         $this->isCurrentTreatment = $isCurrentTreatment;
     }
+    
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getVersions()
+    {
+        return $this->versions;
+    }
+    
+    /**
+     * 
+     * @param \App\Entities\TreatmentVersion $version
+     */
+    public function addVersion(TreatmentVersion $version)
+    {
+        $this->versions[] = $version;
+    }
+    
+    /**
+     * 
+     * @return \App\Entities\TaxonAbstract
+     */
+    public function getForTaxon()
+    {
+        return $this->forTaxon[0];
+    }
+    
+    /**
+     * 
+     * @param \App\Entities\TaxonAbstract $taxon
+     */
+    public function setForTaxon(\App\Entities\TaxonAbstract $taxon)
+    {
+        $this->forTaxon[0] = $taxon;
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getAsScientificName()
+    {
+        return $this->asScientificName;
+    }
+    
+    /**
+     * 
+     * @param string $name
+     */
+    public function setAsScientificName($name)
+    {
+        $this->asScientificName = $name;
+    }
+    
+    
 }

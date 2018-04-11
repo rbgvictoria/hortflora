@@ -25,7 +25,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Threat Status vocabulary
  * @author Niels Klazenga
  * @ORM\Entity()
- * @ORM\Table(name="threat_status_vocab", schema="vocab", indexes={
+ * @ORM\Table(name="threat_status_vocab", indexes={
  *     @ORM\Index(columns={"name"}),
  *     @ORM\Index(columns={"uri"}),
  *     @ORM\Index(columns={"label"}),

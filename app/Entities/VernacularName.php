@@ -24,7 +24,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Class VernacularName
  * @author Niels Klazenga
  * @ORM\Entity()
- * @ORM\Table(schema="flora", indexes={
+ * @ORM\Table( indexes={
  *     @ORM\Index(columns={"vernacular_name"}),
  *     @ORM\Index(columns={"is_preferred_name"}),
  * })
@@ -97,7 +97,7 @@ class VernacularName extends ClassBase {
      */
     public function getTaxon()
     {
-        return $this->taxon();
+        return $this->taxon;
     }
 
     /**

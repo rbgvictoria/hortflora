@@ -26,3 +26,5 @@ Route::get('apidocs', function() {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/taxon/{taxon}', 'TaxonController@getTaxon');

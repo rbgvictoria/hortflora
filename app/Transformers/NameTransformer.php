@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2017 Niels Klazenga, Royal Botanic Gardens Victoria.
+ * Copyright 2017 Royal Botanic Gardens Victoria.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 
 namespace App\Transformers;
 
+use App\Entities\Name;
 use League\Fractal;
 use Swagger\Annotations as SWG;
 
@@ -28,26 +29,29 @@ use Swagger\Annotations as SWG;
  * @SWG\Definition(
  *   definition="Name",
  *   type="object",
- *   required={"id", "scientificName"}
+ *   required={"scientificName", "nameType"}
  * )
  */
 class NameTransformer extends Fractal\TransformerAbstract {
 
     protected $availableIncludes = [
-        'namePublishedIn',
         'nameType',
     ];
 
-    protected $defaultIncludes = [
-    ];
+    protected $defaultIncludes = [];
 
     /**
      * @param \stdClass $name
      * @return array
      *
      * @SWG\Property(
-     *   property="id",
+     *   property="type",
      *   type="string"
+     * ),
+     * @SWG\Property(
+     *   property="id",
+     *   type="string",
+     *   format="uuid"
      * ),
      * @SWG\Property(
      *   property="scientificName",
@@ -75,17 +79,18 @@ class NameTransformer extends Fractal\TransformerAbstract {
      *   type="string",
      *   format="dateTime"
      * ),
+     * 
+     * @param \App\Entities\Name $name
      */
-    public function transform($name)
+    public function transform(Name $name)
     {
         return [
-            'id' => $name->guid,
-            'scientificName' => $name->full_name,
-            'scientificNameAuthorship' => $name->authorship,
-            'namePart' => $name->name,
-            'nomenclaturalNote' => $name->nomenclatural_note,
-            'created' => $name->timestamp_created,
-            'modified' => $name->timestamp_modified
+            'type' => 'Name',
+            'id' => $name->getGuid(),
+            'scientificName' => $name->getFullName(),
+            'scientificNameAuthorship' => $name->getAuthorship(),
+            'namePart' => $name->getName(),
+            'nomenclaturalNote' => $name->getNomenclaturalNote(),
         ];
     }
 
@@ -94,16 +99,15 @@ class NameTransformer extends Fractal\TransformerAbstract {
     *   property="nameType",
     *   ref="#/definitions/NameType"
     * )
-     * @param  \stdClass $name [description]
+     * @param  \App\Entities\Name $name [description]
      * @return Fractal\Resource\Item
      */
     public function includeNameType($name)
     {
-        return new Fractal\Resource\Item((object) [
-            'uri' => $name->name_type_uri,
-            'name' => $name->name_type_name,
-            'label' => $name->name_type_label
-        ], new NameTypeTransformer, 'nameTypes');
+        $type = $name->getNameType();
+        if ($type) {
+            return new Fractal\Resource\Item($type, new NameTypeTransformer, 'nameTypes');
+        }
     }
 
 }

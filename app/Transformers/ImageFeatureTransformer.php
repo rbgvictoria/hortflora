@@ -34,8 +34,13 @@ class ImageFeatureTransformer extends Fractal\TransformerAbstract {
 
     /**
      * @SWG\Property(
-     *   property="id",
+     *   property="type",
      *   type="string"
+     * ),
+     * @SWG\Property(
+     *   property="id",
+     *   type="string",
+     *   format="uri"
      * ),
      * @SWG\Property(
      *   property="name",
@@ -49,9 +54,10 @@ class ImageFeatureTransformer extends Fractal\TransformerAbstract {
      * @param object $feature
      * @return array
      */
-    public function transform($feature)
+    public function transform(\App\Entities\Feature $feature)
     {
         return [
+            'type' => 'ImageFeature',
             'id' => $feature->uri,
             'name' => $feature->name,
             'label' => $feature->label,

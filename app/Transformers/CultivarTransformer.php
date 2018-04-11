@@ -18,6 +18,7 @@
 
 namespace App\Transformers;
 
+use App\Entities\Cultivar;
 use League\Fractal;
 use Swagger\Annotations as SWG;
 
@@ -26,53 +27,92 @@ use Swagger\Annotations as SWG;
  * @author Niels Klazenga <Niels.Klazenga@rbg.vic.gov.au>
  * @SWG\Definition(
  *   definition="Cultivar",
- *   type="object",
- *   required={"id", "scientificName"}
+ *   description="Extends TaxonAbstract definition with properties specific to cultivars",
+ *   allOf={
+ *     @SWG\Schema(ref="#/definitions/TaxonAbstract"),
+ *     @SWG\Schema(
+ *       required={"taxon"},
+ *     )
+ *   }
  * )
  */
-class CultivarTransformer extends Fractal\TransformerAbstract
+class CultivarTransformer extends TaxonAbstractTransformer
 {
-    protected $defaultIncludes = [
-       'cultivarGroup',
-    ];
-
+    
+    public function __construct() {
+        $this->defaultIncludes = array_merge($this->defaultIncludes, [
+            'taxon',
+            'horticulturalGroup',
+        ]);
+    }
+    
     /**
      * @SWG\Property(
-     *   property="id",
-     *   type="string"
+     *   property="taxon",
+     *   description="A Cultivar has to belong to a Taxon",
+     *   ref="#/definitions/Taxon"
      * ),
-     * @SWG\Property(
-     *   property="scientificName",
-     *   type="string"
-     * ),
-     * @SWG\Property(
-     *   property="description",
-     *   type="string"
-     * ),
-     * @param  object $cultivar
-     * @return array
+     * 
+     * @param \App\Entities\Cultivar $cultivar
      */
-    public function transform($cultivar)
+    public function includeTaxon(Cultivar $cultivar)
     {
-       return [
-           'id' => $cultivar->guid,
-           'scientificName' => $cultivar->full_name,
-           'description' => $cultivar->description,
-       ];
+        return new Fractal\Resource\Item($cultivar->getTaxon(), 
+                new TaxonTransformer);
     }
 
     /**
-     * @param  object $cultivar [description]
+     * 
+     * @SWG\Property(
+     *   property="horticulturalGroup",
+     *   ref="#/definitions/HorticulturalGroup"
+     * )
+     * @param  \App\Entities\Cultivar $cultivar [description]
      * @return Fractal\Resource\Item
      */
-    protected function includeCultivarGroup($cultivar)
+    protected function includeHorticulturalGroup(Cultivar $cultivar)
     {
-       if ($cultivar->cultivar_group_id) {
-           return new Fractal\Resource\Item((object) [
-               'guid' => $cultivar->cultivar_group_id,
-               'full_name' => $cultivar->cultivar_group,
-               'cultivar_group_description' => $cultivar->cultivar_group_description
-           ], new CultivarGroupTransformer, 'cultivar-groups');
+       $horticulturalGroup = $cultivar->getHorticulturalGroup();
+       if ($horticulturalGroup) {
+           return new Fractal\Resource\Item($horticulturalGroup, 
+                   new HorticulturalGroupTransformer);
        }
     }
+    
+    /**
+     * @SWG\Property(
+     *   property="hybridParent1",
+     *   ref="#/definitions/Taxon"
+     * )
+     * 
+     * @param \App\Entities\Taxon $taxon
+     * @return \League\Fractal\Resource\Item
+     */
+    public function includeHybridParent1(Taxon $taxon)
+    {
+        $hybridParent1 = $hybrid->getHybridParent1();
+        if ($hybridParent1) {
+            return new Fractal\Resource\Item($hybridParent1, 
+                    new TaxonTransformer, 'taxa');
+        }
+    }
+    
+    /**
+     * @SWG\Property(
+     *   property="hybridParent2",
+     *   ref="#/definitions/Taxon"
+     * )
+     * 
+     * @param \App\Entities\Taxon $taxon
+     * @return \League\Fractal\Resource\Item
+     */
+    public function includeHybridParent2(Taxon $taxon)
+    {
+        $hybridParent2 = $hybrid->getHybridParent2();
+        if ($hybridParent2) {
+            return new Fractal\Resource\Item($hybridParent2, 
+                    new TaxonTransformer, 'taxa');
+        }
+    }
+
 }

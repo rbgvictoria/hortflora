@@ -18,28 +18,33 @@
 
 namespace App\Transformers;
 
-use League\Fractal;
+use App\Entities\ImageAccessPoint;
 use Swagger\Annotations as SWG;
 
 /**
- * Description of ImageTransformer
+ * Image Transformer
  *
  *
  * @SWG\Definition(
  *   definition="AccessPoint",
  *   type="object",
- *   required={"id", "variant", "accessURI", "format", "pixelXDimension",
+ *   required={"variant", "accessURI", "format", "pixelXDimension",
  *       "pixelYDimension"}
  * )
  *
  * @author Niels Klazenga <Niels.Klazenga@rbg.vic.gov.au>
  */
-class ImageAccessPointTransformer extends Fractal\TransformerAbstract {
+class ImageAccessPointTransformer extends OrmTransformer {
 
     /**
      * @SWG\Property(
-     *   property="id",
+     *   property="type",
      *   type="string"
+     * ),
+     * @SWG\Property(
+     *   property="id",
+     *   type="string",
+     *   format="uuid"
      * ),
      * @SWG\Property(
      *   property="variant",
@@ -64,18 +69,19 @@ class ImageAccessPointTransformer extends Fractal\TransformerAbstract {
      *   format="int64"
      * )
      *
-     * @param object $accessPoint
+     * @param \App\Entities\ImageAccessPoint $accessPoint
      * @return array
      */
-    public function transform($accessPoint)
+    public function transform(ImageAccessPoint $accessPoint)
     {
         return [
-            'id' => $accessPoint->access_point_id,
-            'variant' => $accessPoint->variant,
-            'accessURI' => $accessPoint->access_uri,
-            'format' => $accessPoint->format,
-            'pixelXDimension' => (int) $accessPoint->pixel_x_dimension,
-            'pixelYDimension' => (int) $accessPoint->pixel_y_dimension,
+            'type' => 'AccessPoint',
+            'id' => $accessPoint->getGuid(),
+            'variant' => $accessPoint->getVariant()->getName(),
+            'accessURI' => $accessPoint->getAccessUri(),
+            'format' => $accessPoint->getFormat(),
+            'pixelXDimension' => (int) $accessPoint->getPixelXDimension(),
+            'pixelYDimension' => (int) $accessPoint->getPixelYDimension(),
         ];
     }
 }

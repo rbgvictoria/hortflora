@@ -25,7 +25,7 @@ use Doctrine\ORM\Mapping as ORM;
  * EstablishmentMeans vocabulary
  * @author Niels Klazenga
  * @ORM\Entity()
- * @ORM\Table(name="establishment_means_vocab", schema="vocab", indexes={
+ * @ORM\Table(name="establishment_means_vocab", indexes={
  *     @ORM\Index(columns={"name"}),
  *     @ORM\Index(columns={"uri"}),
  *     @ORM\Index(columns={"label"}),

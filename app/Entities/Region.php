@@ -27,7 +27,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @author Niels Klazenga
  *
  * @ORM\Entity()
- * @ORM\Table(schema="flora", name="regions")
+ * @ORM\Table( name="regions")
  */
 
 class Region extends ClassBase {
@@ -57,6 +57,12 @@ class Region extends ClassBase {
      * @ORM\Column(type="integer", nullable=true)
      */
     protected $level;
+    
+    /**
+     * @ORM\Column(nullable=true, length=2)
+     * @var string
+     */
+    protected $countryCode;
 
     /**
      * @var Region
@@ -70,4 +76,94 @@ class Region extends ClassBase {
      * @ORM\Column(type="geometry", options={"geometry_type"="MULTIPOLYGON", "srid"=4326}, nullable=true)
      */
     protected $geom;
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->code;
+    }
+    
+    /**
+     * 
+     * @param string $code
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+    
+    /**
+     * 
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getFullName()
+    {
+        return $this->fullName;
+    }
+    
+    /**
+     * 
+     * @param string $fullName
+     */
+    public function setFullName($fullName)
+    {
+        $this->fullName = $fullName;
+    }
+    
+    /**
+     * 
+     * @return \App\Entities\Region
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+    
+    /**
+     * 
+     * @param \App\Entities\Region $parent
+     */
+    public function setParent($parent)
+    {
+        $this->parent = $parent;
+    }
+    
+    /**
+     * 
+     * @return int
+     */
+    public function getLevel()
+    {
+        return $this->level;
+    }
+    
+    /**
+     * 
+     * @param int $level
+     */
+    public function setLevel($level)
+    {
+        $this->level = $level;
+    }
 }

@@ -179,6 +179,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         LaravelDoctrine\Extensions\GedmoExtensionsServiceProvider::class,
+        App\Providers\SolariumServiceProvider::class,
     ],
 
     /*
