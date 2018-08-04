@@ -27,19 +27,19 @@ use Doctrine\ORM\EntityRepository;
  * @author Niels Klazenga <Niels.Klazenga@rbg.vic.gov.au>
  */
 class TaxonRepository extends EntityRepository {
-    
+
     public function getTaxon($guid)
     {
-        $dql = "SELECT t, n, a, an, nat, 
-                    partial tr.{id, uri, name, label}, 
+        $dql = "SELECT t, n, a, an, nat,
+                    partial tr.{id, uri, name, label},
                     partial ts.{id, uri, name, label}
-                FROM \App\Entities\Taxon t 
-                JOIN t.name n 
-                LEFT JOIN t.accepted a 
-                LEFT JOIN a.name an 
-                LEFT JOIN t.nameAccordingTo nat 
-                LEFT JOIN t.taxonRank tr 
-                LEFT JOIN t.taxonomicStatus ts 
+                FROM \App\Entities\Taxon t
+                JOIN t.name n
+                LEFT JOIN t.accepted a
+                LEFT JOIN a.name an
+                LEFT JOIN t.nameAccordingTo nat
+                LEFT JOIN t.taxonRank tr
+                LEFT JOIN t.taxonomicStatus ts
                 WHERE t.guid=:guid";
         $query = $this->getEntityManager()->createQuery();
         $result = $query->setDQL($dql)
@@ -50,7 +50,7 @@ class TaxonRepository extends EntityRepository {
         }
         return $result[0];
     }
-    
+
     public function findTaxonByName($name)
     {
         $dql = "SELECT t
@@ -66,12 +66,12 @@ class TaxonRepository extends EntityRepository {
         }
         return $result[0];
     }
-    
+
     public function getParentNameUsage($taxon)
     {
-        $dql = "SELECT t, n, partial nt.{id, uri, name, label}, 
+        $dql = "SELECT t, n, partial nt.{id, uri, name, label},
                 partial r.{id, uri, name, label}
-            FROM \App\Entities\Taxon t 
+            FROM \App\Entities\Taxon t
             JOIN t.name n
             JOIN n.nameType nt
             JOIN t.taxonRank r
@@ -82,11 +82,11 @@ class TaxonRepository extends EntityRepository {
                 ->setParameter(':id', $taxon)
                 ->getResult();
     }
-    
-    public function getChildren($taxon) 
+
+    public function getChildren($taxon)
     {
-        $dql = "SELECT t, n, 
-                partial nt.{id, uri, name, label}, 
+        $dql = "SELECT t, n,
+                partial nt.{id, uri, name, label},
                 partial r.{id, uri, name, label}
             FROM \App\Entities\Taxon t
             JOIN t.name n
@@ -97,26 +97,25 @@ class TaxonRepository extends EntityRepository {
         return $query->setParameter(':id', $taxon)
                 ->getResult();
     }
-    
+
     public function getSiblings($taxon) {
         $parent = $this->getEntityManager()
                 ->find('\App\Entities\Taxon', $taxon)
                 ->getParent()->getId();
         $dql = "SELECT t, n,
-                partial nt.{id, uri, name, label}, 
+                partial nt.{id, uri, name, label},
                 partial r.{id, uri, name, label}
             FROM \App\Entities\Taxon t
             JOIN t.name n
             JOIN n.nameType nt
             JOIN t.taxonRank r
-            WHERE t.parent=:parent AND t.id!=:id";
+            WHERE t.parent=:parent";
         $query = $this->getEntityManager()->createQuery($dql);
         return $query->setParameters([
-                    ':parent' => $parent,
-                    ':id' => $taxon,
+                    ':parent' => $parent
                 ])->getResult();
     }
-    
+
     public function getHigherClassification($taxon) {
         $classification = [];
         $node = $this->getEntityManager()
@@ -128,7 +127,8 @@ class TaxonRepository extends EntityRepository {
             JOIN t.name n
             JOIN t.taxonRank r
             JOIN n.nameType nt
-            WHERE tr.nodeNumber<:nodeNumber AND tr.highestDescendantNodeNumber>=:nodeNumber";
+            WHERE tr.nodeNumber<:nodeNumber AND tr.highestDescendantNodeNumber>=:nodeNumber
+            ORDER BY tr.nodeNumber";
         $query = $this->getEntityManager()->createQuery($dql);
         $result = $query->setParameter(':nodeNumber', $node)->getResult();
         foreach($result as $row) {
@@ -136,11 +136,11 @@ class TaxonRepository extends EntityRepository {
         }
         return $classification;
     }
-    
+
     public function getSynonyms($taxon)
     {
         $dql = "SELECT t, n,
-                partial nt.{id, uri, name, label}, 
+                partial nt.{id, uri, name, label},
                 partial r.{id, uri, name, label}
             FROM \App\Entities\Taxon t
             JOIN t.name n
@@ -150,5 +150,5 @@ class TaxonRepository extends EntityRepository {
         $query = $this->getEntityManager()->createQuery($dql);
         return $query->setParameter(':id', $taxon)->getResult();
     }
-    
+
 }

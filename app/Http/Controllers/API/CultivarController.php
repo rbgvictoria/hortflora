@@ -68,16 +68,16 @@ class CultivarController extends TaxonAbstractController
      * )
      *
      * @param Request $request
-     * @param  \Ramsey\Uuid\Uuid  $id
+     * @param  string  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, Uuid $id)
+    public function show(Request $request, $id)
     {
         $this->checkUuid($id);
         $includes = 'horticulturalGroup,' . $request->input('include');
         $cultivar = $this->em->getRepository('\App\Entities\Cultivar')
                 ->findOneBy(['guid' => $id]);
-        $resource = new Fractal\Resource\Item($cultivar, 
+        $resource = new Fractal\Resource\Item($cultivar,
                 new \App\Transformers\CultivarTransformer, 'cultivars');
         $this->fractal->parseIncludes($includes);
         $data = $this->fractal->createData($resource)->toArray();
@@ -132,15 +132,15 @@ class CultivarController extends TaxonAbstractController
         }
         $acceptedNameUsage = $cultivar->getAcceptedNameUsage();
         if ($acceptedNameUsage) {
-            $resource = new Fractal\Resource\Item($acceptedNameUsage, 
+            $resource = new Fractal\Resource\Item($acceptedNameUsage,
                     new TaxonTransformer, 'taxa');
             $data = $this->fractal->createData($resource)->toArray();
             return response()->json($data);
         }
     }
-    
+
     /**
-     * 
+     *
      * @SWG\Get(
      *     path="/cultivars/{cultivar}/taxon",
      *     tags={"Cultivars"},
@@ -187,14 +187,14 @@ class CultivarController extends TaxonAbstractController
             throw new NotFoundHttpException();
         }
         $taxon = $cultivar->getTaxon();
-        $resource = new Fractal\Resource\Item($taxon, 
+        $resource = new Fractal\Resource\Item($taxon,
                 new \App\Transformers\TaxonTransformer, 'cultivars');
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
     }
-    
+
     /**
-     * 
+     *
      * @SWG\Get(
      *     path="/cultivars/{cultivar}/horticulturalGroup",
      *     tags={"Cultivars"},
@@ -242,13 +242,13 @@ class CultivarController extends TaxonAbstractController
         }
         $horticulturalGroup = $cultivar->getHorticulturalGroup();
         if ($horticulturalGroup) {
-            $resource = new Fractal\Resource\Item($horticulturalGroup, 
+            $resource = new Fractal\Resource\Item($horticulturalGroup,
                     new \App\Transformers\HorticulturalGroupTransformer);
             $data = $this->fractal->createData($resource)->toArray();
             return response()->json($data);
         }
     }
-    
+
     /**
      * @SWG\Post(
      *     path="/cultivars",
@@ -284,7 +284,7 @@ class CultivarController extends TaxonAbstractController
      *         }
      *     }
      * )
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
@@ -317,10 +317,10 @@ class CultivarController extends TaxonAbstractController
         $resource = new Fractal\Resource\Item($cultivar, $transformer, 'taxa');
         $this->fractal->parseIncludes('taxon');
         $data = $this->fractal->createData($resource)->toArray();
-        return response()->json($data, 201)->header('Location', env('APP_URL') 
+        return response()->json($data, 201)->header('Location', env('APP_URL')
                 . '/' . $request->path() . '/' . $cultivar->getGuid());
     }
-    
+
     /**
      * @SWG\Put(
      *     path="/cultivars/{cultivar}",
@@ -363,7 +363,7 @@ class CultivarController extends TaxonAbstractController
      *         }
      *     }
      * )
-     * 
+     *
      * @param Request $request
      * @param type $id
      * @return \Illuminate\Http\Response
@@ -406,7 +406,7 @@ class CultivarController extends TaxonAbstractController
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
     }
-    
+
     /**
      * @SWG\Delete(
      *     path="/cultivars/{cultivar}",
@@ -437,7 +437,7 @@ class CultivarController extends TaxonAbstractController
      *         }
      *     }
      * )
-     * 
+     *
      * @param string $id
      * @return \Illuminate\Http\Response
      * @throws NotFoundHttpException

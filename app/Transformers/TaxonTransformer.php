@@ -36,18 +36,21 @@ use Swagger\Annotations as SWG;
  */
 class TaxonTransformer extends TaxonAbstractTransformer
 {
+    protected $em;
 
     public function __construct() {
+        $this->em = app('em');
+
         $this->availableIncludes = array_merge($this->availableIncludes, [
             'parentNameUsage',
             'classification',
-            'sibling',
+            'siblings',
             'children',
             'synonyms',
             'cultivars',
             'horticulturalGroup'
         ]);
-        
+
         $this->defaultIncludes = array_merge($this->defaultIncludes, [
             'taxonRank',
         ]);
@@ -66,7 +69,7 @@ class TaxonTransformer extends TaxonAbstractTransformer
     {
         $parent = $taxon->getParent();
         if ($parent) {
-            return new Fractal\Resource\Item($parent, new TaxonTransformer, 
+            return new Fractal\Resource\Item($parent, new TaxonTransformer,
                     'taxa');
         }
     }
@@ -88,10 +91,10 @@ class TaxonTransformer extends TaxonAbstractTransformer
         $classification = $this->em->getRepository('\App\Entities\Taxon')
                 ->getHigherClassification($taxon);
         if ($classification) {
-            return new Fractal\Resource\Collection($classification, 
+            return new Fractal\Resource\Collection($classification,
                     new TaxonTransformer, 'classification');
         }
-        
+
     }
 
     /**
@@ -111,7 +114,7 @@ class TaxonTransformer extends TaxonAbstractTransformer
         $siblings = $this->em->getRepository('\App\Entities\Taxon')
                 ->getSiblings($taxon);
         if ($siblings) {
-            return new Fractal\Resource\Collection($siblings, 
+            return new Fractal\Resource\Collection($siblings,
                     new TaxonTransformer, 'siblings');
         }
     }
@@ -133,7 +136,7 @@ class TaxonTransformer extends TaxonAbstractTransformer
         $children = $this->em->getRepository('\App\Entities\Taxon')
                 ->getChildren($taxon);
         if ($children) {
-            return new Fractal\Resource\Collection($children, 
+            return new Fractal\Resource\Collection($children,
                     new TaxonTransformer, 'children');
         }
     }
@@ -182,7 +185,7 @@ class TaxonTransformer extends TaxonAbstractTransformer
      *   property="hybridParent1",
      *   ref="#/definitions/Taxon"
      * ),
-     * 
+     *
      * @param \App\Entities\Taxon $taxon
      * @return \League\Fractal\Resource\Item
      */
@@ -190,17 +193,17 @@ class TaxonTransformer extends TaxonAbstractTransformer
     {
         $hybridParent1 = $hybrid->getHybridParent1();
         if ($hybridParent1) {
-            return new Fractal\Resource\Item($hybridParent1, 
+            return new Fractal\Resource\Item($hybridParent1,
                     new TaxonTransformer, 'taxa');
         }
     }
-    
+
     /**
      * @SWG\Property(
      *   property="hybridParent2",
      *   ref="#/definitions/Taxon"
      * ),
-     * 
+     *
      * @param \App\Entities\Taxon $taxon
      * @return \League\Fractal\Resource\Item
      */
@@ -208,7 +211,7 @@ class TaxonTransformer extends TaxonAbstractTransformer
     {
         $hybridParent2 = $hybrid->getHybridParent2();
         if ($hybridParent2) {
-            return new Fractal\Resource\Item($hybridParent2, 
+            return new Fractal\Resource\Item($hybridParent2,
                     new TaxonTransformer, 'taxa');
         }
     }
@@ -221,7 +224,7 @@ class TaxonTransformer extends TaxonAbstractTransformer
      *     ref="#/definitions/Cultivar"
      *   )
      * ),
-     * 
+     *
      * @param  \App\Entities\Taxon $taxon
      * @return Fractal\Resource\Collection
      */
@@ -242,7 +245,7 @@ class TaxonTransformer extends TaxonAbstractTransformer
      *     ref="#/definitions/HorticulturalGroup"
      *   )
      * )
-     * 
+     *
      * @param  \App\Entities\Taxon $taxon
      * @return Fractal\Resource\Item
      */
@@ -250,7 +253,7 @@ class TaxonTransformer extends TaxonAbstractTransformer
     {
         $horticulturalGroups = $taxon->getHorticulturalGroups();
         if ($horticulturalGroups) {
-            return new Fractal\Resource\Collection($horticulturalGroups, 
+            return new Fractal\Resource\Collection($horticulturalGroups,
                     new HorticulturalGroupTransformer);
         }
     }

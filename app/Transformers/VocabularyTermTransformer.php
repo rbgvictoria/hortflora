@@ -28,11 +28,11 @@ use League\Fractal;
  *   type="object",
  *   required={"name", "label"}
  * )
- * 
+ *
  * @author Niels Klazenga <Niels.Klazenga@rbg.vic.gov.au>
  */
 class VocabularyTermTransformer extends Fractal\TransformerAbstract {
-    
+
     /**
      * @SWG\Property(
      *   property="type",
@@ -62,16 +62,16 @@ class VocabularyTermTransformer extends Fractal\TransformerAbstract {
         $vocabulary = camel_case($type);
         return [
             'type' => $type,
-            'id' => env('APP_URL') . '/api/vocabularies/' . $vocabulary 
+            'id' => env('APP_URL') . '/api/vocabularies/' . $vocabulary
                 . '/terms/' . $entity->getName(),
             'name' => $entity->getName(),
             'label' => $entity->getLabel()
         ];
     }
-    
+
     /**
      * Transforms arrays
-     * 
+     *
      * @param array $array
      * @return array
      */

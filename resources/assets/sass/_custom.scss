@@ -22,6 +22,10 @@ limitations under the License.
     border: none;
 }
 
+.vicflora-tab {
+    clear: both;
+}
+
 .section.cultivars {
 
     .cultivar-group > h4 {
@@ -128,4 +132,8 @@ limitations under the License.
 
 span.cv {
     font-style: normal;
+}
+
+#facetModal {
+    display: none;
 }

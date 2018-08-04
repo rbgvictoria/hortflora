@@ -85,6 +85,20 @@ class Agent extends ClassBase
    * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
    */
   protected $user;
+  
+  /**
+   * @ORM\ManyToOne(targetEntity="Agent")
+   * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
+   * @var Agent 
+   */
+  protected $group;
+  
+  /**
+   * @ORM\ManyToOne(targetEntity="Agent")
+   * @ORM\JoinColumn(name="organization_id", referencedColumnName="id")
+   * @var Agent
+   */
+  protected $organization;
 
   /**
    * @return AgentType
@@ -230,6 +244,42 @@ class Agent extends ClassBase
   public function setIpni($ipni)
   {
       $this->ipni = $ipni;
+  }
+  
+  /**
+   * 
+   * @return Agent
+   */
+  public function getOrganization()
+  {
+      return $this->organization;
+  }
+  
+  /**
+   * 
+   * @param Agent $organization
+   */
+  public function setOrganization($organization)
+  {
+      $this->organization = $organization;
+  }
+  
+  /**
+   * 
+   * @return Agent
+   */
+  public function getGroup()
+  {
+      return $this->group;
+  }
+  
+  /**
+   * 
+   * @param Agent $group
+   */
+  public function setGroup($group)
+  {
+      $this->group = $group;
   }
 
 }

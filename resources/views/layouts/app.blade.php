@@ -4,9 +4,7 @@
         <meta charset="utf-8">
         <title>{{ env('APP_NAME') }}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        @if(auth()->check())
-            <meta name="csrf-token" content="{{ csrf_token() }}">
-        @endif
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         <link rel="shortcut icon" href="https://www.rbg.vic.gov.au/common/img/favicon.ico">
         @section('stylesheets')
         <link rel="stylesheet" type="text/css" href="https://www.rbg.vic.gov.au/common/fonts/451576/645A29A9775E15EA2.css" />
@@ -21,22 +19,27 @@
         @show
     </head>
     <body class="hortflora">
-        <header id="banner">
-            @include('partials.banner')
-        </header>
+        <div id="app">
+            <header id="banner">
+                @include('partials.banner')
+            </header>
 
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    @include('partials.flash-message')
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        @include('partials.flash-message')
+                    </div>
                 </div>
             </div>
-        </div>
 
-        @yield('content')
+            @yield('content')
 
-        <footer class="footer clearfix">
-            @include('partials.footer')
-        </footer>
+            <footer class="footer clearfix">
+                @include('partials.footer')
+            </footer>
+        </div> <!-- /#app -->
+        @section('footer-scripts')
+        <script src="{{ env('APP_URL') . mix('/js/app.js') }}"></script>
+        @show
     </body>
 </html>

@@ -52,7 +52,7 @@ class AgentTypeTransformer extends VocabularyTermTransformer {
      * @param  \App\Entities\AgentType $agentType
      * @return array
      */
-    public function transform(AgentType $agentType)
+    public function transform($agentType)
     {
         return parent::transform($agentType);
     }

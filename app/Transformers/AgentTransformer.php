@@ -35,7 +35,9 @@ use Swagger\Annotations as SWG;
 class AgentTransformer extends OrmTransformer {
     
     protected $defaultIncludes = [
-        'agentType'
+        'agentType',
+        'organization',
+        'group'
     ];
 
     /**
@@ -93,5 +95,35 @@ class AgentTransformer extends OrmTransformer {
     {
         return new Fractal\Resource\Item($agent->getAgentType(), 
                 new AgentTypeTransformer);
+    }
+    
+    /**
+     * @SWG\Property(
+     *   property="organization",
+     *   ref="#/definitions/Agent"
+     * )
+     * @param Agent $agent
+     * @return \League\Fractal\Resource\Item
+     */
+    public function includeOrganization(Agent $agent) {
+        $organization = $agent->getOrganization();
+        if ($organization) {
+            return new Fractal\Resource\Item($organization, new AgentTransformer);
+        }
+    }
+    
+    /**
+     * @SWG\Property(
+     *   property="group",
+     *   ref="#/definitions/Agent"
+     * )
+     * @param Agent $agent
+     * @return \League\Fractal\Resource\Item
+     */
+    public function includeGroup(Agent $agent) {
+        $group = $agent->getGroup();
+        if ($group) {
+            return new Fractal\Resource\Item($group, new AgentTransformer);
+        }
     }
 }

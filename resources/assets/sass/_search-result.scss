@@ -13,14 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-/* 
+/*
     Created on : 18/08/2016, 5:54:19 PM
     Author     : nklazenga
 */
 
 /* Search
 -----------------------------------------------------------*/
-#search {
+.left-side-panel > #search {
     margin-top: 1rem;
     width: 100%;
 }
@@ -56,14 +56,14 @@ limitations under the License.
 .query-result-header {
     margin-top: 12px;
     margin-bottom: 12px;
-    
+
     .download {
         display: none;
         @media (min-width: $screen-md-min) {
             display: block;
         }
     }
-    
+
     &::after {
         display: block;
         content: '';
@@ -87,13 +87,13 @@ limitations under the License.
 
 .search-name-entry {
     padding: 5px 0;
-    
+
     .fam {
         @media (min-width: $screen-sm-min) {
             text-align: right;
         }
     }
-    
+
     .vernacular-name {
         display: inline-block;
         margin-left: 20px;
@@ -101,5 +101,3 @@ limitations under the License.
         font-size: $brand-primary;
     }
 }
-
-

@@ -38,10 +38,10 @@ Route::get('ping', 'API\\SolariumController@ping');
 /*
  * TaxonController
  */
-Route::get('taxa/{taxon}', 
+Route::get('taxa/{taxon}',
         'API\\TaxonController@show')
         ->name('api.taxa.show');
-Route::get('/taxa/{taxon}/name', 
+Route::get('/taxa/{taxon}/name',
         'API\\TaxonController@hasScientificName')
         ->name('api.taxa.name');
 Route::get('taxa/{taxon}/acceptedNameUsage',
@@ -113,24 +113,24 @@ Route::get('taxa/{taxon}/distributionMap',
         'API\\TaxonController@hasDistributionMap')
         ->name('api.taxa.distributionMap');
 Route::middleware('auth:api')->group(function() {
-    Route::post('taxa', 
+    Route::post('taxa',
             'API\\TaxonController@store')
             ->name('api.taxa.store');
-    Route::match(['PUT', 'PATCH'], 'taxa/{taxon}', 
+    Route::match(['PUT', 'PATCH'], 'taxa/{taxon}',
             'API\\TaxonController@update')
             ->name('api.taxa.update');
-    Route::delete('taxa/{taxon}', 
+    Route::delete('taxa/{taxon}',
             'API\\TaxonController@destroy')
             ->name('api.taxa.destroy');
 });
-Route::get('taxa/{taxon}/regions', 
+Route::get('taxa/{taxon}/regions',
         'API\\TaxonController@showRegions')
         ->name('api.taxa.regions');
 Route::middleware('auth.api')->group(function() {
-    Route::post('taxa/{taxon}/regions', 
+    Route::post('taxa/{taxon}/regions',
             'API\\TaxonController@addRegions')
             ->name('api.taxa.regions.add');
-    Route::delete('taxa/{taxon}/regions', 
+    Route::delete('taxa/{taxon}/regions',
             'API\\TaxonController@removeRegions')
             ->name('api.taxa.regions.remove');
 });
@@ -138,10 +138,10 @@ Route::middleware('auth.api')->group(function() {
 /*
  * CultivarController
  */
-Route::get('cultivars/{cultivar}', 
+Route::get('cultivars/{cultivar}',
         'API\\CultivarController@show')
         ->name('api.cultivars.show');
-Route::get('/cultivars/{cultivar}/name', 
+Route::get('/cultivars/{cultivar}/name',
         'API\\CultivarController@hasScientificName')
         ->name('api.cultivars.name');
 Route::get('cultivars/{cultivar}/acceptedNameUsage',
@@ -192,10 +192,10 @@ Route::get('cultivars/{cultivar}/cultivarGroup',
 /*
  * HorticulturalGroupController
  */
-Route::get('horticultural-groups/{group}', 
+Route::get('horticultural-groups/{group}',
         'API\\HorticulturalGroupController@show')
         ->name('api.horticultural-groups.show');
-Route::get('/horticultural-groups/{group}/name', 
+Route::get('/horticultural-groups/{group}/name',
         'API\\HorticulturalGroupController@hasScientificName')
         ->name('api.horticultural-groups.name');
 Route::get('horticultural-groups/{group}/acceptedNameUsage',
@@ -248,17 +248,17 @@ Route::get('horticultural-groups/{group}/members',
  */
 Route::get('names/{name}', 'API\\NameController@show')
         ->name('api.taxa.show');
-Route::get('names/{name}/namePublishedIn', 
+Route::get('names/{name}/namePublishedIn',
         'API\\NameController@showNamePublishedIn')
         ->name('api.names.namePublishedIn');
 Route::middleware('auth:api')->group(function() {
-    Route::post('names', 
+    Route::post('names',
             'API\\NameController@store')
             ->name('api.names.store');
-    Route::put('names/{name}', 
+    Route::put('names/{name}',
             'API\\NameController@update')
             ->name('api.names.update');
-    Route::delete('names/{name}', 
+    Route::delete('names/{name}',
             'API\\NameController@destroy')
             ->name('api.names.destroy');
 });
@@ -269,13 +269,13 @@ Route::middleware('auth:api')->group(function() {
 Route::get('references/{reference}', 'API\\ReferenceController@show')
         ->name('api.references.show');
 Route::middleware('auth:api')->group(function() {
-    Route::post('references', 
+    Route::post('references',
             'API\\ReferenceController@store')
             ->name('api.references.store');
-    Route::match(['PUT', 'PATCH'], 'references/{reference}', 
+    Route::match(['PUT', 'PATCH'], 'references/{reference}',
             'API\\ReferenceController@update')
             ->name('api.references.update');
-    Route::delete('references/{reference}', 
+    Route::delete('references/{reference}',
             'API\\ReferenceController@destroy')
             ->name('api.references.destroy');
 });
@@ -283,17 +283,17 @@ Route::middleware('auth:api')->group(function() {
 /*
  * VernacularNameController
  */
-Route::get('vernacular-names/{vernacular_name}', 
+Route::get('vernacular-names/{vernacular_name}',
         'API\\VernacularNameController@show')
         ->name('api.vernacular-names.show');
 Route::middleware('auth:api')->group(function() {
-    Route::post('vernacular-names', 
+    Route::post('vernacular-names',
             'API\\VernacularNameController@store')
             ->name('api.vernacular-names.store');
-    Route::put('vernacular-names/{vernacular_name}', 
+    Route::put('vernacular-names/{vernacular_name}',
             'API\\VernacularNameController@update')
             ->name('api.vernacular-names.update');
-    Route::delete('vernacular-names/{vernacular_name}', 
+    Route::delete('vernacular-names/{vernacular_name}',
             'API\\VernacularNameController@destroy')
             ->name('api.vernacular-names.destroy');
 });
@@ -307,11 +307,11 @@ Route::get('treatments/{treatment}/forTaxon', "API\\TreatmentController@showForT
         ->name('api.treatments.forTaxon');
 Route::get('treatments/{treatment}/asTaxon', "API\\TreatmentController@showAsTaxon")
         ->name('api.treatments.asTaxon');
-Route::get('treatments/{treatment}/versions', 
+Route::get('treatments/{treatment}/versions',
         'API\\TreatmentController@showVersions')
         ->name('api.treatments.versions.list');
 Route::middleware('auth:api')->group(function() {
-    Route::post('treatments/{treatment}/versions', 
+    Route::post('treatments/{treatment}/versions',
             'API\\TreatmentController@storeVersion')
             ->name('api.treatments.versions.store');
 });
@@ -322,7 +322,7 @@ Route::middleware('auth:api')->group(function() {
 Route::resource('versions', 'API\\TreatmentVersionController', ['as' => 'api'])
         ->only(['show']);
 Route::middleware('auth:api')->group(function() {
-    Route::resource('versions', 'API\\TreatmentVersionController', 
+    Route::resource('versions', 'API\\TreatmentVersionController',
             ['as' => 'api'])
             ->only(['update', 'destroy']);
 });
@@ -333,41 +333,41 @@ Route::middleware('auth:api')->group(function() {
 Route::get('images', 'API\\ImageController@index')->name('api.images.list');
 Route::get('images/{image}', 'API\\ImageController@show')->name('api.images.show');
 Route::middleware('auth:api')->group(function() {
-    Route::post('images', 
+    Route::post('images',
             'API\\ImageController@store')
             ->name('api.images.store');
-    Route::match(['PUT', 'PATCH'], 'images/{image}', 
+    Route::match(['PUT', 'PATCH'], 'images/{image}',
             'API\\ImageController@update')
             ->name('api.images.update');
-    Route::delete('images/{image}', 
+    Route::delete('images/{image}',
             'API\\ImageController@destroy')
             ->name('api.images.destroy');
 });
-Route::get('images/{image}/access-points', 
+Route::get('images/{image}/access-points',
         'API\\ImageController@listAccessPoints')
         ->name('api.images.access-points.list');
-Route::get('images/{image}/access-points/{access_point}', 
+Route::get('images/{image}/access-points/{access_point}',
         'API\\ImageController@showAccessPoints')
         ->name('api.images.access-points.show');
 Route::middleware('auth:api')->group(function() {
-    Route::post('images/{image}/access-points', 
+    Route::post('images/{image}/access-points',
             'API\\ImageController@storeAccessPoint')
             ->name('api.images.access-points.store');
-    Route::match(['PUT', 'PATCH'], 'images/{image}/access-points/{access_point}', 
+    Route::match(['PUT', 'PATCH'], 'images/{image}/access-points/{access_point}',
             'API\\ImageController@updateAccessPoint')
             ->name('api.images.access-points.update');
-    Route::delete('images/{image}/access-points/{access_point}', 
+    Route::delete('images/{image}/access-points/{access_point}',
             'API\\ImageController@destroyAccessPoint')
             ->name('api.images.access-points.destroy');
 });
-Route::get('images/{image}/features', 
+Route::get('images/{image}/features',
         'API\\ImageController@showFeatures')
         ->name('api.images.features');
 Route::middleware('auth.api')->group(function() {
-    Route::post('images/{image}/features', 
+    Route::post('images/{image}/features',
             'API\\ImageController@addFeatures')
             ->name('api.images.features.add');
-    Route::delete('images/{image}/features', 
+    Route::delete('images/{image}/features',
             'API\\ImageController@removeFeatures')
             ->name('api.images.features.remove');
 });
@@ -383,13 +383,13 @@ Route::get('occurrences/{occurrence}/event', 'API\\OccurrenceController@showEven
 Route::get('occurrences/{occurrence}', 'API\\OccurrenceController@show')
         ->name('api.occurrences.show');
 Route::middleware('auth:api')->group(function() {
-    Route::post('occurrences', 
+    Route::post('occurrences',
             'API\\OccurrenceController@store')
             ->name('api.occurrences.store');
-    Route::put('occurrences/{occurrence}', 
+    Route::put('occurrences/{occurrence}',
             'API\\OccurrenceController@update')
             ->name('api.occurrences.update');
-    Route::delete('occurrences/{occurrence}', 
+    Route::delete('occurrences/{occurrence}',
             'API\\OccurrenceController@destroy')
             ->name('api.occurrences.destroy');
 });
@@ -426,7 +426,7 @@ Route::get('vocabularies/{vocabulary}/terms/{term}', 'API\\VocabularyController@
 Route::middleware('auth:api')->group(function() {
     Route::post('vocabularies/{vocabulary}/terms', 'API\\VocabularyController@storeTerm')
             ->name('api.vocabularies.terms.store');
-    Route::match(['PUT', 'PATCH'], 'vocabularies/{vocabulary}/terms/{term}', 
+    Route::match(['PUT', 'PATCH'], 'vocabularies/{vocabulary}/terms/{term}',
             'API\\VocabularyController@updateTerm')
             ->name('api.vocabularies.terms.update');
     Route::delete('vocabularies/{vocabulary}/terms/{term}', 'API\\VocabularyController@destroyTerm')
@@ -438,5 +438,17 @@ Route::middleware('auth:api')->group(function() {
  */
 Route::resource('changes', 'API\\ChangeController', ['as' => 'api'])
         ->only(['show']);
-Route::middleware('auth:api')->resource('changes', 'API\\ChangeController', 
+Route::middleware('auth:api')->resource('changes', 'API\\ChangeController',
         ['as' => 'api'])->only(['update', 'destroy']);
+
+/*
+ * Autocomplete
+ */
+Route::get('autocomplete/name', 'API\\AutocompleteController@autocompleteName')
+        ->name('api.autocomplete.name');
+
+/*
+ * Agent
+ */
+Route::resource('agents', 'API\\AgentController', ['as' => 'api'])->only(['show']);
+

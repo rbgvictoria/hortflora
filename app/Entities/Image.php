@@ -42,13 +42,13 @@ class Image extends ClassBase {
      * @ORM\JoinColumn(name="occurrence_id", referencedColumnName="id")
      */
     protected $occurrence;
-    
+
     /**
      * @ORM\ManyToMany(targetEntity="TaxonAbstract", mappedBy="images")
      * @var \Doctrine\Common\Collections\ArrayCollection;
      */
     protected $taxa;
-    
+
     /**
      * Scientific name as given on the image, matched to a name in VicFlora/HortFlora
      * @ORM\ManyToOne(targetEntity="Name")
@@ -62,12 +62,18 @@ class Image extends ClassBase {
      * @var string
      */
     protected $verbatimScientificName;
-    
+
     /**
      * @var \App\Entities\Reference
      * @ORM\ManyToOne(targetEntity="\App\Entities\Reference")
      */
     protected $source;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $dcSource;
 
     /**
      * @var string
@@ -166,19 +172,19 @@ class Image extends ClassBase {
      * @ORM\Column(type="smallint", nullable=true)
      */
     protected $rating;
-    
+
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      * @ORM\OneToMany(targetEntity="Identification", mappedBy="image")
      */
     protected $identifications;
-    
+
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      * @ORM\OneToMany(targetEntity="ImageAccessPoint", mappedBy="image")
      */
     protected $accessPoints;
-    
+
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      * @ORM\ManyToMany(targetEntity="Feature")
@@ -188,7 +194,7 @@ class Image extends ClassBase {
      * )
      */
     protected $features;
-    
+
     public function __construct()
     {
         $this->taxa = new ArrayCollection();
@@ -196,7 +202,7 @@ class Image extends ClassBase {
         $this->accessPoints = new ArrayCollection();
         $this->features = new ArrayCollection();
     }
-    
+
     /**
      * @return string
      */
@@ -204,7 +210,7 @@ class Image extends ClassBase {
     {
         return $this->title;
     }
-    
+
     /**
      * @param string $occurrence
      */
@@ -212,7 +218,7 @@ class Image extends ClassBase {
     {
         $this->title = $title;
     }
-    
+
     /**
      * @return Occurrence
      */
@@ -220,7 +226,7 @@ class Image extends ClassBase {
     {
         return $this->occurrence;
     }
-    
+
     /**
      * @param \App\Entities\Occurrence $occurrence
      */
@@ -228,88 +234,88 @@ class Image extends ClassBase {
     {
         $this->occurrence = $occurrence;
     }
-    
+
     /**
-     * 
+     *
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
     public function getTaxa()
     {
         return $this->taxa;
     }
-    
+
     /**
-     * 
+     *
      * @param \App\Entities\TaxonAbstract $taxon
      */
     public function addTaxon(\App\Entities\TaxonAbstract $taxon)
     {
         $this->taxa[] = $taxon;
     }
-    
+
     /**
-     * 
+     *
      * @return \App\Entities\ScientificName
      */
     public function getScientificName()
     {
         return $this->scientificName;
     }
-    
+
     /**
-     * 
+     *
      * @param \App\Entities\Name $name
      */
     public function setScientificName(Name $name)
     {
         $this->scientificName = $name;
     }
-    
+
     /**
-     * 
+     *
      * @return string
      */
     public function getVerbatimScientificName()
     {
         return $this->verbatimScientificName;
     }
-    
+
     /**
-     * 
+     *
      * @param string $name
      */
     public function setVerbatimScientificName($name)
     {
         $this->verbatimScientificName = $name;
     }
-    
+
     /**
-     * 
+     *
      * @return \App\Entities\Reference
      */
     public function getSource()
     {
         return $this->source;
     }
-    
+
     /**
-     * 
+     *
      * @param \App\Entities\Reference $source
      */
     public function setSource($source)
     {
         $this->source = $source;
     }
-    
+
     /**
-     * 
+     *
      * @return string
      */
     public function getType()
     {
         return $this->type;
     }
-    
+
     /**
      * @param string $type
      */
@@ -317,7 +323,7 @@ class Image extends ClassBase {
     {
         $this->type = $type;
     }
-    
+
     /**
      * @return \App\Entities\Subtype
      */
@@ -325,7 +331,7 @@ class Image extends ClassBase {
     {
         return $this->subtype;
     }
-    
+
     /**
      * @param \App\Entities\Subtype $subtype
      */
@@ -333,7 +339,7 @@ class Image extends ClassBase {
     {
         $this->subtype = $subtype;
     }
-    
+
     /**
      * @return string
      */
@@ -341,7 +347,7 @@ class Image extends ClassBase {
     {
         return $this->caption;
     }
-    
+
     /**
      * @param string $caption
      */
@@ -349,25 +355,25 @@ class Image extends ClassBase {
     {
         $this->caption = $caption;
     }
-    
+
     /**
-     * 
+     *
      * @return SubjectCategory
      */
     public function getSubjectCategory()
     {
         return $this->subjectCategory;
     }
-    
+
     /**
-     * 
+     *
      * @param \App\Entities\SubjectCategory $subjectCategory
      */
     public function setSubjectCategory($subjectCategory)
     {
         $this->subjectCategory = $subjectCategory;
     }
-    
+
     /**
      * @return string
      */
@@ -375,7 +381,7 @@ class Image extends ClassBase {
     {
         return $this->subjectPart;
     }
-    
+
     /**
      * @param string $subjectPart
      */
@@ -383,7 +389,7 @@ class Image extends ClassBase {
     {
         $this->subjectPart = $subjectPart;
     }
-    
+
     /**
      * @return string
      */
@@ -391,7 +397,7 @@ class Image extends ClassBase {
     {
         return $this->subjectOrientation;
     }
-    
+
     /**
      * @param string $subjectOrientation
      */
@@ -399,7 +405,7 @@ class Image extends ClassBase {
     {
         $this->subjectOrientation = $subjectOrientation;
     }
-    
+
     /**
      * @return \DateTime
      */
@@ -407,7 +413,7 @@ class Image extends ClassBase {
     {
         return $this->createDate;
     }
-    
+
     /**
      * @param \DateTime $createDate
      */
@@ -415,7 +421,7 @@ class Image extends ClassBase {
     {
         $this->createDate = $createDate;
     }
-    
+
     /**
      * @return \DateTime
      */
@@ -423,7 +429,7 @@ class Image extends ClassBase {
     {
         return $this->digitizationDate;
     }
-    
+
     /**
      * @param \DateTime $digitizationDate
      */
@@ -431,7 +437,7 @@ class Image extends ClassBase {
     {
         $this->digitizationDate = $digitizationDate;
     }
-    
+
     /**
      * @return \App\Entities\Agent
      */
@@ -439,7 +445,7 @@ class Image extends ClassBase {
     {
         return $this->creator;
     }
-    
+
     /**
      * @param \App\Entities\Agent $creator
      */
@@ -447,7 +453,7 @@ class Image extends ClassBase {
     {
         $this->creator = $creator;
     }
-    
+
     /**
      * @return \App\Entities\Agent
      */
@@ -455,7 +461,7 @@ class Image extends ClassBase {
     {
         return $this->provider;
     }
-    
+
     /**
      * @param \App\Entities\Agent $creator
      */
@@ -463,7 +469,7 @@ class Image extends ClassBase {
     {
         $this->provider = $provider;
     }
-    
+
     /**
      * @return \App\Entities\Agent
      */
@@ -471,7 +477,7 @@ class Image extends ClassBase {
     {
         return $this->rightsHolder;
     }
-    
+
     /**
      * @param \App\Entities\Agent $rightsHolder
      */
@@ -479,7 +485,7 @@ class Image extends ClassBase {
     {
         $this->rightsHolder = $rightsHolder;
     }
-    
+
     /**
      * @return License
      */
@@ -487,7 +493,7 @@ class Image extends ClassBase {
     {
         return $this->license;
     }
-    
+
     /**
      * @param \App\Entities\Licence $license
      */
@@ -495,7 +501,7 @@ class Image extends ClassBase {
     {
         $this->license = $license;
     }
-    
+
     /**
      * @return string
      */
@@ -503,7 +509,7 @@ class Image extends ClassBase {
     {
         return $this->rights;
     }
-    
+
     /**
      * @param string $rights
      */
@@ -511,7 +517,7 @@ class Image extends ClassBase {
     {
         $this->rights = $rights;
     }
-    
+
     /**
      * @return bool
      */
@@ -519,7 +525,7 @@ class Image extends ClassBase {
     {
         return $this->isHeroImage;
     }
-    
+
     /**
      * @param bool $isHeroImage
      */
@@ -527,7 +533,7 @@ class Image extends ClassBase {
     {
         $this->isHeroImage = $isHeroImage;
     }
-    
+
     /**
      * @return int
      */
@@ -535,7 +541,7 @@ class Image extends ClassBase {
     {
         return $this->rating;
     }
-    
+
     /**
      * @param int $rating
      */
@@ -543,7 +549,7 @@ class Image extends ClassBase {
     {
         $this->rating = $rating;
     }
-    
+
     /**
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
@@ -551,16 +557,16 @@ class Image extends ClassBase {
     {
         return $this->identifications;
     }
-    
+
     /**
-     * 
+     *
      * @param \App\Entities\Identification $identification
      */
     public function addIdentification(Identification $identification)
     {
         $this->identifications[] = $identification;
     }
-    
+
     /**
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
@@ -568,7 +574,7 @@ class Image extends ClassBase {
     {
         return $this->accessPoints;
     }
-    
+
     /**
      * @param \App\Entities\ImageAccessPoint $accessPoint
      */
@@ -576,18 +582,18 @@ class Image extends ClassBase {
     {
         $this->accessPoints[] = $accessPoint;
     }
-    
+
     /**
-     * 
+     *
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
     public function getFeatures()
     {
         return $this->features;
     }
-    
+
     /**
-     * 
+     *
      * @param \App\Entities\Feature $feature
      */
     public function addFeature(Feature $feature)

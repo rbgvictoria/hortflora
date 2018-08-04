@@ -7,7 +7,7 @@
                     <li><a href="https://instagram.com/royalbotanicgardensvic/" target="_blank"><span class="icon icon-instagram-solid"></span></a></li>
                 </ul>
               </div> <!-- /.col -->
-              
+
             <nav class="navbar navbar-default">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -21,20 +21,20 @@
                         <a class="brand-vicflora" href="https://hortflora.rbg.vic.gov.au/">HortFlora</a>
                     </div>
                 </div>
-              
+
                 <div id="navbar" class="navbar-collapse collapse">
                   <ul class="nav navbar-nav">
                       <li class="home-link"><a href="{{ env('APP_URL') }}"><span class="glyphicon glyphicon-home"></span></a></li>
-                    <li><a href="{{ secure_url('/search') }}">Search</a></li>
-                    <li><a href="{{ secure_url('/browse') }}">Browse classification</a></li>
+                    <li><a href="{{ url('/search') }}">Search</a></li>
+                    <li><a href="{{ url('/taxa/9b750d7a-20f5-4e68-8f63-d315b925ef57') }}">Browse classification</a></li>
                     <li><a href="#">Glossary</a></li>
                   </ul>
-                  <form action="{{ secure_url('search') }}" accept-charset="utf-8" method="get" class="navbar-form navbar-right">                    <div class="form-group">
+                  <form action="{{ url('search') }}" accept-charset="utf-8" method="get" class="navbar-form navbar-right">                    <div class="form-group">
                         <div class="input-group">
                       <input type="text" name="q" value="" class="form-control input-sm" placeholder="Enter taxon name..."  />                            <div class="submit input-group-addon"><i class="fa fa-search fa-lg"></i></div>
                         </div>
                     </div>
-                    
+
                   </form>                </div><!--/.navbar-collapse -->
             </nav>
 
@@ -42,16 +42,16 @@
                 <div id="header">
                     <div class="login">
                         @if(auth()->check())
-                        {{ Auth::user()->getName() }} | <a href="{{ secure_url('logout') }}"
+                        {{ Auth::user()->getName() }} | <a href="{{ url('logout') }}"
                                 onclick="event.preventDefault();
                                          document.getElementById('logout-form').submit();">Log out</a>
-                        <form id="logout-form" action="{{ secure_url('logout') }}" method="POST" style="display: none;">
+                        <form id="logout-form" action="{{ url('logout') }}" method="POST" style="display: none;">
                             {{ csrf_field() }}
                             <input type="hidden" name="user_id" value="{{ Auth::user()->getId() }}"/>
                         </form>
 
                         @else
-                        <a href="{{ secure_url('login') }}" id="hidden-login-link">Log in</a>
+                        <a href="{{ url('login') }}" id="hidden-login-link">Log in</a>
                         @endif
                     </div>
                     <div id="logo">
@@ -65,6 +65,6 @@
                     <div id="subtitle">{{ env('APP_SUBTITLE') }}</div>
                 </div>
             </div>
-              
+
         </div><!--/.row -->
     </div><!--/.container -->

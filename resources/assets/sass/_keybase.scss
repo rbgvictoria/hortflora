@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-/* 
+/*
     Created on : 28/08/2016, 12:18:33 PM
     Author     : Niels Klazenga
 */
@@ -149,4 +149,64 @@ limitations under the License.
 .keybase-bracketed-key .keybase-to-item {
     display: inline-block;
     float: right;
+}
+
+/*
+ * KeyBase player
+ */
+#keybase-player > .keybase-player-window {
+  position: relative;
+}
+
+#keybase-player .keybase-player-leftpane,
+#keybase-player .keybase-player-rightpane {
+  height: 100%;
+  position: absolute;
+  top: 0px;
+}
+
+#keybase-player .keybase-player-leftpane {
+  width: calc(67% - 3px);
+  left: 0px;
+}
+
+#keybase-player .keybase-player-rightpane {
+  width: calc(33% - 3px);
+  left: calc(67% + 3px);
+}
+
+#keybase-player .keybase-player-currentnode,
+#keybase-player .keybase-player-path,
+#keybase-player .keybase-player-remainingitems,
+#keybase-player .keybase-player-discardeditems {
+  position: absolute;
+  height: calc(50% - 3px);
+  width: 100%;
+}
+
+#keybase-player .keybase-player-path,
+#keybase-player .keybase-player-discardeditems {
+  top: calc(50% + 3px);
+}
+
+#keybase-player .keybase-player-currentnode > div,
+#keybase-player .keybase-player-path > div,
+#keybase-player .keybase-player-remainingitems > div,
+#keybase-player .keybase-player-discardeditems > div {
+  height: 100%;
+}
+
+#keybase-player .keybase-player-drag-leftright {
+  width: 6px;
+  height: 100%;
+  position: absolute;
+  top: 0px;
+  left: calc(67% - 3px);
+}
+
+#keybase-player .keybase-player-drag-updown {
+  height: 6px;
+  width: 100%;
+  position: absolute;
+  top: calc(50% - 3px);
 }

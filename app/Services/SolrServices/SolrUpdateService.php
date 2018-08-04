@@ -28,11 +28,11 @@ use Illuminate\Support\Facades\DB;
  */
 class SolrUpdateService {
     protected $client;
-    
+
     public function __construct() {
         $this->client = new Client(config('solarium'));
     }
-    
+
     public function updateAllDocuments()
     {
         $taxa = DB::table('taxa')->pluck('guid');
@@ -40,7 +40,7 @@ class SolrUpdateService {
             $this->updateDocument($id);
         }
     }
-    
+
     public function updateDocument($id)
     {
         $updateQuery = $this->client->createUpdate();
@@ -50,7 +50,7 @@ class SolrUpdateService {
         $this->doc->id = $id;
         $this->doc->scientific_name_id = $row->scientific_name_id;
         $this->doc->scientific_name = $row->scientific_name;
-        $this->doc->scientific_name_authorship = 
+        $this->doc->scientific_name_authorship =
                 $row->scientific_name_authorship;
         $this->doc->name_type = $row->name_type;
         $this->doc->entry_type = $row->entry_type;
@@ -63,15 +63,15 @@ class SolrUpdateService {
             $this->doc->parent_name_usage = $row->parent_name_usage;
             $this->doc->accepted_name_usage_id = $row->accepted_name_usage_id;
             $this->doc->accepted_name_usage = $row->accepted_name_usage;
-            $this->doc->accepted_name_usage_authorship = 
+            $this->doc->accepted_name_usage_authorship =
                     $row->accepted_name_usage_authorship;
-            $this->doc->accepted_name_usage_taxon_rank = 
+            $this->doc->accepted_name_usage_taxon_rank =
                     $row->accepted_name_usage_taxon_rank;
             if ($row->accepted_rank_id == 220) {
                 $this->doc->species_id = $row->accepted_name_usage_id;
             }
             elseif ($row->accepted_rank_id > 220) {
-                $this->doc->species_id = 
+                $this->doc->species_id =
                         $this->getSpeciesID($row->accepted_name_usage_id);
             }
             if ($row->rank_id > 220) {
@@ -84,6 +84,8 @@ class SolrUpdateService {
             }
             $this->doc->taxon_id = $row->taxon_id;
             $this->doc->taxon_name = $row->taxon_name;
+            $this->doc->taxon_rank = $row->cultivar_taxon_rank;
+            $this->doc->taxonomic_status = $row->cultivar_taxonomic_status;
             $this->doc->horticultural_group_id = $row->horticultural_group_id;
             $this->doc->horticultural_group_name = $row->horticultural_group_name;
         }
@@ -127,8 +129,8 @@ class SolrUpdateService {
         $updateQuery->addCommit();
         $this->client->update($updateQuery);
     }
-    
-    protected function getData($id) 
+
+    protected function getData($id)
     {
         return DB::table('taxa as t')
                 ->join('names as n','t.name_id','=','n.id')
@@ -146,6 +148,8 @@ class SolrUpdateService {
                 ->leftJoin('names as c_n', 'c_t.name_id', '=', 'c_n.id')
                 ->leftJoin('taxa as c_cg', 't.horticultural_group_id', '=', 'c_cg.id')
                 ->leftJoin('names as c_cgn', 'c_cg.name_id', '=', 'c_cgn.id')
+                ->leftJoin('taxon_rank_vocab as c_td', 'c_t.rank_id', '=', 'c_td.id')
+                ->leftJoin('taxonomic_status_vocab as c_ts', 'c_t.taxonomic_status_id', '=', 'c_ts.id')
                 ->leftJoin('taxon_tree as tt', function($join) {
                     $join->on('t.id','=','tt.taxon_id')
                             ->where('t.taxonomic_status_id', 1);
@@ -163,15 +167,15 @@ class SolrUpdateService {
                 })
                 ->leftJoin('taxonomic_status_vocab AS ts',
                         't.taxonomic_status_id','=','ts.id')
-                
-                        
+
+
                 ->where('t.guid', $id)
                 ->select('n.guid as scientific_name_id','n.id as name_id',
                         'n.full_name as scientific_name', 'n.name as name_part',
                         'n.authorship as scientific_name_authorship',
                         'nt.name as name_type', 't.discr as entry_type',
                         'td.name as taxon_rank', 'td.text_before',
-                        'td.name as raxon_rank','ts.name as taxonomic_status',
+                        'ts.name as taxonomic_status',
                         't.taxon_remarks',
                         'pt.guid as parent_name_usage_id',
                         'pn.full_name as parent_name_usage',
@@ -182,14 +186,16 @@ class SolrUpdateService {
                         'tt.node_number',
                         'att.node_number as accepted_node_number',
                         'v.vernacular_name', 'td.rank_id',
-                        'atd.rank_id as accepted_rank_id', 
+                        'atd.rank_id as accepted_rank_id',
                         'c_t.guid as taxon_id', 'c_n.full_name as taxon_name',
-                        'c_cg.guid as horticultural_group_id', 
-                        'c_cgn.full_name as horticultural_group_name', 
-                        'c_tt.node_number as taxon_node_number')
+                        'c_cg.guid as horticultural_group_id',
+                        'c_cgn.full_name as horticultural_group_name',
+                        'c_tt.node_number as taxon_node_number',
+                        'c_td.name as cultivar_taxon_rank',
+                        'c_ts.name as cultivar_taxonomic_status')
                 ->first();
     }
-    
+
     protected function getSpeciesID($id)
     {
         return DB::table('taxa as t')
@@ -197,7 +203,7 @@ class SolrUpdateService {
                 ->where('t.guid', $id)
                 ->value('pt.guid');
     }
-    
+
     protected function hasChildren($id)
     {
         $numChildren = DB::table('taxa as t')
@@ -214,7 +220,7 @@ class SolrUpdateService {
             return false;
         }
     }
-    
+
     protected function higherClassification($node)
     {
         $ret = [];
@@ -235,7 +241,7 @@ class SolrUpdateService {
                 if ($row->rank == 'species') {
                     $ret['specific_epithet'] = $row->name;
                 }
-                elseif (in_array($row->rank, 
+                elseif (in_array($row->rank,
                         ['subspecies', 'variety', 'forma'])) {
                     $ret['infraspecific_epithet'] = $row->name;
                 }

@@ -5,9 +5,14 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
+require('./bootstrap')
+require('./keybase')
 
-window.Vue = require('vue');
+window.Vue = require('vue')
+
+import router from './router'
+import store from './store'
+import '../../../node_modules/nprogress/nprogress.css'
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -18,23 +23,28 @@ window.Vue = require('vue');
 Vue.component(
     'passport-clients',
     require('./components/passport/Clients.vue')
-);
+)
 
 Vue.component(
     'passport-authorized-clients',
     require('./components/passport/AuthorizedClients.vue')
-);
+)
 
 Vue.component(
     'passport-personal-access-tokens',
     require('./components/passport/PersonalAccessTokens.vue')
-);
+)
 
 Vue.component(
     'taxon-page',
-    require('../components/TaxonPage.vue')
-);
+    require('./components/TaxonPage.vue')
+)
+
+import App from './components/App.vue'
 
 const app = new Vue({
-    el: '#app'
-});
+    el: '#app',
+    render: h => h(App),
+    router,
+    store
+})

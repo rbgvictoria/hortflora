@@ -26,16 +26,17 @@ use Solarium\Client;
  * @author Niels Klazenga <Niels.Klazenga@rbg.vic.gov.au>
  */
 class SolrQueryService {
-    
+
     protected $client;
-    
+
     /**
      * Default download fields
-     * 
-     * @var array 
+     *
+     * @var array
      */
     protected $defaultDownloadFields = [
         'id',
+        'entry_type',
         'taxon_rank',
         'scientific_name',
         'scientific_name_authorship',
@@ -58,7 +59,7 @@ class SolrQueryService {
         'taxonomic_status',
         'vernacular_name',
     ];
-    
+
     protected $defaultFacetFields = [
         'entry_type',
         'name_type',
@@ -71,13 +72,13 @@ class SolrQueryService {
         'family',
         'genus',
     ];
-    
+
     protected $defaultRows = 20;
-    
+
     public function __construct(Client $client) {
         $this->client = $client;
     }
-    
+
     public function search()
     {
         if (request()->getQueryString()) {
@@ -87,13 +88,17 @@ class SolrQueryService {
             }
             if (!isset($params['rows'])) {
                 $params['rows'] = $this->defaultRows;
-            } 
+            }
         }
         else {
             $params = [
                 'q' => '*:*',
                 'rows' => $this->defaultRows
             ];
+        }
+        if (isset($params['fq[]'])) {
+            $params['fq'] = $params['fq[]'];
+            unset($params['fq[]']);
         }
         $query = $this->client->createSelect();
         $query = $this->setQuery($query, $params);
@@ -103,8 +108,8 @@ class SolrQueryService {
         $this->setFacets($query, $params);
         return $this->getResult($query, $params);
     }
-    
-    protected function toTransformOrNotToTransform($params) 
+
+    protected function toTransformOrNotToTransform($params)
     {
         $transform = true;
         if (isset($params['transform']) && $params['transform'] == 'false') {
@@ -112,14 +117,16 @@ class SolrQueryService {
         }
         return $transform;
     }
-    
+
     protected function setQuery($query, $params)
     {
-        return $query->setQuery((isset($params['q'])) ? $params['q'] : '*:*')
-                ->setFields(isset($params['fl']) ? 
+        return $query
+                ->setQueryDefaultField('text')
+                ->setQuery((isset($params['q'])) ? $params['q'] : '*:*')
+                ->setFields(isset($params['fl']) ?
                     explode(',', $params['fl']) : $this->defaultDownloadFields);
     }
-    
+
     protected function setSort($query, $params)
     {
         $sortOrder = 'asc';
@@ -142,7 +149,7 @@ class SolrQueryService {
         }
         return $query;
     }
-    
+
     protected function setCursor($query, $params)
     {
         $rows = 20;
@@ -158,7 +165,7 @@ class SolrQueryService {
         }
         return $query->setStart($start)->setRows($rows);
     }
-    
+
     protected function setFilters($query, $params)
     {
         if (isset($params['fq'])) {
@@ -173,10 +180,10 @@ class SolrQueryService {
         }
         return $query;
     }
-    
-    public function getFacetFields($params) 
+
+    public function getFacetFields($params)
     {
-        if (isset($params['facet.field']) && 
+        if (isset($params['facet.field']) &&
                 is_array($params['facet.field'])) {
             $facetFields = $params['facet.field'];
         }
@@ -188,7 +195,7 @@ class SolrQueryService {
         }
         return $facetFields;
     }
-    
+
     public function setFacets($query, $params)
     {
         if (!(isset($params['facet']) && $params['facet'] == "false")) {
@@ -202,18 +209,18 @@ class SolrQueryService {
                 if (isset($params['facet.sort'])) {
                     $facetField->setSort($params['facet.sort']);
                 }
-                if (isset($params['facet.limit']) 
+                if (isset($params['facet.limit'])
                         && is_numeric($params['facet.limit'])) {
                     $facetField->setLimit($params['facet.limit']);
                 }
-                if (isset($params['facet.offset']) 
+                if (isset($params['facet.offset'])
                         && is_numeric($params['facet.offset'])) {
                     $facetField->setOffset($params['facet.offset']);
                 }
             }
         }
     }
-    
+
     protected function getResult($query, $params)
     {
         // Result
@@ -222,7 +229,7 @@ class SolrQueryService {
         $response['meta']['params'] = $params;
         $response['meta']['query'] = \GuzzleHttp\Psr7\build_query($params);
         if ($params['rows']) {
-            $response['meta']['pagination'] = $this->pagination($resultSet, 
+            $response['meta']['pagination'] = $this->pagination($resultSet,
                     $params);
             $response['docs'] = $this->getDocs($resultSet);
         }
@@ -235,8 +242,8 @@ class SolrQueryService {
         }
         return $response;
     }
-    
-    protected function getDocs($resultSet) 
+
+    protected function getDocs($resultSet)
     {
         $docs = [];
         foreach ($resultSet as $document) {
@@ -249,8 +256,8 @@ class SolrQueryService {
         }
         return $docs;
     }
-    
-    protected function getFacetFieldResults($resultSet, $params) 
+
+    protected function getFacetFieldResults($resultSet, $params)
     {
         if (!(isset($params['facet']) && $params['facet'] == "false")) {
             $facetFields = [];
@@ -260,9 +267,9 @@ class SolrQueryService {
                 $facetField = [
                     'fieldName' => camel_case($field),
                     'facets' => [],
-                    
+
                 ];
-                
+
                 $facet = $facetSet->getFacet($field);
                 foreach ($facet as $value => $count) {
                     if ($value != "") {
@@ -285,7 +292,7 @@ class SolrQueryService {
             return $facetFields;
         }
     }
-    
+
     protected function pagination($result, $params)
     {
         $total = $result->getNumFound();
@@ -310,18 +317,18 @@ class SolrQueryService {
         ];
         return $pagination;
     }
-    
+
     protected function pagination_links($result, $params=[])
     {
         $url = secure_url(request()->path());
-        
+
         $perPage = 20;
         if (isset($params['rows'])) {
             $perPage = $params['rows'];
             unset($params['rows']);
         }
         $params['rows'] = $perPage;
-        
+
         $page = 1;
         if (isset($params['page'])) {
             $page = $params['page'];
@@ -331,7 +338,7 @@ class SolrQueryService {
             $page = floor($params['start'] / $perPage);
             unset($params['start']);
         }
-        
+
         $links = [];
         $links['self'] = $url . '?' . \GuzzleHttp\Psr7\build_query($params) . '&page=' . $page;
         $links['first'] = $url . '?' . \GuzzleHttp\Psr7\build_query($params) . '&page=1';

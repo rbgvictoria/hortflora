@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-/* 
+/*
     Created on : 10/07/2017, 12:14:27 PM
     Author     : Niels Klazenga <Niels.Klazenga@rbg.vic.gov.au>
 */
@@ -25,8 +25,12 @@ limitations under the License.
 
     .modal-body {
         /* 100% = dialog height, 120px = header + footer */
-        max-height: calc(100% - 120px);
+        height: calc(100% - 135px);
         overflow-y: auto;
+    }
+
+    .modal-footer {
+        text-align: left;
     }
 }
 
@@ -44,4 +48,3 @@ limitations under the License.
         }
     }
 }
-

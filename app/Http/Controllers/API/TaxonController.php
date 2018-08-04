@@ -924,7 +924,7 @@ class TaxonController extends TaxonAbstractController
     {
         $taxon = $this->getTaxon($id);
         $resource = new Fractal\Resource\Collection($taxon->getRegions(), 
-                new \App\Transformers\TaxonTransformer);
+                new \App\Transformers\RegionTransformer);
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
     }

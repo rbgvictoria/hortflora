@@ -15,16 +15,17 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('apidocs', function() {
-    return view('swagger');
-});
-
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/taxon/{taxon}', 'TaxonController@getTaxon');
+Route::get('/', 'Controller@getHomePage');
+
+Route::get('/taxa/{taxon}', 'TaxonController@getTaxon');
+Route::get('/keys/{key}', 'TaxonController@getKey');
+
+Route::get('/search', 'SearchController@search');
+
+Route::get('apidocs', function() {
+    return view('swagger');
+});

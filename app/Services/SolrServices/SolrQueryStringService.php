@@ -26,8 +26,8 @@ use Illuminate\Http\Request;
  * @author Niels Klazenga <Niels.Klazenga@rbg.vic.gov.au>
  */
 class SolrQueryStringService {
-    
-    public static function parse_query_string(Request $request) 
+
+    public static function parse_query_string(Request $request)
     {
         $params = \GuzzleHttp\Psr7\parse_query($request->getQueryString());
         if (!isset($params['q']) || !$params['q']) {
@@ -44,8 +44,8 @@ class SolrQueryStringService {
         }
         return $params;
     }
-    
-    protected static function prepare_query_term($q) 
+
+    protected static function prepare_query_term($q)
     {
         if (substr($q, 0, 1) == '(' && substr($q, -1) == ')') {
             return $q;
@@ -58,10 +58,14 @@ class SolrQueryStringService {
         }
         return $q;
     }
-    
-    public static function parse_filter_queries($params) 
+
+    public static function parse_filter_queries($params)
     {
         $filterQueries = [];
+        if (isset($params['fq[]'])) {
+            $params->fq = $params['fq[]'];
+            unset($params['fq[]']);
+        }
         if (isset($params->fq)) {
             if (!is_array($params->fq)) {
                 $params->fq = [$params->fq];
@@ -73,7 +77,7 @@ class SolrQueryStringService {
                 $filterQuery['value'] = ucfirst($value);
                 $qryParams = (array) $params;
                 unset($qryParams['fq'][$index]);
-                $filterQuery['removeLink'] = secure_url('/search?') 
+                $filterQuery['removeLink'] = secure_url('/search?')
                         . \GuzzleHttp\Psr7\build_query($qryParams);
                 $filterQueries[] = $filterQuery;
             }
