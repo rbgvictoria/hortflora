@@ -19,44 +19,21 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import Item from './Item'
 
 export default {
   components: {
     Item
   },
-  data() {
-    return {
-      bracketedKey: false
-    }
-  },
-  computed: {
-    ...mapState({
-      items: (state) => {
-        return state.key.items
-      }
-    })
-  },
+  props: ['bracketedKey', 'items'],
   methods: {
-    getKey() {
-        $.fn.keybase('bracketedKey', {
-          bracketedKeyDiv: '#keybase-bracketed',
-          onBracketedKey: this.onBracketedKey,
-          bracketedKeyDisplay: function() {}
-        })
-    },
-    onBracketedKey() {
-      this.bracketedKey = $.fn.keybase.getters.bracketedKey()[0]
-    },
     getItem(id) {
-      return this.items.filter(item => {
-        return item.item_id === id
-      })[0]
+      if (this.items.length) {
+        return this.items.filter(item => {
+          return item.item_id === id
+        })[0]
+      }
     }
   },
-  mounted() {
-    this.getKey();
-  }
 }
 </script>

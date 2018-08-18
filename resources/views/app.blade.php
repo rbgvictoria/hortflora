@@ -8,7 +8,7 @@
         <link rel="shortcut icon" href="https://www.rbg.vic.gov.au/common/img/favicon.ico">
         <link rel="stylesheet" type="text/css" href="https://www.rbg.vic.gov.au/common/fonts/451576/645A29A9775E15EA2.css" />
         <link rel="stylesheet" type="text/css" href="{{ env('APP_URL') }}/css/font-awesome.css" />
-        <link rel="stylesheet" type="text/css" href="{{ env('APP_URL') . mix('/css/app.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ env('APP_URL') }}/css/app.css" />
         <script type="text/javascript">
             @isset($data)
             window.hortflora_server_data = "{!! addslashes(json_encode($data)) !!}";
@@ -17,6 +17,6 @@
     </head>
     <body class="hortflora">
         <div id="app"></div> <!-- /#app -->
-        <script src="{{ env('APP_URL') . mix('/js/app.js') }}"></script>
+        <script src="{{ env('APP_URL') }}/js/app.js"></script>
     </body>
 </html>

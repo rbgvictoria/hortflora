@@ -293,6 +293,7 @@ try {
         onBracketedKey: function() {},
         onBracketedKeyComplete: function() {},
         onIndentedKey: function() {},
+        onIndentedKey: function() {},
         onIndentedKeyComplete: function() {},
         onNextCouplet: function() {}
     };
@@ -1168,10 +1169,8 @@ try {
             taxa.title = "Item";
             taxa.isFolder = true;
             taxa.children = [];
-
-            var taxon = {};
-            taxon.item_id = item;
-            taxon.title = JSPath.apply('.items{.item_id==="' + item + '"}.item_name', json)[0];
+            var taxon = JSPath.apply('.items{.item_id==="' + item + '"}', json)[0];
+            taxon.title = taxon.item_name;
             taxa.children[0] = taxon;
             //alert (taxon.title);
             taxa.expand = true;

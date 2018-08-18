@@ -33,6 +33,21 @@ limitations under the License.
     border: solid 1px #cccccc;
 }
 
+.keybase-player-currentnode:after, .keybase-player-currentnode:before,
+.keybase-player-path:after, .keybase-player-path:before,
+.keybase-player-remainingitems:after, .keybase-player-remainingitems:before,
+.keybase-player-discardeditems:after, .keybase-player-discardeditems:after {
+  display: table;
+  content: " ";
+}
+
+.keybase-player-currentnode:after,
+.keybase-player-path:after,
+.keybase-player-remainingitems:after,
+.keybase-player-discardeditems:after {
+  clear: both;
+}
+
 .keybase-player-drag-leftright {
     cursor: col-resize;
 }
@@ -77,10 +92,12 @@ limitations under the License.
     background-repeat: no-repeat;
 }
 
-.keybase-player-currentnode>div, .keybase-player-path>div,
-.keybase-player-remainingitems>div, .keybase-player-discardeditems>div {
+.keybase-player-currentnode > div, .keybase-player-path > div,
+.keybase-player-remainingitems > div, .keybase-player-discardeditems > div {
     overflow-y: auto;
     padding: 10px 0;
+    box-sizing: border-box;
+    height: calc(100% - 40px);
 }
 
 .keybase-player-currentnode ul, .keybase-player-path ol,
@@ -189,13 +206,6 @@ limitations under the License.
   top: calc(50% + 3px);
 }
 
-#keybase-player .keybase-player-currentnode > div,
-#keybase-player .keybase-player-path > div,
-#keybase-player .keybase-player-remainingitems > div,
-#keybase-player .keybase-player-discardeditems > div {
-  height: 100%;
-}
-
 #keybase-player .keybase-player-drag-leftright {
   width: 6px;
   height: 100%;
@@ -209,4 +219,62 @@ limitations under the License.
   width: 100%;
   position: absolute;
   top: calc(50% - 3px);
+}
+
+/* Indented key
+************************************************/
+/* Indented key display
+-----------------------------------*/
+.keybase-indented-key {
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.keybase-indented-key ul {
+  padding-left: 20px;
+}
+
+.keybase-indented-key>ul {
+  padding-left: 0;
+  margin: 0 10px;
+}
+
+.keybase-indented-key li {
+  list-style-type: none;
+}
+
+.keybase-indented-key .keybase-lead {
+  margin-bottom: 10px;
+}
+
+.keybase-indented-key .keybase-lead::before, .keybase-indented-key .keybase-lead::after {
+  display: block;
+  clear: both;
+  content: '';
+}
+
+.keybase-indented-key .keybase-from-node {
+  display: inline-block;
+  margin-right: 6px;
+  font-weight: bold;
+}
+
+.keybase-indented-key .keybase-to-node, .keybase-indented-key .keybase-to-item {
+  display: inline-block;
+  float: right;
+  margin-left: 308px;
+}
+
+.keybase-indented-key .keybase-from-node::after {
+  content: ':';
+  margin-right: 0;
+}
+
+.keybase-indented-key .keybase-couplet li:first-child>.keybase-lead>.keybase-from-node::after {
+  content: '.';
+  color: #fff;
+}
+
+.external-filters {
+  margin-bottom: 10px;
 }

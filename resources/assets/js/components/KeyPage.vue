@@ -27,10 +27,18 @@
             <!-- Tab panes -->
             <div class="tab-content">
               <div role="tabpanel" class="tab-pane active" id="tab_player">
-                <keybase-player></keybase-player>
+                <keybase-player
+                  :currentNode="currentNode"
+                  :kbPath="kbPath"
+                  :remainingItems="remainingItems"
+                  :discardedItems="discardedItems"
+                ></keybase-player>
               </div>
               <div role="tabpanel" class="tab-pane" id="tab_bracketed">
-                <bracketed-key></bracketed-key>
+                <bracketed-key
+                  :bracketedKey="bracketedKey"
+                  :items="items"
+                ></bracketed-key>
               </div>
             </div> <!-- /.tab-content -->
 
@@ -54,6 +62,18 @@ export default {
   components: {
     KeybasePlayer,
     BracketedKey
+  },
+  data() {
+    return {
+      items: false,
+      leads: false,
+      root: false,
+      currentNode: false,
+      kbPath: false,
+      remainingItems: false,
+      discardedItems: false,
+      bracketedKey: false
+    }
   },
   computed: {
     ...mapState({
@@ -85,6 +105,81 @@ export default {
         }
         return parent
       }
+    })
+  },
+  methods: {
+    getKey(keyID) {
+
+      $('.keybase-link a').attr('href', 'http://keybase.rbg.vic.gov.au/keys/show/' + keyID)
+      var wsUrl = 'https://data.rbg.vic.gov.au/keybase-ws'
+
+      $.fn.keybase('player', {
+        baseUrl: wsUrl + "/ws/key_get",
+        playerDiv: '#keybase-player',
+        key: keyID,
+        title: false,
+        reset: true,
+        playerWindow: function() {},
+        currentNodeDisplay: function() {},
+        pathDisplay: function() {},
+        remainingItemsDisplay: function() {},
+        discardedItemsDisplay: function() {},
+        bracketedKeyDisplay: null,
+        onJson: this.onJson,
+        onLoad: this.getBracketedKey,
+        onNextCouplet: this.onNextCouplet,
+        bracketedKeyDiv: null
+      })
+    },
+    onNextCouplet() {
+      this.currentNode = $.fn.keybase.getters.currentNode()
+      this.kbPath = $.fn.keybase.getters.path()
+      this.remainingItems = $.fn.keybase.getters.remainingItems()
+      this.discardedItems = $.fn.keybase.getters.discardedItems()
+    },
+    onJson() {
+      let json = $.fn.keybase.getters.jsonKey()
+      let keyInStore = this.$store.state.key
+      if (keyInStore && keyInStore.taxonomic_scope.url) {
+        json.parent = {
+          id: keyInStore.key_id,
+          title: keyInStore.key_title,
+          taxonomic_scope: keyInStore.taxonomic_scope
+        }
+      }
+      this.$store.dispatch('storeKey', json)
+      this.items = json.items
+      this.leads = json.leads
+      this.root = json.first_step.root_node_id
+    },
+    getBracketedKey() {
+      $.fn.keybase('bracketedKey', {
+        bracketedKeyDiv: '#keybase-bracketed',
+        onBracketedKey: this.onBracketedKey,
+        bracketedKeyDisplay: function() {},
+        reset: false
+      })
+    },
+    onBracketedKey() {
+      this.bracketedKey = $.fn.keybase.getters.bracketedKey()[0]
+    }
+  },
+  watch: {
+    '$route.params.key'() {
+      this.getKey(this.$route.params.key)
+    }
+  },
+  mounted() {
+    this.getKey(this.$route.params.key)
+    // drag events from KeyBase
+    $('.keybase-player-window').on('mousedown', '.keybase-player-drag-leftright',
+        $.fn.keybase.dragLeftRight)
+    $('.keybase-player-leftpane').on('mousedown', '.keybase-player-drag-updown',
+        $.fn.keybase.dragUpDownLeftPane)
+    $('.keybase-player-rightpane').on('mousedown', '.keybase-player-drag-updown',
+        $.fn.keybase.dragUpDownRightPane)
+    $(document).mouseup(function(e){
+      $(document).unbind('mousemove')
     })
   }
 }
