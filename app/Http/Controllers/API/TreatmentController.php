@@ -56,7 +56,7 @@ class TreatmentController extends ApiController
     {
         $treatment = $this->getTreatment($id);
         $transformer = new \App\Transformers\TreatmentTransformer();
-        $resource = new Fractal\Resource\Item($treatment, $transformer, 
+        $resource = new Fractal\Resource\Item($treatment, $transformer,
                 'treatments');
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
@@ -69,7 +69,7 @@ class TreatmentController extends ApiController
      *     summary="Updates an existing Treatment record",
      *     @SWG\Parameter(
      *         in="path",
-     *         name="version",
+     *         name="treatment",
      *         type="string",
      *         format="uuid",
      *         required=true,
@@ -132,7 +132,7 @@ class TreatmentController extends ApiController
             }
         }
         $this->em->flush();
-        $resource =  new Fractal\Resource\Item($treatment, 
+        $resource =  new Fractal\Resource\Item($treatment,
                 new \App\Transformers\TreatmentTransformer);
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
@@ -183,7 +183,7 @@ class TreatmentController extends ApiController
         $this->em->flush();
         return response()->json([], 204);
     }
-    
+
     /**
      * @SWG\Get(
      *     path="/treatments/{treatment}/asTaxon",
@@ -208,7 +208,7 @@ class TreatmentController extends ApiController
      *         description="The requested resource could not be found."
      *     )
      * )
-     * 
+     *
      * @param \Ramsey\Uuid\Uuid $id
      * @return \Illuminate\Http\Response
      */
@@ -222,7 +222,7 @@ class TreatmentController extends ApiController
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
     }
-    
+
     /**
      * @SWG\Get(
      *     path="/treatments/{treatment}/forTaxon",
@@ -247,7 +247,7 @@ class TreatmentController extends ApiController
      *         description="The requested resource could not be found."
      *     )
      * )
-     * 
+     *
      * @param \Ramsey\Uuid\Uuid $id
      * @return \Illuminate\Http\Response
      */
@@ -261,7 +261,7 @@ class TreatmentController extends ApiController
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
     }
-    
+
     /**
      * @SWG\Get(
      *     path="/treatments/{treatment}/versions",
@@ -282,7 +282,7 @@ class TreatmentController extends ApiController
      *           type="array",
      *           @SWG\Items(
      *             ref="#/definitions/TreatmentVersion"
-     *           )  
+     *           )
      *         )
      *     ),
      *     @SWG\Response(
@@ -290,19 +290,19 @@ class TreatmentController extends ApiController
      *         description="The requested resource could not be found."
      *     )
      * )
-     * 
+     *
      * @param string $id
      * @return \Illuminate\Http\Response
      */
     public function showVersions($id)
     {
         $treatment = $this->getTreatment($id);
-        $resource = new Fractal\Resource\Collection($treatment->getVersions(), 
+        $resource = new Fractal\Resource\Collection($treatment->getVersions(),
                 new \App\Transformers\TreatmentTransformer);
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
     }
-    
+
     /**
      * @SWG\Get(
      *     path="/treatments/{treatment}/currentVersion",
@@ -328,7 +328,7 @@ class TreatmentController extends ApiController
      *         description="The requested resource could not be found."
      *     )
      * )
-     * 
+     *
      * @param type $id
      * @return type
      */
@@ -338,12 +338,12 @@ class TreatmentController extends ApiController
         $currentVersion = $treatment->getVersions()->filter(function($version) {
             return $version->getIsCurrentVersion();
         })->first();
-        $resource = new Fractal\Resource\Item($currentVersion, 
+        $resource = new Fractal\Resource\Item($currentVersion,
                 new \App\Transformers\TreatmentTransformer);
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
     }
-    
+
     /**
      * @SWG\Post(
      *     path="/treatments/{treatment}/versions",
@@ -352,10 +352,10 @@ class TreatmentController extends ApiController
      *     consumes={"application/json"},
      *     @SWG\Parameter(
      *         in="path",
-     *         name="taxon",
+     *         name="treatment",
      *         type="string",
      *         required=true,
-     *         description="Identifier (UUID) of the Taxon"
+     *         description="Identifier (UUID) of the Treatment"
      *     ),
      *     @SWG\Parameter(
      *         in="body",
@@ -387,7 +387,7 @@ class TreatmentController extends ApiController
      *         }
      *     }
      * )
-     * 
+     *
      * @param \Illuminate\Http\Request $request
      * @param string $id
      * @return \Illuminate\Http\Response
@@ -410,15 +410,15 @@ class TreatmentController extends ApiController
             $version->setIsCurrentVersion(false);
         }
         $this->em->flush();
-        $resource = new Fractal\Resource\Item($version, 
+        $resource = new Fractal\Resource\Item($version,
                 new \App\Transformers\TreatmentVersionTransformer);
         $data = $this->fractal->createData($resource)->toArray();
-        return response()->json($data, 201)->header('Location', env('APP_URL') 
+        return response()->json($data, 201)->header('Location', env('APP_URL')
                 . '/api/treatment-versions/' . $version->getGuid());
     }
-    
+
     /**
-     * 
+     *
      * @param string $id
      * @return \App\Entities\Treatment
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException

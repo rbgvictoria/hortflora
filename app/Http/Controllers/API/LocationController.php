@@ -58,10 +58,10 @@ class LocationController extends ApiController
         $loc->setDecimalLongitude($request->input('decimalLongitude'));
         $this->em->persist($loc);
         $this->em->flush();
-        $resource = new Fractal\Resource\Item($loc, 
+        $resource = new Fractal\Resource\Item($loc,
                 new \App\Transformers\LocationTransformer);
         $data = $this->fractal->createData($resource)->toArray();
-        return response()->json($data, 201)->header('Location', 
+        return response()->json($data, 201)->header('Location',
                 $request->fullUrl() . '/' . $loc->getGuid());
     }
 
@@ -101,7 +101,7 @@ class LocationController extends ApiController
         if (!$loc) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
-        $resource = new Fractal\Resource\Item($loc, 
+        $resource = new Fractal\Resource\Item($loc,
                 new \App\Transformers\LocationTransformer);
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
@@ -109,7 +109,7 @@ class LocationController extends ApiController
 
     /**
      * @SWG\Put(
-     *     path="/locations/{locations}",
+     *     path="/locations/{location}",
      *     tags={"Locations"},
      *     summary="Updates an existing Location record",
      *     @SWG\Parameter(
@@ -169,7 +169,7 @@ class LocationController extends ApiController
         $loc->setDecimalLatitude($request->input('decimalLatitude'));
         $loc->setDecimalLongitude($request->input('decimalLongitude'));
         $this->em->flush();
-        $resource = new Fractal\Resource\Item($loc, 
+        $resource = new Fractal\Resource\Item($loc,
                 new \App\Transformers\LocationTransformer);
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
@@ -177,7 +177,7 @@ class LocationController extends ApiController
 
     /**
      * @SWG\Delete(
-     *     path="/locations/{locations}",
+     *     path="/locations/{location}",
      *     tags={"Locations"},
      *     summary="Deletes an Location record",
      *     @SWG\Parameter(

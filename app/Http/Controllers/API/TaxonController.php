@@ -141,7 +141,7 @@ class TaxonController extends TaxonAbstractController
         }
         $acceptedNameUsage = $taxon->getAcceptedNameUsage();
         if ($acceptedNameUsage) {
-            $resource = new Fractal\Resource\Item($acceptedNameUsage, 
+            $resource = new Fractal\Resource\Item($acceptedNameUsage,
                     new TaxonTransformer, 'taxa');
             $data = $this->fractal->createData($resource)->toArray();
             return response()->json($data);
@@ -196,7 +196,7 @@ class TaxonController extends TaxonAbstractController
         }
         $parent = $taxon->getParent();
         if ($parent) {
-            $resource = new Fractal\Resource\Item($parent, 
+            $resource = new Fractal\Resource\Item($parent,
                     new TaxonTransformer, 'taxa');
             $data = $this->fractal->createData($resource)->toArray();
             return response()->json($data);
@@ -255,7 +255,7 @@ class TaxonController extends TaxonAbstractController
         $classification = $this->em->getRepository('\App\Entities\Taxon')
                 ->getHigherClassification($taxon);
         if ($classification) {
-            $resource = new Fractal\Resource\Collection($classification, 
+            $resource = new Fractal\Resource\Collection($classification,
                     new TaxonTransformer, 'taxa');
             $data = $this->fractal->createData($resource)->toArray();
             return response()->json($data);
@@ -314,7 +314,7 @@ class TaxonController extends TaxonAbstractController
         $children = $this->em->getRepository('\App\Entities\Taxon')
                 ->getChildren($taxon);
         if ($children) {
-            $resource = new Fractal\Resource\Collection($children, 
+            $resource = new Fractal\Resource\Collection($children,
                     new TaxonTransformer, 'taxa');
             $data = $this->fractal->createData($resource)->toArray();
             return response()->json($data);
@@ -373,7 +373,7 @@ class TaxonController extends TaxonAbstractController
         $siblings = $this->em->getRepository('\App\Entities\Taxon')
                 ->getSiblings($taxon);
         if ($siblings) {
-            $resource = new Fractal\Resource\Collection($siblings, 
+            $resource = new Fractal\Resource\Collection($siblings,
                     new TaxonTransformer, 'taxa');
             $data = $this->fractal->createData($resource)->toArray();
             return response()->json($data);
@@ -432,7 +432,7 @@ class TaxonController extends TaxonAbstractController
         $synonyms = $this->em->getRepository('\App\Entities\Taxon')
                 ->getSynonyms($taxon);
         if ($synonyms) {
-            $resource = new Fractal\Resource\Collection($synonyms, 
+            $resource = new Fractal\Resource\Collection($synonyms,
                     new TaxonTransformer, 'taxa');
             $data = $this->fractal->createData($resource)->toArray();
             return response()->json($data);
@@ -440,7 +440,7 @@ class TaxonController extends TaxonAbstractController
     }
 
     /**
-     * 
+     *
      * @SWG\Get(
      *     path="/taxa/{taxon}/cultivars",
      *     tags={"Taxa", "Cultivars"},
@@ -489,7 +489,7 @@ class TaxonController extends TaxonAbstractController
             throw new NotFoundHttpException();
         }
         $cultivars = $taxon->getCultivars();
-        $resource = new Fractal\Resource\Collection($cultivars, 
+        $resource = new Fractal\Resource\Collection($cultivars,
                 new \App\Transformers\CultivarTransformer, 'cultivars');
         $this->fractal->parseExcludes('taxon');
         $data = $this->fractal->createData($resource)->toArray();
@@ -497,7 +497,7 @@ class TaxonController extends TaxonAbstractController
     }
 
     /**
-     * 
+     *
      * @SWG\Get(
      *     path="/taxa/{taxon}/horticulturalGroups",
      *     tags={"Taxa", "Horticultural Groups"},
@@ -548,7 +548,7 @@ class TaxonController extends TaxonAbstractController
         $horticulturalGroups = $taxon->getHorticulturalGroups();
         if ($horticulturalGroups) {
             $transformer = new \App\Transformers\HorticulturalGroupTransformer();
-            $resource = new Fractal\Resource\Collection($horticulturalGroups, 
+            $resource = new Fractal\Resource\Collection($horticulturalGroups,
                     new \App\Transformers\HorticulturalGroupTransformer);
             $data = $this->fractal->createData($resource)->toArray();
             return response()->json($data);
@@ -629,7 +629,7 @@ class TaxonController extends TaxonAbstractController
     }
 
     /**
-     * 
+     *
      * @param  string $id
      * @return \Illuminate\Http\Response
      */
@@ -642,7 +642,7 @@ class TaxonController extends TaxonAbstractController
             throw new NotFoundHttpException();
         }
         $distribution = $taxon->getDistribution();
-        $resource = new Fractal\Resource\Collection($distribution, 
+        $resource = new Fractal\Resource\Collection($distribution,
                 new \App\Transformers\RegionTransformer, 'regions');
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
@@ -678,7 +678,7 @@ class TaxonController extends TaxonAbstractController
             return response()->json(null);
         }
     }
-    
+
     /**
      * @SWG\Post(
      *     path="/taxa",
@@ -714,18 +714,18 @@ class TaxonController extends TaxonAbstractController
      *         }
      *     }
      * )
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         $taxon = new \App\Entities\Taxon();
-        $taxon->setName($this->getValue($request->input('name'), 
+        $taxon->setName($this->getValue($request->input('name'),
                 'Name'));
-        $taxon->setTaxonRank($this->getValue($request->input('taxonRank'), 
+        $taxon->setTaxonRank($this->getValue($request->input('taxonRank'),
                 'TaxonRank', true));
-        $taxon->setParent($this->getValue($request->input('parentNameUsage'), 
+        $taxon->setParent($this->getValue($request->input('parentNameUsage'),
                 'Taxon'));
         if ($request->input('acceptedNameUsage')) {
             $taxon->setAcceptedNameUsage($this->getValue($request
@@ -746,13 +746,13 @@ class TaxonController extends TaxonAbstractController
         $this->em->flush();
         $transformer = new \App\Transformers\TaxonTransformer();
         $resource = new Fractal\Resource\Item($taxon, $transformer, 'taxa');
-        $this->fractal->parseIncludes(['parentNameUsage', 'acceptedNameUsage', 
+        $this->fractal->parseIncludes(['parentNameUsage', 'acceptedNameUsage',
                 'taxonomicStatus']);
         $data = $this->fractal->createData($resource)->toArray();
-        return response()->json($data, 201)->header('Location', env('APP_URL') 
+        return response()->json($data, 201)->header('Location', env('APP_URL')
                 . '/' . $request->path() . '/' . $taxon->getGuid());
     }
-    
+
     /**
      * @SWG\Put(
      *     path="/taxa/{taxon}",
@@ -795,7 +795,7 @@ class TaxonController extends TaxonAbstractController
      *         }
      *     }
      * )
-     * 
+     *
      * @param Request $request
      * @param string $id
      * @return \Illuminate\Http\Response
@@ -818,7 +818,7 @@ class TaxonController extends TaxonAbstractController
             throw new \App\Exceptions\CannotChangeTaxonNameException();
         }
         if ($request->input('taxonRank')) {
-            $taxon->setTaxonRank($this->getValue($request->input('taxonRank'), 
+            $taxon->setTaxonRank($this->getValue($request->input('taxonRank'),
                     'TaxonRank', true));
         }
         if ($request->input('parentNameUsage')) {
@@ -829,7 +829,7 @@ class TaxonController extends TaxonAbstractController
             $taxon->setAcceptedNameUsage($this->getValue($request
                     ->input('acceptedNameUsage'), 'Taxon'));
             $taxon->setTaxonomicStatus($this->getValue($request
-                    ->input('taxonomicStatus'), 'TaxonomicStatus', 
+                    ->input('taxonomicStatus'), 'TaxonomicStatus',
                     true));
         }
         $taxon->setTaxonRemarks($request->input('taxonRemarks'));
@@ -840,7 +840,7 @@ class TaxonController extends TaxonAbstractController
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
     }
-    
+
     /**
      * @SWG\Delete(
      *     path="/taxa/{taxon}",
@@ -871,7 +871,7 @@ class TaxonController extends TaxonAbstractController
      *         }
      *     }
      * )
-     * 
+     *
      * @param string $id
      * @return \Illuminate\Http\Response
      * @throws NotFoundHttpException
@@ -888,7 +888,7 @@ class TaxonController extends TaxonAbstractController
         $this->em->flush();
         return response()->json([], 204);
     }
-    
+
     /**
      * @SWG\Get(
      *     path="/taxa/{taxon}/regions",
@@ -916,21 +916,21 @@ class TaxonController extends TaxonAbstractController
      *         description="The requested resource could not be found"
      *     )
      * )
-     * 
+     *
      * @param string $id
      * @return \Illuminate\Http\Response
      */
     public function showRegions($id)
     {
         $taxon = $this->getTaxon($id);
-        $resource = new Fractal\Resource\Collection($taxon->getRegions(), 
+        $resource = new Fractal\Resource\Collection($taxon->getRegions(),
                 new \App\Transformers\RegionTransformer);
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
     }
-    
+
     /**
-     * 
+     *
      * @param string $id
      * @return \App\Entities\Taxon
      * @throws NotFoundHttpException
@@ -954,7 +954,7 @@ class TaxonController extends TaxonAbstractController
      *     description="Route takes an array of region codes in the body; a region won't be added if the Taxon already has it; an error will be thrown if a region doesn't exist.",
      *     @SWG\Parameter(
      *       in="path",
-     *       name="image",
+     *       name="taxon",
      *       type="string",
      *       required=true,
      *       description="Identifier (UUID) of the Taxon"
@@ -991,7 +991,7 @@ class TaxonController extends TaxonAbstractController
      *         }
      *     }
      * )
-     * 
+     *
      * @param \Illuminate\Http\Request $request
      * @param string $image
      * @return \Illuminate\Http\Response
@@ -1003,7 +1003,7 @@ class TaxonController extends TaxonAbstractController
         $regions = $request->getContent();
         if ($regions) {
             foreach ($regions as $reg) {
-                if (!$taxon->getRegions()->filter(function($region) 
+                if (!$taxon->getRegions()->filter(function($region)
                         use ($reg) {
                     return $region->getRegionCode == $reg;
                 })) {
@@ -1017,12 +1017,12 @@ class TaxonController extends TaxonAbstractController
             }
             $this->em->flush();
         }
-        $resource = new Fractal\Resource\Collection($taxon->getRegions(), 
+        $resource = new Fractal\Resource\Collection($taxon->getRegions(),
                 new \App\Transformers\RegionTransformer);
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
     }
-    
+
     /**
      * @SWG\Delete(
      *     path="/taxa/{taxon}/regions",
@@ -1071,7 +1071,7 @@ class TaxonController extends TaxonAbstractController
      *         }
      *     }
      * )
-     * 
+     *
      * @param \Illuminate\Http\Request $request
      * @param string $id
      * @return \Illuminate\Http\Response
@@ -1083,7 +1083,7 @@ class TaxonController extends TaxonAbstractController
         $regions = $request->getContent();
         if ($regions) {
             foreach ($regions as $item) {
-                $region = $taxon->getRegions()->filter(function($region) 
+                $region = $taxon->getRegions()->filter(function($region)
                         use ($item) {
                     return $region->getRegionCode() == $item;
                 });
@@ -1094,12 +1094,12 @@ class TaxonController extends TaxonAbstractController
             }
             $this->em->flush();
         }
-        $resource = new Fractal\Resource\Collection($taxon->getRegions(), 
+        $resource = new Fractal\Resource\Collection($taxon->getRegions(),
                 new \App\Transformers\RegionTransformer);
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
     }
-    
+
     /**
      * @SWG\Post(
      *     path="/taxa/{taxon}/changes",
@@ -1141,7 +1141,7 @@ class TaxonController extends TaxonAbstractController
      *         }
      *     }
      * )
-     * 
+     *
      * @param \Illuminate\Http\Request $request
      * @param string $id
      * @return \Illuminate\Http\Response
@@ -1163,10 +1163,10 @@ class TaxonController extends TaxonAbstractController
         }
         $change->setIsCurrent(true);
         $this->em->flush();
-        $resource = new Fractal\Resource\Item($change, 
+        $resource = new Fractal\Resource\Item($change,
                 new \App\Transformer\ChangeTransformer());
         $data = $this->fractal->createData($resource)->toArray();
-        return response()->json($data, 201)->header('Location', 
+        return response()->json($data, 201)->header('Location',
                 $request->fullUrl() . '/' . $change->getGuid());
     }
 

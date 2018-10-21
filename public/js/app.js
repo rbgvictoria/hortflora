@@ -12511,7 +12511,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\keybase\\Item.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\keybase\\Item.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Item.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -12549,7 +12549,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\widgets\\LazyLoadImage.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\widgets\\LazyLoadImage.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] LazyLoadImage.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -25398,7 +25398,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\SearchForm.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\SearchForm.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] SearchForm.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -25432,7 +25432,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\TaxonPage.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\TaxonPage.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] TaxonPage.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -32026,7 +32026,7 @@ exports.push([module.i, "\n.modal {\n  background-color: rgba(0, 0, 0, 0.5);\n}\
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(1)();
-exports.push([module.i, "\r\n#nprogress {\r\n  pointer-events: none;\r\n  margin-top: 10px;\r\n  color: rgb(187, 157, 19) !important;\r\n}\r\n\r\n#nprogress .bar {\r\n  background: rgb(187, 157, 19) !important;\r\n\r\n  position: fixed;\r\n  z-index: 1031;\r\n  top: 0;\r\n  left: 0;\r\n\r\n  width: 100%;\r\n  height: 5px !important;\r\n}\r\n\r\n/* Fancy blur effect */\r\n#nprogress .peg {\r\n  display: block;\r\n  position: absolute;\r\n  right: 0px;\r\n  width: 100px;\r\n  height: 100%;\r\n  box-shadow: 0 0 10px rgb(187, 157, 19), 0 0 5px rgb(187, 157, 19);\r\n  opacity: 1.0;\r\n\r\n  -webkit-transform: rotate(3deg) translate(0px, -4px);\r\n      -ms-transform: rotate(3deg) translate(0px, -4px);\r\n          transform: rotate(3deg) translate(0px, -4px);\r\n}\r\n\r\n/* Remove these to get rid of the spinner */\r\n#nprogress .spinner {\r\n  display: block;\r\n  position: fixed;\r\n  z-index: 1031;\r\n  top: 15px;\r\n  left: 15px;\r\n}\r\n\r\n#nprogress .spinner-icon {\r\n  width: 18px;\r\n  height: 18px;\r\n  box-sizing: border-box;\r\n\r\n  border: solid 2px transparent;\r\n  border-top-color: rgb(187, 157, 19);\r\n  border-left-color: rgb(187, 157, 19);\r\n  border-radius: 50%;\r\n\r\n  -webkit-animation: nprogress-spinner 400ms linear infinite;\r\n          animation: nprogress-spinner 400ms linear infinite;\r\n}\r\n\r\n.nprogress-custom-parent {\r\n  overflow: hidden;\r\n  position: relative;\r\n}\r\n\r\n.nprogress-custom-parent #nprogress .spinner,\r\n.nprogress-custom-parent #nprogress .bar {\r\n  position: absolute;\r\n}\r\n\r\n@-webkit-keyframes nprogress-spinner {\r\n  0%   { -webkit-transform: rotate(0deg); }\r\n  100% { -webkit-transform: rotate(360deg); }\r\n}\r\n@keyframes nprogress-spinner {\r\n  0%   { transform: rotate(0deg); }\r\n  100% { transform: rotate(360deg); }\r\n}\r\n", ""]);
+exports.push([module.i, "\n#nprogress {\n  pointer-events: none;\n  margin-top: 10px;\n  color: rgb(187, 157, 19) !important;\n}\n\n#nprogress .bar {\n  background: rgb(187, 157, 19) !important;\n\n  position: fixed;\n  z-index: 1031;\n  top: 0;\n  left: 0;\n\n  width: 100%;\n  height: 5px !important;\n}\n\n/* Fancy blur effect */\n#nprogress .peg {\n  display: block;\n  position: absolute;\n  right: 0px;\n  width: 100px;\n  height: 100%;\n  box-shadow: 0 0 10px rgb(187, 157, 19), 0 0 5px rgb(187, 157, 19);\n  opacity: 1.0;\n\n  -webkit-transform: rotate(3deg) translate(0px, -4px);\n      -ms-transform: rotate(3deg) translate(0px, -4px);\n          transform: rotate(3deg) translate(0px, -4px);\n}\n\n/* Remove these to get rid of the spinner */\n#nprogress .spinner {\n  display: block;\n  position: fixed;\n  z-index: 1031;\n  top: 15px;\n  left: 15px;\n}\n\n#nprogress .spinner-icon {\n  width: 18px;\n  height: 18px;\n  box-sizing: border-box;\n\n  border: solid 2px transparent;\n  border-top-color: rgb(187, 157, 19);\n  border-left-color: rgb(187, 157, 19);\n  border-radius: 50%;\n\n  -webkit-animation: nprogress-spinner 400ms linear infinite;\n          animation: nprogress-spinner 400ms linear infinite;\n}\n\n.nprogress-custom-parent {\n  overflow: hidden;\n  position: relative;\n}\n\n.nprogress-custom-parent #nprogress .spinner,\n.nprogress-custom-parent #nprogress .bar {\n  position: absolute;\n}\n\n@-webkit-keyframes nprogress-spinner {\n  0%   { -webkit-transform: rotate(0deg); }\n  100% { -webkit-transform: rotate(360deg); }\n}\n@keyframes nprogress-spinner {\n  0%   { transform: rotate(0deg); }\n  100% { transform: rotate(360deg); }\n}\n", ""]);
 
 /***/ }),
 /* 116 */
@@ -57606,7 +57606,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\App.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\App.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] App.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -57640,7 +57640,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\BackToLastSearchButton.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\BackToLastSearchButton.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] BackToLastSearchButton.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -57674,7 +57674,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\Banner.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\Banner.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Banner.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -57712,7 +57712,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\Breadcrumbs.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\Breadcrumbs.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Breadcrumbs.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -57746,7 +57746,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\ChildrenSelect.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\ChildrenSelect.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] ChildrenSelect.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -57780,7 +57780,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\ClassificationTab.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\ClassificationTab.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] ClassificationTab.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -57814,7 +57814,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\CultivarsTab.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\CultivarsTab.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] CultivarsTab.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -57852,7 +57852,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\DistributionMap.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\DistributionMap.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] DistributionMap.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -57890,7 +57890,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\FacetFields.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\FacetFields.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] FacetFields.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -57928,7 +57928,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\FacetModal.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\FacetModal.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] FacetModal.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -57962,7 +57962,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\FilterQueries.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\FilterQueries.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] FilterQueries.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -57996,7 +57996,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\Footer.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\Footer.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Footer.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58034,7 +58034,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\HeroImage.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\HeroImage.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] HeroImage.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58068,7 +58068,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\HomePage.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\HomePage.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] HomePage.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58102,7 +58102,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\HomePageHighlights.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\HomePageHighlights.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] HomePageHighlights.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58140,7 +58140,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\Images.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\Images.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Images.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58174,7 +58174,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\KeyButton.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\KeyButton.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] KeyButton.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58208,7 +58208,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\KeyPage.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\KeyPage.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] KeyPage.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58242,7 +58242,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\LoginPage.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\LoginPage.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] LoginPage.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58276,7 +58276,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\SearchPage.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\SearchPage.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] SearchPage.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58310,7 +58310,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\SearchResult.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\SearchResult.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] SearchResult.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58344,7 +58344,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\SearchResultHeader.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\SearchResultHeader.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] SearchResultHeader.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58378,7 +58378,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\SearchResultNav.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\SearchResultNav.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] SearchResultNav.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58412,7 +58412,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\SiblingsSelect.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\SiblingsSelect.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] SiblingsSelect.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58446,7 +58446,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\TaxonTabs.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\TaxonTabs.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] TaxonTabs.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58480,7 +58480,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\TaxonTreatment.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\TaxonTreatment.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] TaxonTreatment.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58518,7 +58518,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\Thumbnail.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\Thumbnail.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Thumbnail.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58552,7 +58552,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\keybase\\BracketedKey.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\keybase\\BracketedKey.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] BracketedKey.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58586,7 +58586,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\keybase\\CurrentNode.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\keybase\\CurrentNode.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] CurrentNode.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58620,7 +58620,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\keybase\\DiscardedItems.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\keybase\\DiscardedItems.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] DiscardedItems.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58654,7 +58654,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\keybase\\KeybasePlayer.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\keybase\\KeybasePlayer.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] KeybasePlayer.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58688,7 +58688,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\keybase\\Path.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\keybase\\Path.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Path.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58722,7 +58722,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\keybase\\RemainingItems.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\keybase\\RemainingItems.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] RemainingItems.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58760,7 +58760,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\passport\\AuthorizedClients.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\passport\\AuthorizedClients.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] AuthorizedClients.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58798,7 +58798,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\passport\\Clients.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\passport\\Clients.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Clients.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58836,7 +58836,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\passport\\PersonalAccessTokens.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\passport\\PersonalAccessTokens.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] PersonalAccessTokens.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58874,7 +58874,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\widgets\\AutoComplete.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\widgets\\AutoComplete.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] AutoComplete.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58908,7 +58908,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\widgets\\Carousel.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\widgets\\Carousel.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] Carousel.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58946,7 +58946,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\widgets\\LoadingSpinner.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\widgets\\LoadingSpinner.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] LoadingSpinner.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -58980,7 +58980,7 @@ var Component = __webpack_require__(0)(
   /* cssModules */
   null
 )
-Component.options.__file = "C:\\users\\nklaze\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\widgets\\PhotoSwipeElement.vue"
+Component.options.__file = "C:\\Users\\nklazenga\\Homestead\\code\\hortflora\\resources\\assets\\js\\components\\widgets\\PhotoSwipeElement.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] PhotoSwipeElement.vue: functional components are not supported with templates, they should use render functions.")}
 

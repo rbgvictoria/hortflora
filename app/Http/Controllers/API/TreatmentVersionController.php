@@ -13,7 +13,7 @@ class TreatmentVersionController extends ApiController
      *     summary="Gets a Treatment Version",
      *     @SWG\Parameter(
      *         in="path",
-     *         name="treatment_version",
+     *         name="version",
      *         type="string",
      *         required=true,
      *         description="Identifier (UUID) of the Treatment Version"
@@ -34,14 +34,14 @@ class TreatmentVersionController extends ApiController
      *         description="The requested resource could not be found."
      *     )
      * )
-     * 
+     *
      * @param string $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
         $version = $this->getTreatmentVersion($id);
-        $resource = new Fractal\Resource\Item($version, 
+        $resource = new Fractal\Resource\Item($version,
                 new \App\Transformers\TreatmentVersionTransformer);
         $data = $this->fractal->createData($resource);
         return response()->json($data);
@@ -108,7 +108,7 @@ class TreatmentVersionController extends ApiController
             $version->setIsCurrentVersion(true);
         }
         $this->em->flush();
-        $resource = new Fractal\Resource\Item($version, 
+        $resource = new Fractal\Resource\Item($version,
                 new \App\Transformers\TreatmentVersionTransformer);
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
@@ -156,9 +156,9 @@ class TreatmentVersionController extends ApiController
         $this->em->flush();
         return response()->json([], 204);
     }
-    
+
     /**
-     * 
+     *
      * @param string $id
      * @return \App\Entities\TreatmentVersion
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
@@ -173,6 +173,6 @@ class TreatmentVersionController extends ApiController
         }
         return $version;
     }
-    
-    
+
+
 }

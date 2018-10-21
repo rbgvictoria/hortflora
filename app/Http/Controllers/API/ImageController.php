@@ -141,27 +141,27 @@ class ImageController extends ApiController
      *       description="Successful response"
      *     ),
      * )
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
         $queryParams = array_diff_key($request->all(), array_flip(['page']));
-        $perPage = (isset($queryParams['perPage'])) 
+        $perPage = (isset($queryParams['perPage']))
                 ? $queryParams['perPage'] : 20;
         $page = $request->input('page') ?: 1;
         $paginator = $this->em->getRepository('\App\Entities\Image')->search($queryParams, $perPage, $page);
         $paginator->appends($queryParams);
         $paginatorAdapter = new IlluminatePaginatorAdapter($paginator);
         $images = $paginator->getCollection();
-        $resource = new Fractal\Resource\Collection($images, 
+        $resource = new Fractal\Resource\Collection($images,
                 new \App\Transformers\ImageTransformer, 'images');
         $resource->setPaginator($paginatorAdapter);
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
     }
-    
+
     /**
      * @SWG\Get(
      *     path="/images/{image}",
@@ -208,7 +208,7 @@ class ImageController extends ApiController
      *         description="The requested resource could not be found"
      *     )
      * )
-     * 
+     *
      * @param string $id
      * @return \Illuminate\Http\Response
      */
@@ -224,7 +224,7 @@ class ImageController extends ApiController
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
     }
-    
+
     /**
      * @SWG\Get(
      *     path="/images/{image}/occurrence",
@@ -249,7 +249,7 @@ class ImageController extends ApiController
      *         description="The requested resource could not be found"
      *     )
      * )
-     * 
+     *
      * @param string $id
      * @return \Illuminate\Http\Response
      */
@@ -269,7 +269,7 @@ class ImageController extends ApiController
         }
         return response()->json($data);
     }
-    
+
     /**
      * @SWG\Post(
      *     path="/images",
@@ -305,7 +305,7 @@ class ImageController extends ApiController
      *         }
      *     }
      * )
-     * 
+     *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
@@ -317,7 +317,7 @@ class ImageController extends ApiController
                 true));
         $image->setSubjectCategory($this->getValue($request
                 ->input('subjectCategory'), 'SubjectCategory', true));
-        $image->setLicense($this->getValue($request->input('license'), 'License', 
+        $image->setLicense($this->getValue($request->input('license'), 'License',
                 true));
         $image->setTitle($request->input('title'));
         $image->setCaption($request->input('caption'));
@@ -330,17 +330,17 @@ class ImageController extends ApiController
         $image->setRating($request->input('rating'));
         $image->setIsHeroImage($request->input('isHeroImage'));
         $image->setCreator($this->getValue($request->input('creator'), 'Agent'));
-        $image->setSource($this->getValue($request->input('source'), 
+        $image->setSource($this->getValue($request->input('source'),
                 'Reference'));
         $this->em->persist($image);
         $this->em->flush();
-        $resource = new Fractal\Resource\Item($image, 
+        $resource = new Fractal\Resource\Item($image,
                 new \App\Transformers\ImageTransformer, 'images');
         $data = $this->fractal->createData($resource)->toArray();
-        return response()->json($data, 201)->header('Location', env('APP_URL') 
+        return response()->json($data, 201)->header('Location', env('APP_URL')
                 . '/' . $request->path() . '/' . $image->getGuid());
     }
-    
+
     /**
      * @SWG\Put(
      *     path="/images/{image}",
@@ -383,7 +383,7 @@ class ImageController extends ApiController
      *         }
      *     }
      * )
-     * 
+     *
      * @param \Illuminate\Http\Request $request
      * @param string $id
      * @return \Illuminate\Http\Response
@@ -401,7 +401,7 @@ class ImageController extends ApiController
             $image->setScientificName($request->input('scientificName'));
         }
         if ($request->input('subtype')) {
-            $image->setSubtype($this->getValue($request->input('subtype'), 
+            $image->setSubtype($this->getValue($request->input('subtype'),
                     'Subtype', true));
         }
         if ($request->input('subjectCategory')) {
@@ -409,7 +409,7 @@ class ImageController extends ApiController
                     ->input('subjectCategory'), 'SubjectCategory', true));
         }
         if ($request->input('license')) {
-            $image->setLicense($this->getValue($request->input('license'), 'License', 
+            $image->setLicense($this->getValue($request->input('license'), 'License',
                     true));
         }
         if ($request->input('title')) {
@@ -444,18 +444,18 @@ class ImageController extends ApiController
             $image->setCreator($this->getValue($request->input('creator'), 'Agent'));
         }
         if ($request->input('source')) {
-            $image->setSource($this->getValue($request->input('source'), 
+            $image->setSource($this->getValue($request->input('source'),
                     'Reference'));
         }
         $this->em->flush();
-        $resource = new Fractal\Resource\Item($image, 
+        $resource = new Fractal\Resource\Item($image,
                 new \App\Transformers\ImageTransformer, 'images');
         $data = $this->fractal->createData($resource)->toArray();
-        return response()->json($data, 201)->header('Location', env('APP_URL') 
+        return response()->json($data, 201)->header('Location', env('APP_URL')
                 . '/' . $request->path() . '/' . $image->getGuid());
-        
+
     }
-    
+
     /**
      * @SWG\Delete(
      *     path="/images/{image}",
@@ -486,7 +486,7 @@ class ImageController extends ApiController
      *         }
      *     }
      * )
-     * 
+     *
      * @param string $id
      * @return \Illuminate\Http\Response
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
@@ -503,7 +503,7 @@ class ImageController extends ApiController
         $this->em->flush();
         return response()->json([], 204);
     }
-    
+
     /**
      * @SWG\Get(
      *     path="/images/{image}/access-points",
@@ -531,7 +531,7 @@ class ImageController extends ApiController
      *         description="The requested resource could not be found"
      *     )
      * )
-     * 
+     *
      * @param string $id
      * @return \Illuminate\Http\Response
      */
@@ -547,7 +547,7 @@ class ImageController extends ApiController
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
     }
-    
+
     /**
      * @SWG\Get(
      *     path="/images/{image}/access-points/{access_point}",
@@ -579,7 +579,7 @@ class ImageController extends ApiController
      *         description="The requested resource could not be found"
      *     )
      * )
-     * 
+     *
      * @param type $image
      * @param type $id
      * @return \Illuminate\Http\Response
@@ -594,13 +594,13 @@ class ImageController extends ApiController
         if (!$accessPoint || $accessPoint->getImage()->getGuid() != $id) {
             throw new NotFoundHttpException();
         }
-        $resource = new Fractal\Resource\Item($accessPoint, 
-                new \App\Transformers\ImageAccessPointTransformer, 
+        $resource = new Fractal\Resource\Item($accessPoint,
+                new \App\Transformers\ImageAccessPointTransformer,
                 'access-points');
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
     }
-    
+
     /**
      * @SWG\Post(
      *     path="/images/{image}/access-points",
@@ -643,7 +643,7 @@ class ImageController extends ApiController
      *         }
      *     }
      * )
-     * 
+     *
      * @param Request $request
      * @param type $image
      * @return type
@@ -658,7 +658,7 @@ class ImageController extends ApiController
         }
         $accessPoint = new \App\Entities\ImageAccessPoint();
         $accessPoint->setImage($img);
-        $accessPoint->setVariant($this->getValue($request->input('variant'), 
+        $accessPoint->setVariant($this->getValue($request->input('variant'),
                 '\App\Entities\Variant', true));
         $accessPoint->setAccessUri($request->input('accessUri'));
         $accessPoint->setFormat($request->input('format'));
@@ -666,14 +666,14 @@ class ImageController extends ApiController
         $accessPoint->setPixelYDimension($request->input('pixelYDimension'));
         $this->em->persist($accessPoint);
         $this->em->flush();
-        $resource = new Fractal\Resource\Item($accessPoint, 
-                new \App\Transformers\ImageAccessPointTransformer, 
+        $resource = new Fractal\Resource\Item($accessPoint,
+                new \App\Transformers\ImageAccessPointTransformer,
                 'access-points');
         $data = $this->fractal->createData($resource)->toArray();
-        return response()->json($data, 201)->header('Location', env('APP_URL') 
+        return response()->json($data, 201)->header('Location', env('APP_URL')
                 . '/' . $request->path() . '/' . $accessPoint->getGuid());
     }
-    
+
     /**
      * @SWG\Put(
      *     path="/images/{image}/access-points/{access_point}",
@@ -723,7 +723,7 @@ class ImageController extends ApiController
      *         }
      *     }
      * )
-     * 
+     *
      * @param \Illuminate\Http\Request $request
      * @param string $image                           UUID of the Image
      * @param string $id                              UUID of the AccessPoint
@@ -740,7 +740,7 @@ class ImageController extends ApiController
             throw new NotFoundHttpException();
         endif;
         if ($request->input('variant')):
-            $accessPoint->setVariant($this->getValue($request->input('variant'), 
+            $accessPoint->setVariant($this->getValue($request->input('variant'),
                     '\App\Entities\Variant', true));
         endif;
         if ($request->input('accessUri')):
@@ -756,13 +756,13 @@ class ImageController extends ApiController
             $accessPoint->setPixelYDimension($request->input('pixelYDimension'));
         endif;
         $this->em->flush();
-        $resource = new Fractal\Resource\Item($accessPoint, 
-                new \App\Transformers\ImageAccessPointTransformer, 
+        $resource = new Fractal\Resource\Item($accessPoint,
+                new \App\Transformers\ImageAccessPointTransformer,
                 'access-points');
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
     }
-    
+
     /**
      * @SWG\Delete(
      *     path="/images/{image}/access-points/{access_point}",
@@ -800,7 +800,7 @@ class ImageController extends ApiController
      *         }
      *     }
      * )
-     * 
+     *
      * @param type $image
      * @param type $id
      * @return type
@@ -819,7 +819,7 @@ class ImageController extends ApiController
         return response()->json([], 204);
     }
 
-    
+
     /**
      * @SWG\Get(
      *     path="/images/{image}/features",
@@ -847,7 +847,7 @@ class ImageController extends ApiController
      *         description="The requested resource could not be found"
      *     )
      * )
-     * 
+     *
      * @param string $id
      * @return \Illuminate\Http\Response
      */
@@ -863,7 +863,7 @@ class ImageController extends ApiController
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
     }
-    
+
     /**
      * @SWG\Post(
      *     path="/images/{image}/features",
@@ -909,7 +909,7 @@ class ImageController extends ApiController
      *         }
      *     }
      * )
-     * 
+     *
      * @param \Illuminate\Http\Request $request
      * @param string $image
      * @return \Illuminate\Http\Response
@@ -926,7 +926,7 @@ class ImageController extends ApiController
         $features = $request->input();
         if ($features) {
             foreach ($features as $item) {
-                if (!$img->getFeatures()->filter(function($feature) 
+                if (!$img->getFeatures()->filter(function($feature)
                         use ($item) {
                     return $feature->getName() == $item;
                 })) {
@@ -941,12 +941,12 @@ class ImageController extends ApiController
             $this->em->flush();
         }
         $transformer = new \App\Transformers\ImageFeatureTransformer();
-        $resource = new Fractal\Resource\Collection($img->getFeatures(), 
+        $resource = new Fractal\Resource\Collection($img->getFeatures(),
                 $transformer, 'features');
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);
     }
-    
+
     /**
      * @SWG\Delete(
      *     path="/images/{image}/features",
@@ -993,7 +993,7 @@ class ImageController extends ApiController
      *         }
      *     }
      * )
-     * 
+     *
      * @param \Illuminate\Http\Request $request
      * @param string $image
      * @return \Illuminate\Http\Response
@@ -1010,7 +1010,7 @@ class ImageController extends ApiController
         $features = $request->input();
         if ($features) {
             foreach ($features as $item) {
-                $feature = $img->getFeatures()->filter(function($feature) 
+                $feature = $img->getFeatures()->filter(function($feature)
                         use ($item) {
                     return $feature->getName() == $item;
                 });
@@ -1022,7 +1022,7 @@ class ImageController extends ApiController
             $this->em->flush();
         }
         $transformer = new \App\Transformers\ImageFeatureTransformer();
-        $resource = new Fractal\Resource\Collection($img->getFeatures(), 
+        $resource = new Fractal\Resource\Collection($img->getFeatures(),
                 $transformer, 'features');
         $data = $this->fractal->createData($resource)->toArray();
         return response()->json($data);

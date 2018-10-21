@@ -26,19 +26,19 @@ use Swagger\Annotations as SWG;
  * Description of TreatmentVersionTransformer
  *
  * @author Niels Klazenga <Niels.Klazenga@rbg.vic.gov.au>
- * 
+ *
  * @SWG\Definition(
  *   definition="TreatmentVersion",
  *   type="object",
- *   required={"isCurrentVersion", "html"}
+ *   required={"isCurrentVersion", "text"}
  * )
  */
 class TreatmentVersionTransformer extends OrmTransformer {
-    
+
     protected $availableIncludes = [];
-    
+
     protected $defaultIncludes = [];
-    
+
     /**
      * @SWG\Property(
      *   property="type",
@@ -63,7 +63,7 @@ class TreatmentVersionTransformer extends OrmTransformer {
      *   type="string",
      *   format="date"
      * ),
-     * 
+     *
      * @param \App\Entities\TreatmentVersion $treatmentVersion
      * @return array
      */
@@ -78,5 +78,5 @@ class TreatmentVersionTransformer extends OrmTransformer {
                 ->format('Y-m-d')
         ];
     }
-    
+
 }

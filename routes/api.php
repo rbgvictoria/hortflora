@@ -367,8 +367,8 @@ Route::middleware('auth.api')->group(function() {
     Route::post('images/{image}/features',
             'API\\ImageController@addFeatures')
             ->name('api.images.features.add');
-    Route::delete('images/{image}/features',
-            'API\\ImageController@removeFeatures')
+    Route::delete('images/{image}/feature/{feature}',
+            'API\\ImageController@removeFeature')
             ->name('api.images.features.remove');
 });
 Route::get('images/{image}/occurrence',
@@ -451,4 +451,3 @@ Route::get('autocomplete/name', 'API\\AutocompleteController@autocompleteName')
  * Agent
  */
 Route::resource('agents', 'API\\AgentController', ['as' => 'api'])->only(['show']);
-
