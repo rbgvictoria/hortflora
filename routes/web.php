@@ -29,3 +29,7 @@ Route::get('/search', 'SearchController@search');
 Route::get('apidocs', function() {
     return view('swagger');
 });
+
+Route::get('/glossary', function() {
+  return view('app', ['data' => []]);
+});

@@ -15,6 +15,8 @@ import TaxonPage from './components/TaxonPage.vue';
 import KeyPage from './components/KeyPage.vue';
 import SearchPage from './components/SearchPage.vue';
 import LoginPage from './components/LoginPage.vue';
+import Glossary from './components/glossary/Glossary.vue'
+import PassportDashboard from './components/PassportDashboard.vue'
 
 let router = new VueRouter({
   mode: 'history',
@@ -23,7 +25,8 @@ let router = new VueRouter({
     { path: '/taxa/:taxon', component: TaxonPage, name: 'taxa' },
     { path: '/keys/:key', component: KeyPage, name: 'keys' },
     { path: '/search', component: SearchPage, name: 'search' },
-    { path: '/login', component: LoginPage, name: 'login' }
+    { path: '/login', component: LoginPage, name: 'login' },
+    { path: '/glossary', component: Glossary, name: 'glossary' }
   ],
   scrollBehavior (to, from, savedPosition) {
     return { x: 0, y: 0 }

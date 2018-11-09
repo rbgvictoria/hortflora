@@ -6,7 +6,6 @@ use App\Entities\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Support\Str;
-use Doctrine\ORM\EntityManagerInterface as EntityManager;
 
 class ResetPasswordController extends Controller
 {
@@ -40,12 +39,12 @@ class ResetPasswordController extends Controller
         $this->middleware('guest');
     }
     
-    protected function resetPassword(EntityManager $em, $user, $password) {
+    protected function resetPassword($user, $password) {
         $user->setPassword(bcrypt($password));
         $user->setRememberToken(Str::random(60));
         
-        $em->persist($user);
-        $em->flush();
+        \EntityManager::persist($user);
+        \EntityManager::flush();
         
         $this->guard()->login($user);
     }

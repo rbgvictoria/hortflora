@@ -36,7 +36,7 @@
                             <router-link :to="{ name: 'taxa', params: { taxon: '9b750d7a-20f5-4e68-8f63-d315b925ef57' } }">Browse classification</router-link>
                         </li>
                         <li>
-                            <a href="#">Glossary</a>
+                          <router-link :to="{ name: 'glossary' }">Glossary</router-link>
                         </li>
                       </ul>
                       <div class="navbar-form navbar-right">
