@@ -10,6 +10,7 @@
             <option value="select-child">Select child...</option>
             <option
                 v-for="option in children"
+                :key="option.id"
                 :value="option.id"
             >
                 {{ option.name.scientificName }}

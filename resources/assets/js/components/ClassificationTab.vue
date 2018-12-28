@@ -1,7 +1,7 @@
 <template>
     <div class="section classification">
         <div v-if="classification" class="classification ancestors">
-            <div v-for="item in classification">
+            <div v-for="item in classification" :key="item.id">
                 <span class="taxon-rank">{{ item.rank }}</span>
                 <span v-html="item.spacer"></span>
                 <router-link v-if="item.rank !== 'Life'" :to="{ name: 'taxa', params: { taxon: item.id } }">
@@ -28,7 +28,7 @@
             Subordinate taxa
         </div>
         <div v-if="children" class="classification children">
-            <div v-for="item in children">
+            <div v-for="item in children" :key="item.id">
                 <span class="taxon-rank">{{ item.rank }}</span>
                 <span v-html="item.spacer"></span>
                 <router-link :to="{ name: 'taxa', params: { taxon: item.id } }">

@@ -8,7 +8,7 @@
       <div v-if="activeFilters.length">
         <h4>Filter queries</h4>
         <ul>
-          <li v-for="filter in activeFilters">
+          <li v-for="filter in activeFilters" :key="filter.label">
             <b>{{ filter.label }}:</b> {{ filter.value }}
             <router-link :to="{ name: 'search', query: filter.query }">
               <i class="fa fa-times"></i>

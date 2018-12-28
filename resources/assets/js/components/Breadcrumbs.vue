@@ -1,6 +1,6 @@
 <template>
     <ol class="breadcrumb pull-left" v-if="breadcrumbs">
-        <li v-for="crumb in breadcrumbs">
+        <li v-for="crumb in breadcrumbs" :key="crumb.id">
             <router-link
                 :to="{name: 'taxa', params: {taxon: crumb.id}}"
                 v-html="crumb.name.scientificName"

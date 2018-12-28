@@ -24,7 +24,7 @@
                   </tr>
               </thead>
               <tbody>
-                  <tr v-for="facet in field.facets">
+                  <tr v-for="facet in field.facets" :key="facet.val">
                       <td>
                           <label>
                               <input :value="facet.val" type="checkbox">

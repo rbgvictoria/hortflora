@@ -26698,6 +26698,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data() {
@@ -26850,6 +26851,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             let cult = this.$store.state.taxon.cultivars.data;
             return cult.map((item, index) => {
                 return {
+                    id: item.id,
                     formattedName: __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__helpers_name_helper__["a" /* formatName */])(item),
                     description: item.currentTreatment.currentVersion.text
                 };
@@ -26891,7 +26893,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
   methods: {
     getSrc() {
-      this.src = "http://localhost:8080/geoserver" + '/wms?service=WMS&version=1.1.0&request=GetMap' + '&layers=wgs%3Alevel3%2Chortflora%3Adistribution_view' + '&styles=polygon%2Cred_polygon' + '&bbox=-180.00005538%2C-55.9197235107422%2C180.0%2C83.6236064951172' + '&width=851&height=400' + '&srs=EPSG%3A4326' + '&format=image%2Fsvg' + `&cql_filter=INCLUDE%3Btaxon_id%3D%27${this.$route.params.taxon}%27`;
+      this.src = "http://localhost:8081/geoserver" + '/wms?service=WMS&version=1.1.0&request=GetMap' + '&layers=wgs%3Alevel3%2Chortflora%3Adistribution_view' + '&styles=polygon%2Cred_polygon' + '&bbox=-180.00005538%2C-55.9197235107422%2C180.0%2C83.6236064951172' + '&width=851&height=400' + '&srs=EPSG%3A4326' + '&format=image%2Fsvg' + `&cql_filter=INCLUDE%3Btaxon_id%3D%27${this.$route.params.taxon}%27`;
     }
   },
   mounted() {
@@ -26916,6 +26918,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex__ = __webpack_require__(5);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+//
 //
 //
 //
@@ -28171,6 +28174,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
 
 
 
@@ -28413,6 +28417,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
 //
 //
 //
@@ -59500,6 +59505,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v("Select child...")]), _vm._v(" "), _vm._l((_vm.children), function(option) {
     return _c('option', {
+      key: option.id,
       domProps: {
         "value": option.id
       }
@@ -59643,7 +59649,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('span', {
     staticClass: "h4"
   }, [_vm._v("Query term:")]), _vm._v(" " + _vm._s(_vm.params.q) + "\n    ")]), _vm._v(" "), (_vm.activeFilters.length) ? _c('div', [_c('h4', [_vm._v("Filter queries")]), _vm._v(" "), _c('ul', _vm._l((_vm.activeFilters), function(filter) {
-    return _c('li', [_c('b', [_vm._v(_vm._s(filter.label) + ":")]), _vm._v(" " + _vm._s(filter.value) + "\n          "), _c('router-link', {
+    return _c('li', {
+      key: filter.label
+    }, [_c('b', [_vm._v(_vm._s(filter.label) + ":")]), _vm._v(" " + _vm._s(filter.value) + "\n          "), _c('router-link', {
       attrs: {
         "to": {
           name: 'search',
@@ -59671,7 +59679,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   return _c('div', {
     staticClass: "keybase-player-path"
   }, [_c('h3', [_vm._v("Path")]), _vm._v(" "), _c('div', [(_vm.path) ? _c('ol', _vm._l((_vm.path), function(lead) {
-    return _c('li', [_c('a', {
+    return _c('li', {
+      key: lead.lead_id
+    }, [_c('a', {
       attrs: {
         "href": ("#l_" + (lead.lead_id))
       }
@@ -59741,6 +59751,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, _vm._l((_vm.siblings), function(option) {
     return _c('option', {
+      key: option.id,
       domProps: {
         "value": option.id
       }
@@ -59763,8 +59774,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   return _c('div', {
     staticClass: "keybase-player-discardeditems"
   }, [_c('h3', [_vm._v(_vm._s(_vm.header))]), _vm._v(" "), _c('div', [(_vm.discardedItems) ? _c('ul', _vm._l((_vm.discardedItems), function(item) {
-    return _c('li', [_c('item', {
-      key: item.id,
+    return _c('li', {
+      key: item.id
+    }, [_c('item', {
       attrs: {
         "item": item
       }
@@ -59789,7 +59801,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('div', {
     staticClass: "cultivar-group"
   }, _vm._l((_vm.cultivars), function(cultivar) {
-    return _c('div', [_c('p', {
+    return _c('div', {
+      key: cultivar.id
+    }, [_c('p', {
       staticClass: "currentname italics",
       domProps: {
         "innerHTML": _vm._s(cultivar.formattedName)
@@ -60141,8 +60155,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   return _c('div', {
     staticClass: "keybase-player-remainingitems"
   }, [_c('h3', [_vm._v(_vm._s(_vm.header))]), _vm._v(" "), _c('div', [(_vm.remainingItems) ? _c('ul', _vm._l((_vm.remainingItems), function(item) {
-    return _c('li', [_c('item', {
-      key: item.id,
+    return _c('li', {
+      key: item.id
+    }, [_c('item', {
       attrs: {
         "item": item
       }
@@ -60175,6 +60190,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "glossary-relationships"
   }, [_c('h4', [_vm._v("Relationships")]), _vm._v(" "), _vm._l((_vm.termData.relationships.data), function(rel) {
     return _c('div', {
+      key: rel.id,
       staticClass: "row"
     }, [_c('div', {
       staticClass: "col-xs-6 col-md-8"
@@ -60320,7 +60336,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   return (_vm.breadcrumbs) ? _c('ol', {
     staticClass: "breadcrumb pull-left"
   }, [_vm._l((_vm.breadcrumbs), function(crumb) {
-    return _c('li', [_c('router-link', {
+    return _c('li', {
+      key: crumb.id
+    }, [_c('router-link', {
       attrs: {
         "to": {
           name: 'taxa',
@@ -60533,12 +60551,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "keybase-bracketed-key"
   }, _vm._l((_vm.bracketedKey.children), function(couplet) {
     return _c('div', {
+      key: ("l_" + (couplet.children[0].parent_id)),
       staticClass: "keybase-couplet",
       attrs: {
         "id": ("l_" + (couplet.children[0].parent_id))
       }
     }, _vm._l((couplet.children), function(lead) {
       return _c('div', {
+        key: lead.lead_id,
         staticClass: "keybase-lead"
       }, [_c('span', {
         staticClass: "keybase-from-node"
@@ -60694,6 +60714,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_c('ul', _vm._l((_vm.terms), function(term) {
     return _c('li', {
+      key: term.value,
       class: term.label === _vm.activeTerm ? 'active' : false
     }, [_c('i', {
       staticClass: "fa fa-caret-right"
@@ -61088,6 +61109,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "query-result"
   }, [_c('search-result-header'), _vm._v(" "), _vm._l((_vm.results), function(doc) {
     return _c('div', {
+      key: doc.id,
       staticClass: "search-name-entry"
     }, [(doc.taxonomicStatus.name === 'accepted') ? _c('div', {
       staticClass: "row"
@@ -61170,7 +61192,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [(_vm.classification) ? _c('div', {
     staticClass: "classification ancestors"
   }, _vm._l((_vm.classification), function(item) {
-    return _c('div', [_c('span', {
+    return _c('div', {
+      key: item.id
+    }, [_c('span', {
       staticClass: "taxon-rank"
     }, [_vm._v(_vm._s(item.rank))]), _vm._v(" "), _c('span', {
       domProps: {
@@ -61229,7 +61253,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }), _vm._v("\n        Subordinate taxa\n    ")]) : _vm._e(), _vm._v(" "), (_vm.children) ? _c('div', {
     staticClass: "classification children"
   }, _vm._l((_vm.children), function(item) {
-    return _c('div', [_c('span', {
+    return _c('div', {
+      key: item.id
+    }, [_c('span', {
       staticClass: "taxon-rank"
     }, [_vm._v(_vm._s(item.rank))]), _vm._v(" "), _c('span', {
       domProps: {
@@ -61649,6 +61675,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "form-horizontal"
   }, _vm._l((_vm.facetFields), function(field) {
     return _c('div', {
+      key: field.fieldName,
       staticClass: "facet collapsible",
       attrs: {
         "data-hortflora-facet-name": field.name
@@ -61657,6 +61684,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       staticClass: "form-group"
     }, _vm._l((field.facets), function(facet) {
       return _c('li', {
+        key: facet.val,
         staticClass: "checkbox"
       }, [_c('label', [_c('input', {
         attrs: {
@@ -61786,6 +61814,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "highlights"
   }, [_c('h2', [_vm._v("Highlights")]), _vm._v(" "), _vm._l((_vm.highlights), function(highlight) {
     return _c('div', {
+      key: highlight.name,
       staticClass: "highlight"
     }, [_c('div', {
       staticClass: "highlight-image"
@@ -61886,7 +61915,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   return _c('div', {
     staticClass: "keybase-player-currentnode"
   }, [_vm._m(0), _vm._v(" "), _c('div', [(_vm.currentNode) ? _c('ul', _vm._l((_vm.currentNode), function(lead) {
-    return _c('li', [_c('a', {
+    return _c('li', {
+      key: lead.lead_id
+    }, [_c('a', {
       staticClass: "keybase-lead",
       attrs: {
         "href": ("#l_" + (lead.lead_id))
@@ -61987,6 +62018,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }, [_vm._v(_vm._s(_vm.paginationLinks.first.label))])], 1), _vm._v(" "), _vm._l((_vm.paginationLinks.pages), function(page) {
     return _c('li', {
+      key: page.label,
       class: page.classes
     }, [_c('router-link', {
       attrs: {
@@ -62308,7 +62340,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }
   }, [_vm._v("\n                        Count"), _vm._m(1)])])]), _vm._v(" "), _c('tbody', _vm._l((_vm.field.facets), function(facet) {
-    return _c('tr', [_c('td', [_c('label', [_c('input', {
+    return _c('tr', {
+      key: facet.val
+    }, [_c('td', [_c('label', [_c('input', {
       attrs: {
         "type": "checkbox"
       },

@@ -3,8 +3,8 @@
     <h3>{{ header }}</h3>
     <div>
       <ul v-if="remainingItems">
-        <li v-for="item in remainingItems">
-          <item :item="item" :key="item.id"></item>
+        <li v-for="item in remainingItems" :key="item.id">
+          <item :item="item"></item>
         </li>
       </ul>
     </div>

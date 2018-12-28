@@ -13,7 +13,7 @@
           query: paginationLinks.first.query }"
         >{{ paginationLinks.first.label }}</router-link>
       </li>
-      <li v-for="page in paginationLinks.pages" :class="page.classes">
+      <li v-for="page in paginationLinks.pages" :key="page.label" :class="page.classes">
         <router-link :to="{ name: 'search', query: page.query }">{{ page.label }}</router-link>
       </li>
       <li :class="paginationLinks.last.classes">

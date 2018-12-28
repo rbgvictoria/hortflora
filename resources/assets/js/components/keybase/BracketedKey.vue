@@ -1,8 +1,8 @@
 <template>
   <div id="keybase-bracketed" class="keybase-panel">
     <div class="keybase-bracketed-key">
-      <div v-for="couplet in bracketedKey.children" class="keybase-couplet" :id="`l_${ couplet.children[0].parent_id}`">
-        <div v-for="lead in couplet.children" class="keybase-lead">
+      <div v-for="couplet in bracketedKey.children" class="keybase-couplet" :key="`l_${ couplet.children[0].parent_id}`" :id="`l_${ couplet.children[0].parent_id}`">
+        <div v-for="lead in couplet.children" :key="lead.lead_id" class="keybase-lead">
           <span class="keybase-from-node">{{ lead.fromNode  }}</span>
           <span class="keybase-lead-text">{{ lead.title }}
             <span v-if="lead.toNode !== undefined" class="keybase-to-node">

@@ -4,6 +4,7 @@
     <div
       class="search-name-entry"
       v-for="doc in results"
+      :key="doc.id"
     >
       <div class="row" v-if="doc.taxonomicStatus.name === 'accepted'">
         <div class="col-lg-9 col-sm-8">

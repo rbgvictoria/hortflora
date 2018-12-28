@@ -1,7 +1,7 @@
 <template>
 <div id="term-list">
   <ul>
-    <li v-for="term in terms" :class="term.label === activeTerm ? 'active' : false">
+    <li v-for="term in terms" :key="term.value" :class="term.label === activeTerm ? 'active' : false">
       <i class="fa fa-caret-right"></i>
       <router-link :to="{ name: 'glossary', hash: '#' + term.label }">{{ term.label }}</router-link>
     </li>

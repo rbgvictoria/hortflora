@@ -9,6 +9,7 @@
         >
             <option
                 v-for="option in siblings"
+                :key="option.id" 
                 :value="option.id"
             >
                 {{ option.name.scientificName }}

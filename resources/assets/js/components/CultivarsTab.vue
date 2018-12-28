@@ -1,7 +1,7 @@
 <template>
     <div class="section cultivars">
         <div class="cultivar-group">
-            <div v-for="cultivar in cultivars">
+            <div v-for="cultivar in cultivars" :key="cultivar.id">
                 <p class="currentname italics" v-html="cultivar.formattedName"></p>
                 <div class="description" v-html="cultivar.description"></div>
             </div>
@@ -22,6 +22,7 @@
                 let cult = this.$store.state.taxon.cultivars.data;
                 return cult.map((item, index) => {
                     return {
+                        id: item.id,
                         formattedName: formatName(item),
                         description: item.currentTreatment.currentVersion.text
                     };

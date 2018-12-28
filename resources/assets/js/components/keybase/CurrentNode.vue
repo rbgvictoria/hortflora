@@ -6,7 +6,7 @@
     </h3>
     <div>
       <ul v-if="currentNode">
-        <li v-for="lead in currentNode">
+        <li v-for="lead in currentNode" :key="lead.lead_id">
           <a class="keybase-lead" :href="`#l_${ lead.lead_id }`">{{ lead.lead_text }}</a>
         </li>
       </ul>

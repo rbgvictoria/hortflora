@@ -5,7 +5,7 @@
     <div v-if="termData.relationships && termData.relationships.data.length"
         class="glossary-relationships">
       <h4>Relationships</h4>
-      <div class="row" v-for="rel in termData.relationships.data">
+      <div class="row" v-for="rel in termData.relationships.data" :key="rel.id">
         <div class="col-xs-6 col-md-8">
           <span class="glossary-rel-type">{{ rel.relationshipType.label }}</span>
         </div>
