@@ -4,12 +4,13 @@
     <div class="form-horizontal">
       <div
         v-for="field in facetFields"
+        :key="field.fieldName"
         class="facet collapsible"
         :data-hortflora-facet-name="field.name"
       >
         <h4>{{ field.label }}</h4>
         <ul class="form-group">
-          <li v-for="facet in field.facets" class="checkbox">
+          <li v-for="facet in field.facets" :key="facet.val" class="checkbox">
             <label>
               <input type="checkbox" :value="facet.val" :disabled="field.disabled"/>
               <router-link
